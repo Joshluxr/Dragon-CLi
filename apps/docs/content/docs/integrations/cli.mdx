@@ -1,0 +1,224 @@
+---
+title: Terry CLI & MCP
+description: Command-line interface for interacting with Terragon that can also be used as an MCP server
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+
+<img
+  src="https://img.shields.io/npm/v/@terragon-labs/cli.svg?style=flat-square"
+  alt="npm"
+/>
+
+The Terry CLI let's you interact with Terragon directly from the command line. Create tasks, review changes, pull tasks to pick up where you left off, all from your terminal.
+
+### Requirements
+
+- **macOS**, **Linux**, or **WSL (Windows Subsystem for Linux)**
+- **Node.js 18+** or newer
+- **npm** package manager (bun is not currently supported)
+
+### Installation
+
+<Callout type="warning">
+  **Note**: Currently only npm is supported for installing the Terry CLI.
+</Callout>
+
+```bash title="Terminal"
+npm install -g @terragon-labs/cli
+```
+
+### Authentication
+
+```bash title="Terminal"
+terry auth
+```
+
+This will:
+
+<Steps>
+  <Step>Open your browser for authentication</Step>
+  <Step>Generate a secure token</Step>
+  <Step>Store credentials safely in `~/.terry/config.json`</Step>
+  <Step>Confirm successful connection</Step>
+</Steps>
+
+You can override the default settings directory by setting the `TERRY_SETTINGS_DIR` environment variable before running the CLI. For example:
+
+```bash title="Terminal"
+export TERRY_SETTINGS_DIR=~/.config/terry
+terry auth
+```
+
+### Commands
+
+### `terry create`
+
+Create a new task in Terragon with a message.
+
+<Callout type="info">
+  The CLI has a daily limit of 50 tasks per user. This limit resets every 24 hours.
+</Callout>
+
+```bash title="Terminal"
+# Create a task in the current repository and branch
+terry create "Fix the login bug"
+
+# Specify a different repository
+terry create "Add new feature" --repo owner/repo
+
+# Use a specific base branch
+terry create "Update documentation" --branch develop
+
+# Use existing branch without creating a new one
+terry create "Quick fix" --no-new-branch
+
+# Use a specific AI model
+terry create "Refactor code" --model opus
+
+# Create a task in plan mode (for complex tasks requiring planning)
+terry create "Build new authentication system" --mode plan
+```
+
+#### Options
+
+- `-r, --repo <repo>`: GitHub repository (default: current repository)
+- `-b, --branch <branch>`: Base branch name (default: current branch, falls back to main)
+- `--no-new-branch`: Don't create a new branch (default: creates new branch)
+- `-M, --mode <mode>`: Whether to create tasks in `plan` mode (require approval before making changes) or `execution` mode. Only available with the Claude Code agent (default: execute)
+- `-m, --model <model>`: AI model to use (default: last model you selected in the dashboard)
+
+Available models:
+
+- `sonnet`
+- `haiku`
+- `opus`
+- `gpt-5.2` (or `gpt-5.2-medium`)
+- `gpt-5.2-low`
+- `gpt-5.2-high`
+- `gpt-5.1` (or `gpt-5.1-medium`)
+- `gpt-5.1-low`
+- `gpt-5.1-high`
+- `gpt-5.1-codex-max` (or `gpt-5.1-codex-max-medium`)
+- `gpt-5.1-codex-max-low`
+- `gpt-5.1-codex-max-high`
+- `gpt-5.1-codex-max-xhigh`
+- `gpt-5.1-codex-low`
+- `gpt-5.1-codex-medium` (or `gpt-5.1-codex`)
+- `gpt-5.1-codex-high`
+- `gpt-5` (or `gpt-5-medium`)
+- `gpt-5-low`
+- `gpt-5-high`
+- `gpt-5-codex-low`
+- `gpt-5-codex-medium` (or `gpt-5-codex`)
+- `gpt-5-codex-high`
+- `gemini-3-pro`
+- `gemini-2.5-pro`
+- `opencode/grok-code` (or `grok-code`)
+- `opencode/qwen3-coder` (or `qwen3-coder`)
+- `opencode/kimi-k2` (or `kimi-k2`)
+- `opencode/glm-4.6` (or `glm-4.6`)
+- `opencode/gemini-2.5-pro`
+- `amp`
+
+### `terry pull`
+
+Pull tasks from Terragon to your local machine:
+
+```bash title="Terminal"
+# Interactive mode - select from recent tasks
+terry pull
+
+# Pull a specific task by ID
+terry pull <taskId>
+
+# Pull and automatically launch Claude Code
+terry pull <taskId> --resume
+```
+
+<Callout type="info">
+  **Getting the task ID**:
+  <br />
+  You can find the task ID at the end of the URL when viewing a task in
+  Terragon. For example, in `https://terragonlabs.com/tasks/abc123-def456`, the
+  task ID is `abc123-def456`.
+</Callout>
+
+#### Options
+
+- `-r, --resume`: Automatically launch Claude Code after pulling
+
+#### Task Display
+
+Once selected, each task shows:
+
+- `Task title`
+- `Branch name`
+- `Repository`
+- `PR #` (if available)
+
+### `terry list`
+
+List all tasks in a non-interactive format:
+
+```bash title="Terminal"
+# List all tasks (automatically filters by current repo when inside a Git repository)
+terry list
+```
+
+#### Task Display
+
+Each task shows:
+
+- `Task ID`
+- `Name`
+- `Branch`
+- `Repository`
+- `PR #` (if available)
+
+A count of your active tasks is returned after all of your tasks are listed.
+
+#### Example Output
+
+```
+Task ID         abc123def456
+Name            Fix login bug
+Branch          terragon/fix-login
+Repository      myorg/myrepo
+PR Number       #123
+
+Task ID         def789ghi012
+Name            Add dark mode
+Branch          terragon/dark-mode
+Repository      myorg/myrepo
+PR Number       N/A
+
+Total: 2 tasks
+```
+
+### `terry mcp`
+
+Run an MCP (Model Context Protocol) server for the git repository:
+
+```bash title="Terminal"
+# Run MCP server for current directory
+terry mcp
+```
+
+#### Claude Code Integration
+
+You can add the Terry MCP server to your local Claude Code instance to enable direct interaction with Terragon tasks from within Claude:
+
+```bash title="Terminal"
+claude mcp add terry -- terry mcp
+```
+
+This integration provides Claude Code with the following capabilities:
+
+- **`terry_list`**: List all your Terragon tasks directly from Claude
+- **`terry_create`**: Create new tasks without leaving Claude Code
+- **`terry_pull`**: Pull task session data to continue work
+
+The MCP server acts as a bridge between Claude Code and Terragon, allowing you to manage tasks using natural language commands within your AI coding sessions.

@@ -1,0 +1,27 @@
+{
+  "name": "@terragon/utils",
+  "version": "1.0.0",
+  "description": "Shared utility functions for the terragon monorepo",
+  "type": "module",
+  "exports": {
+    "./error": "./src/error.ts",
+    "./retry": "./src/retry.ts",
+    "./encryption": "./src/encryption.ts",
+    "./circuit-breaker": "./src/circuit-breaker.ts",
+    "./batch": "./src/batch.ts"
+  },
+  "scripts": {
+    "tsc-check": "tsc --noEmit",
+    "tsc-watch": "tsc --noEmit --watch --preserveWatchOutput",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

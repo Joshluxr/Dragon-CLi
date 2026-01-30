@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* CSS Variables for customization - Following Fumadocs best practices */
+:root {
+  /* Page spacing customization */
+  --fd-page-header-margin-bottom: 1.5rem;
+  --fd-title-margin-bottom: 0.5rem;
+  --fd-separator-margin: 0.75rem;
+
+  /* Step component spacing */
+  --fd-step-margin-bottom: 0.5em;
+  --fd-step-min-height: 2.5rem;
+  --fd-step-content-gap: 0.5rem;
+  --fd-page-width: 1250px;
+
+  /* Primary color matching apps/www */
+  --color-fd-primary: hsl(142, 71%, 25%);
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);
+}
+
+.dark {
+  /* Dark mode overrides */
+  --color-fd-primary: hsl(142, 50%, 40%);
+  --color-fd-primary-foreground: hsl(150, 43%, 6%);
+}
+
+/* Page layout spacing - using CSS variables */
+[data-page] > div:first-child {
+  margin-bottom: var(--fd-page-header-margin-bottom);
+}
+
+[data-page] h1 {
+  margin-bottom: var(--fd-title-margin-bottom);
+}
+
+/* Clean up empty horizontal rules */
+hr:empty,
+[data-page] > hr:first-of-type {
+  display: none;
+}
+
+/* Consistent separator spacing */
+hr,
+[data-slot="separator"] {
+  margin: var(--fd-separator-margin) 0;
+}
+
+/* Steps component customization - Future-proof selectors */
+/* This targets all possible step component implementations */
+[data-slot="step"],
+.fd-step,
+.fd-steps > *:not(:last-child),
+[class*="step-"]:not([class*="steps"]) {
+  margin-bottom: var(--fd-step-margin-bottom);
+  min-height: var(--fd-step-min-height);
+}
+
+/* Remove bottom margin from last step in any container */
+[data-slot="step"]:last-child,
+.fd-step:last-child,
+.fd-steps > *:last-child,
+[class*="step-"]:last-child {
+  margin-bottom: 0;
+}
+
+/* Step content gap for all step implementations */
+[data-slot="step"] > div,
+.fd-step > div,
+[class*="step-"] > div {
+  gap: var(--fd-step-content-gap);
+}
+
+/* Step content spacing - applies to all step variations */
+[data-slot="step"] :is(ol, ul),
+.fd-step :is(ol, ul),
+[class*="step-"] :is(ol, ul) {
+  @apply mt-2 mb-2;
+}
+
+[data-slot="step"] li,
+.fd-step li,
+[class*="step-"] li {
+  @apply mt-1 mb-1;
+}
+
+/* Home link wrapper - using Tailwind utilities */
+.home-link-wrapper {
+  @apply inline-flex items-center gap-0;
+}
+
+.home-link-wrapper .chevron-icon {
+  @apply hidden w-4 h-4 mr-1;
+}
+
+/* Show chevron on link hover */
+a:hover .chevron-icon {
+  @apply inline-block;
+}
+
+.home-link-wrapper svg {
+  @apply align-middle;
+}
+
+/* Ensure all sidebar icons are left aligned */
+[data-slot="sidebar"] svg {
+  @apply flex-shrink-0;
+}
+
+[data-slot="sidebar"] a,
+[data-slot="sidebar"] button {
+  @apply flex items-center;
+}
+
+[data-slot="sidebar"] a > svg:first-child,
+[data-slot="sidebar"] button > svg:first-child {
+  @apply mr-2;
+}
+
+/* Custom line highlighting for code blocks - using Tailwind utilities */
+[data-highlighted-line] {
+  @apply bg-blue-500/10 -mx-4 px-4 border-l-4 border-blue-500;
+}
+
+/* Dark mode highlighted lines */
+.dark [data-highlighted-line] {
+  @apply bg-blue-400/10 border-blue-400;
+}
+
+/* Custom table styling */
+td {
+  @apply align-top;
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@terragon/env",
+  "version": "1.0.0",
+  "description": "Package to manage environment variables across the terragon monorepo",
+  "type": "module",
+  "exports": {
+    "./apps-www": "./src/apps-www.ts",
+    "./apps-broadcast": "./src/apps-broadcast.ts",
+    "./pkg-dev-env": "./src/pkg-dev-env.ts",
+    "./pkg-shared": "./src/pkg-shared.ts",
+    "./next-public": "./src/next-public.ts"
+  },
+  "scripts": {
+    "tsc-check": "tsc --noEmit",
+    "tsc-watch": "tsc --noEmit --watch --preserveWatchOutput",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "envsafe": "^2.0.3"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,738 @@
+import { describe, expect, test, vi } from "vitest";
+import { codexCommand, parseCodexLine } from "./codex";
+import type { IDaemonRuntime } from "./runtime";
+
+describe("parseCodexLine", () => {
+  const mockRuntime: IDaemonRuntime = {
+    logger: {
+      info: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      debug: vi.fn(),
+    },
+    execSync: vi.fn(),
+    readFileSync: vi.fn(),
+    writeFileSync: vi.fn(),
+    appendFileSync: vi.fn(),
+  } as any;
+
+  test("should parse thread.started event", () => {
+    const line =
+      '{"type":"thread.started","thread_id":"0199cb44-d7e2-7fc1-87ca-6f41dbc18d72"}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "system",
+      subtype: "init",
+      session_id: "0199cb44-d7e2-7fc1-87ca-6f41dbc18d72",
+      tools: [],
+      mcp_servers: [],
+    });
+  });
+
+  test("should parse reasoning item", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_0","type":"reasoning","text":"**Preparing greeting response**"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "assistant",
+      message: {
+        role: "assistant",
+        content: [
+          {
+            type: "thinking",
+            thinking: "**Preparing greeting response**",
+            signature: "codex-synthetic-signature",
+          },
+        ],
+      },
+      parent_tool_use_id: null,
+      session_id: "",
+    });
+  });
+
+  test("should parse agent_message item", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"Hey! What can I help you with today?"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "assistant",
+      message: {
+        role: "assistant",
+        content: [
+          { type: "text", text: "Hey! What can I help you with today?" },
+        ],
+      },
+      parent_tool_use_id: null,
+      session_id: "",
+    });
+  });
+
+  test("should parse command_execution with in_progress status", () => {
+    const line =
+      '{"type":"item.started","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","aggregated_output":"","status":"in_progress"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+    expect(results).toHaveLength(1);
+    const result = results[0];
+    expect(result).toBeDefined();
+    expect(result?.type).toBe("assistant");
+    if (result?.type === "assistant") {
+      const content = result.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_use",
+          name: "Bash",
+          input: { command: "bash -lc ls" },
+          id: "item_1",
+        });
+      }
+    }
+  });
+
+  test("should parse command_execution with completed status (success)", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","aggregated_output":"AGENTS.md\\napps\\n","exit_code":0,"status":"completed"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+    expect(results).toHaveLength(1);
+    const result = results[0];
+
+    expect(result).toBeDefined();
+    expect(result?.type).toBe("user");
+    if (result?.type === "user") {
+      const content = result.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_1",
+          content: "AGENTS.md\napps\n",
+          is_error: false,
+        });
+      }
+    }
+  });
+
+  test("should parse command_execution with completed status (error)", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_2","type":"command_execution","command":"bash -lc \'cat nonexistent\'","aggregated_output":"cat: nonexistent: No such file or directory\\n","exit_code":1,"status":"completed"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+    expect(results).toHaveLength(1);
+    const result = results[0];
+
+    expect(result).toBeDefined();
+    expect(result?.type).toBe("user");
+    if (result?.type === "user") {
+      const content = result.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_2",
+          is_error: true,
+        });
+      }
+    }
+  });
+
+  test("should return null for turn.started", () => {
+    const line = '{"type":"turn.started"}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+    expect(results).toHaveLength(0);
+  });
+
+  test("should return null for turn.completed and log usage", () => {
+    const line =
+      '{"type":"turn.completed","usage":{"input_tokens":6450,"cached_input_tokens":2048,"output_tokens":16}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(0);
+    expect(mockRuntime.logger.debug).toHaveBeenCalledWith("Codex token usage", {
+      input_tokens: 6450,
+      cached_input_tokens: 2048,
+      output_tokens: 16,
+    });
+  });
+
+  test("should return null for file_change and log changes", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_7","type":"file_change","changes":[{"path":"/Users/michael/Projects/test-project/src/math.ts","kind":"update"}],"status":"completed"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(0);
+    expect(mockRuntime.logger.info).toHaveBeenCalledWith("Codex file changes", {
+      changes: [
+        {
+          path: "/Users/michael/Projects/test-project/src/math.ts",
+          kind: "update",
+        },
+      ],
+      paths: "/Users/michael/Projects/test-project/src/math.ts",
+    });
+  });
+
+  test("should handle invalid JSON as text", () => {
+    const line = "not valid json";
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "assistant",
+      message: {
+        role: "assistant",
+        content: "not valid json",
+      },
+      parent_tool_use_id: null,
+      session_id: "",
+    });
+  });
+
+  test("should handle JSON without type field as text", () => {
+    const line = '{"some":"data"}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "assistant",
+      message: {
+        role: "assistant",
+        content: '{"some":"data"}',
+      },
+      parent_tool_use_id: null,
+      session_id: "",
+    });
+  });
+
+  test("should warn and return null for unknown item type", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_1","type":"unknown_type","data":"test"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(0);
+    expect(mockRuntime.logger.warn).toHaveBeenCalledWith(
+      "Unknown Codex item type",
+      expect.objectContaining({
+        type: "unknown_type",
+      }),
+    );
+  });
+
+  test("should parse full conversation from user logs", () => {
+    const lines = [
+      '{"type":"thread.started","thread_id":"0199cb44-d7e2-7fc1-87ca-6f41dbc18d72"}',
+      '{"type":"turn.started"}',
+      '{"type":"item.completed","item":{"id":"item_0","type":"reasoning","text":"**Preparing to read README**"}}',
+      '{"type":"item.started","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","aggregated_output":"","status":"in_progress"}}',
+      '{"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","aggregated_output":"AGENTS.md\\napps\\nCLAUDE.local.md\\n","exit_code":0,"status":"completed"}}',
+      '{"type":"item.completed","item":{"id":"item_2","type":"reasoning","text":"**Viewing README file**"}}',
+      '{"type":"item.started","item":{"id":"item_3","type":"command_execution","command":"bash -lc \'cat README.md\'","aggregated_output":"","status":"in_progress"}}',
+      '{"type":"item.completed","item":{"id":"item_3","type":"command_execution","command":"bash -lc \'cat README.md\'","aggregated_output":"# Terragon\\n\\nDelegation platform\\n","exit_code":0,"status":"completed"}}',
+      '{"type":"item.completed","item":{"id":"item_4","type":"reasoning","text":"**Preparing summary**"}}',
+      '{"type":"item.completed","item":{"id":"item_5","type":"agent_message","text":"Terragon is a delegation platform"}}',
+      '{"type":"turn.completed","usage":{"input_tokens":20854,"cached_input_tokens":19584,"output_tokens":294}}',
+    ];
+
+    const results = lines.flatMap((line) =>
+      parseCodexLine({ line, runtime: mockRuntime }),
+    );
+
+    // Should have: init, reasoning, bash, bash_result, reasoning, bash, bash_result, reasoning, agent_message
+    expect(results).toHaveLength(9);
+
+    // Verify sequence
+    expect(results[0]?.type).toBe("system");
+    expect(results[1]?.type).toBe("assistant"); // reasoning
+    expect(results[2]?.type).toBe("assistant"); // bash tool_use
+    expect(results[3]?.type).toBe("user"); // bash tool_result
+    expect(results[4]?.type).toBe("assistant"); // reasoning
+    expect(results[5]?.type).toBe("assistant"); // bash tool_use
+    expect(results[6]?.type).toBe("user"); // bash tool_result
+    expect(results[7]?.type).toBe("assistant"); // reasoning
+    expect(results[8]?.type).toBe("assistant"); // agent_message
+
+    // Verify first init message
+    if (results[0]?.type === "system") {
+      expect(results[0].session_id).toBe(
+        "0199cb44-d7e2-7fc1-87ca-6f41dbc18d72",
+      );
+    }
+
+    // Verify tool uses have correct IDs
+    if (results[2]?.type === "assistant") {
+      const content = results[2].message.content;
+      if (Array.isArray(content) && content[0]?.type === "tool_use") {
+        expect(content[0].id).toBe("item_1");
+      }
+    }
+
+    // Verify tool results match tool use IDs
+    if (results[3]?.type === "user") {
+      const content = results[3].message.content;
+      if (Array.isArray(content) && content[0]?.type === "tool_result") {
+        expect(content[0].tool_use_id).toBe("item_1");
+      }
+    }
+  });
+
+  test("should parse web_search item started and completed", () => {
+    const startedLine =
+      '{"type":"item.started","item":{"id":"item_web","type":"web_search","query":"latest ai news"}}';
+    const completedLine =
+      '{"type":"item.completed","item":{"id":"item_web","type":"web_search","query":"latest ai news","results":["result1","result2"]}}';
+
+    const started = parseCodexLine({
+      line: startedLine,
+      runtime: mockRuntime,
+    });
+    const completed = parseCodexLine({
+      line: completedLine,
+      runtime: mockRuntime,
+    });
+
+    expect(started).toHaveLength(1);
+    const startedMessage = started[0];
+    expect(startedMessage).toBeDefined();
+    expect(startedMessage?.type).toBe("assistant");
+    if (startedMessage?.type === "assistant") {
+      const content = startedMessage.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_use",
+          name: "WebSearch",
+          id: "item_web",
+          input: { query: "latest ai news" },
+        });
+      }
+    }
+
+    expect(completed).toHaveLength(1);
+    const completedMessage = completed[0];
+    expect(completedMessage).toBeDefined();
+    expect(completedMessage?.type).toBe("user");
+    if (completedMessage?.type === "user") {
+      const content = completedMessage.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_web",
+          is_error: false,
+        });
+        if (
+          content[0] &&
+          typeof content[0] === "object" &&
+          "content" in content[0]
+        ) {
+          expect(content[0].content).toContain("result1");
+        }
+      }
+    }
+  });
+
+  test("should parse error item into result message", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_err","type":"error","message":"Something went wrong"}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "result",
+      subtype: "error_during_execution",
+      is_error: true,
+      session_id: "",
+      error: "Something went wrong",
+      num_turns: 0,
+      duration_ms: 0,
+    });
+  });
+
+  test("should parse mcp_tool_call started and completed", () => {
+    const startedLine =
+      '{"type":"item.started","item":{"id":"item_mcp","type":"mcp_tool_call","server":"ide","tool":"getDiagnostics","status":"in_progress"}}';
+    const completedLine =
+      '{"type":"item.completed","item":{"id":"item_mcp","type":"mcp_tool_call","server":"ide","tool":"getDiagnostics","status":"completed","result":{"diagnostics":0}}}';
+
+    const started = parseCodexLine({
+      line: startedLine,
+      runtime: mockRuntime,
+    });
+    const completed = parseCodexLine({
+      line: completedLine,
+      runtime: mockRuntime,
+    });
+
+    expect(started).toHaveLength(1);
+    const startedMessage = started[0];
+    expect(startedMessage).toBeDefined();
+    expect(startedMessage?.type).toBe("assistant");
+    if (startedMessage?.type === "assistant") {
+      const content = startedMessage.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_use",
+          name: "MCPTool",
+          input: { server: "ide", tool: "getDiagnostics" },
+          id: "item_mcp",
+        });
+      }
+    }
+
+    expect(completed).toHaveLength(1);
+    const completedMessage = completed[0];
+    expect(completedMessage).toBeDefined();
+    expect(completedMessage?.type).toBe("user");
+    if (completedMessage?.type === "user") {
+      const content = completedMessage.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_mcp",
+          is_error: false,
+        });
+        if (
+          content[0] &&
+          typeof content[0] === "object" &&
+          "content" in content[0]
+        ) {
+          expect(content[0].content).toContain("diagnostics");
+        }
+      }
+    }
+  });
+
+  test("should transform todo_list started into TodoRead tool call", () => {
+    const line =
+      '{"type":"item.started","item":{"id":"item_todo","type":"todo_list","items":[{"text":"Write tests","completed":false},{"text":"Fix bug","completed":true}]}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(2);
+
+    const [toolUse, toolResult] = results;
+
+    expect(toolUse).toBeDefined();
+    expect(toolUse?.type).toBe("assistant");
+    if (toolUse?.type === "assistant") {
+      const content = toolUse.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_use",
+          name: "TodoRead",
+          input: {},
+          id: "item_todo-read",
+        });
+      }
+    }
+
+    expect(toolResult).toBeDefined();
+    expect(toolResult?.type).toBe("user");
+    if (toolResult?.type === "user") {
+      const content = toolResult.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_todo-read",
+          is_error: false,
+        });
+        if (
+          content[0] &&
+          typeof content[0] === "object" &&
+          "content" in content[0]
+        ) {
+          expect(content[0].content).toContain("Write tests");
+          expect(content[0].content).toContain("Fix bug");
+        }
+      }
+    }
+  });
+
+  test("should transform todo_list completed into TodoWrite tool call", () => {
+    const line =
+      '{"type":"item.completed","item":{"id":"item_todo","type":"todo_list","items":[{"text":"Write tests","completed":false},{"text":"Fix bug","completed":true}]}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(2);
+
+    const [toolUse, toolResult] = results;
+
+    expect(toolUse).toBeDefined();
+    expect(toolUse?.type).toBe("assistant");
+    if (toolUse?.type === "assistant") {
+      const content = toolUse.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_use",
+          name: "TodoWrite",
+          id: "item_todo-write",
+        });
+        if (
+          content[0] &&
+          typeof content[0] === "object" &&
+          "input" in content[0]
+        ) {
+          expect(content[0].input).toMatchObject({
+            todos: [
+              { id: "1", content: "Write tests", status: "pending" },
+              { id: "2", content: "Fix bug", status: "completed" },
+            ],
+          });
+        }
+      }
+    }
+
+    expect(toolResult).toBeDefined();
+    expect(toolResult?.type).toBe("user");
+    if (toolResult?.type === "user") {
+      const content = toolResult.message.content;
+      expect(Array.isArray(content)).toBe(true);
+      if (Array.isArray(content)) {
+        expect(content[0]).toMatchObject({
+          type: "tool_result",
+          tool_use_id: "item_todo-write",
+          is_error: false,
+        });
+        if (
+          content[0] &&
+          typeof content[0] === "object" &&
+          "content" in content[0]
+        ) {
+          expect(content[0].content).toContain("Updated todo list");
+        }
+      }
+    }
+  });
+
+  test("should ignore in-progress todo_list updates", () => {
+    const line =
+      '{"type":"item.updated","item":{"id":"item_todo","type":"todo_list","items":[{"text":"Write tests","completed":false}]}}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(0);
+  });
+
+  test("should parse top-level error event into result message", () => {
+    const line =
+      '{"type":"error","message":"API key not found in environment"}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "result",
+      subtype: "error_during_execution",
+      session_id: "",
+      error: "API key not found in environment",
+      is_error: true,
+      num_turns: 0,
+      duration_ms: 0,
+    });
+  });
+
+  test("should handle error event without message field", () => {
+    const line = '{"type":"error"}';
+    const results = parseCodexLine({ line, runtime: mockRuntime });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toEqual({
+      type: "result",
+      subtype: "error_during_execution",
+      session_id: "",
+      error: undefined,
+      is_error: true,
+      num_turns: 0,
+      duration_ms: 0,
+    });
+  });
+});
+
+describe("codexCommand", () => {
+  const mockRuntime: IDaemonRuntime = {
+    logger: {
+      info: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      debug: vi.fn(),
+    },
+    execSync: vi.fn(),
+    readFileSync: vi.fn(),
+    writeFileSync: vi.fn(),
+    appendFileSync: vi.fn(),
+  } as any;
+
+  test("should generate command for gpt-5 without reasoning effort config", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5"`,
+    );
+  });
+
+  test("should generate command for gpt-5-low with low reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5-low",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5 --config model_reasoning_effort=low"`,
+    );
+  });
+
+  test("should generate command for gpt-5-high with high reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5-high",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5 --config model_reasoning_effort=high"`,
+    );
+  });
+
+  test("should generate command for gpt-5-codex-low with low reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5-codex-low",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5-codex --config model_reasoning_effort=low"`,
+    );
+  });
+
+  test("should generate command for gpt-5-codex-medium with medium reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5-codex-medium",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5-codex --config model_reasoning_effort=medium"`,
+    );
+  });
+
+  test("should generate command for gpt-5-codex-high with high reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5-codex-high",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5-codex --config model_reasoning_effort=high"`,
+    );
+  });
+
+  test("should generate command for gpt-5.1-codex-max-low with low reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5.1-codex-max-low",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5.1-codex-max --config model_reasoning_effort=low"`,
+    );
+  });
+
+  test("should generate command for gpt-5.1-codex-max with medium reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5.1-codex-max",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5.1-codex-max --config model_reasoning_effort=medium"`,
+    );
+  });
+
+  test("should generate command for gpt-5.1-codex-max-xhigh with xhigh reasoning effort", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5.1-codex-max-xhigh",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5.1-codex-max --config model_reasoning_effort=xhigh"`,
+    );
+  });
+
+  test("should include terry model provider flag when useCredits is true", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "gpt-5",
+      sessionId: null,
+      useCredits: true,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5 -c model_provider="terry""`,
+    );
+  });
+
+  test("should write prompt to temporary file", () => {
+    codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt content",
+      model: "gpt-5",
+      sessionId: null,
+    });
+    expect(mockRuntime.writeFileSync).toHaveBeenCalledWith(
+      expect.stringContaining("/tmp/codex-prompt-"),
+      "test prompt content",
+    );
+  });
+
+  test("should handle unknown model as gpt-5 default", () => {
+    const command = codexCommand({
+      runtime: mockRuntime,
+      prompt: "test prompt",
+      model: "unknown-model",
+      sessionId: null,
+    });
+    expect(
+      command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
+    ).toMatchInlineSnapshot(
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5"`,
+    );
+  });
+});

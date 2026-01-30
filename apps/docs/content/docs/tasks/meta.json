@@ -1,0 +1,13 @@
+{
+  "title": "Tasks",
+  "pages": [
+    "creating-tasks",
+    "managing-tasks",
+    "task-follow-ups",
+    "slash-commands",
+    "automations",
+    "draft-tasks",
+    "scheduled-tasks",
+    "retry"
+  ]
+}

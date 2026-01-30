@@ -1,0 +1,70 @@
+{
+  "name": "@terragon/shared",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "vitest --no-file-parallelism",
+    "drizzle-kit-push-test": "drizzle-kit push --config drizzle.config.ts",
+    "drizzle-kit-push-dev": "dotenv -e .env.development.local -- drizzle-kit push",
+    "drizzle-kit-push-prod": "dotenv -e .env.production.local -- drizzle-kit push",
+    "drizzle-kit-studio-dev": "dotenv -e .env.development.local -- drizzle-kit studio",
+    "drizzle-kit-studio-prod": "dotenv -e .env.production.local -- drizzle-kit studio",
+    "dev-env": "dotenv -e .env.development.local --",
+    "prod-env": "dotenv -e .env.production.local --",
+    "tsc-watch": "tsc --noEmit --watch --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    },
+    "./*": {
+      "import": "./src/*.ts"
+    },
+    "./automations": {
+      "import": "./src/automations/index.ts"
+    },
+    "./db": {
+      "import": "./src/db/index.ts"
+    }
+  },
+  "keywords": [],
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "@date-fns/tz": "^1.2.0",
+    "@octokit/app": "^16.0.1",
+    "@terragon/agent": "workspace:*",
+    "@terragon/daemon": "workspace:*",
+    "@terragon/env": "workspace:*",
+    "@terragon/types": "workspace:*",
+    "@terragon/utils": "workspace:*",
+    "ai": "^5.0.59",
+    "better-auth": "1.3.25",
+    "cron-parser": "^5.3.0",
+    "cronstrue": "^3.0.0",
+    "date-fns": "^4.1.0",
+    "drizzle-orm": "^0.43.1",
+    "nanoid": "^5.1.5",
+    "octokit": "^5.0.2",
+    "parse-diff": "^0.11.1",
+    "zod": "4.1.11"
+  },
+  "devDependencies": {
+    "@octokit/types": "^14.0.0",
+    "@terragon/dev-env": "workspace:*",
+    "@terragon/sandbox": "workspace:*",
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.15.21",
+    "dotenv-cli": "^8.0.0",
+    "drizzle-kit": "^0.31.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

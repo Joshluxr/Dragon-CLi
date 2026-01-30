@@ -1,0 +1,26 @@
+---
+title: Retry Tasks
+description: Re-run a task with the original prompt and context
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { House } from "lucide-react";
+
+**Retrying a task is helpful when:**
+
+- You want to explore a different approach to a solution
+- A task has gotten unweildly with lots of iterative commits and you want to start over with an improved prompt
+- The AI agent has gone off the rails and you want to re-start with fresh context
+
+### Retrying a task
+
+<Steps>
+  <Step>
+    Open a task from [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://www.terragonlabs.com)
+  </Step>
+  <Step>Click the `...` menu in the top right</Step>
+  <Step>Select `Retry`</Step>
+  <Step>Update the prompt before retrying, or submit immediately</Step>
+  <Step>Retrying a task archives the original task after you submit</Step>
+</Steps>

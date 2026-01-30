@@ -1,0 +1,171 @@
+---
+title: Prompt Examples
+description: This collection demonstrates Terragon's context capabilities through three essential examples that show how to leverage multiple context types effectively.
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+
+<Tabs items={['Example 1', 'Example 2', 'Example 3']}>
+  <Tab value="Example 1">
+    ### UI Update with Visual Context
+
+    **Scenario**: Update React components to match a new design system
+
+    ```markdown
+    Update the dashboard to match the new design shown in the attached mockup.
+
+    Requirements:
+
+    - Implement the new color scheme and spacing
+    - Update all card components to use rounded corners
+    - Add the gradient header as shown
+    - Ensure mobile responsiveness
+    - Maintain existing functionality
+
+    Current implementation:
+    @src/pages/dashboard/index.tsx
+    @src/components/DashboardCard.tsx
+    @src/styles/theme.css
+
+    [Attached: new-dashboard-design.png]
+    ```
+
+    **Why This Works**:
+
+    - **Visual reference** provides exact design requirements
+    - **Multiple file mentions** give full context
+    - **Clear requirements** prevent ambiguity
+    - **Specific scope** keeps task focused
+
+    **Result**: Terragon analyzes the mockup, understands the current implementation, and systematically updates all components to match the new design while preserving functionality.
+
+  </Tab>
+  
+  <Tab value="Example 2">
+    ### Bug Fix from External Sources
+
+    **Scenario**: Fix a complex issue using GitHub issue details and monitoring data
+
+    ```markdown
+    Fix the memory leak issue reported in GitHub and confirmed by our monitoring.
+
+    Issue details: https://github.com/acme/app/issues/892
+    Performance data: https://app.datadog.com/dashboard/mem-leak-analysis
+
+    The leak appears to happen in our real-time features after 1-2 hours of use.
+
+    Investigate:
+    @src/hooks/useWebSocket.ts
+    @src/contexts/RealtimeContext.tsx
+    @src/components/LiveFeed.tsx
+
+    Look for:
+
+    - Event listeners not being cleaned up
+    - Subscriptions not being unsubscribed
+    - Large objects being retained in closures
+    ```
+
+    **Why This Works**:
+
+    - **External URLs** provide rich context from multiple sources
+    - **Specific investigation areas** guide Terragon efficiently
+    - **Clear symptoms** help identify the problem
+    - **Targeted file list** focuses the search
+
+    **Result**: Terragon fetches issue details and monitoring data, identifies the memory leak in event listener cleanup, and implements proper disposal patterns.
+
+  </Tab>
+  
+  <Tab value="Example 3">
+    ### Full Feature with Mixed Context
+
+    **Scenario**: Implement a complete feature using voice, images, and code references
+
+    ```markdown
+    [Voice transcription]: I need a notification system for our app. Users should be able to receive in-app notifications for important events like new messages, mentions, and system alerts. The notifications should appear as a dropdown in the header with a bell icon, show unread count, and have real-time updates.
+
+    UI Design: [Attached: notification-dropdown-mockup.png]
+
+    Backend requirements:
+
+    - Store notifications in database
+    - WebSocket for real-time delivery
+    - Mark as read/unread functionality
+    - Pagination for old notifications
+
+    Reference our existing message system for patterns:
+    @src/features/messages/
+    @src/server/websocket/messageHandler.ts
+
+    Add to:
+    @src/components/layout/Header.tsx
+    @prisma/schema.prisma
+    ```
+
+    **Why This Works**:
+
+    - **Voice input** captures natural requirements quickly
+    - **Visual mockup** shows exact UI expectations
+    - **Reference implementation** ensures consistency
+    - **Mixed context** provides complete picture
+
+    **Result**: Terragon implements the entire notification system following existing patterns, matching the UI mockup, and fulfilling all requirements from the voice description.
+
+  </Tab>
+</Tabs>
+
+### Key Takeaways
+
+#### Combine Context Types
+
+The most effective prompts use multiple context types:
+
+- **Visual + Code**: UI updates with mockups and current implementation
+- **URLs + Files**: Bug fixes with issue trackers and specific code locations
+- **Voice + Images + References**: Complex features with natural language and visual specs
+
+#### Be Specific About Scope
+
+- List exact files to modify
+- Provide clear acceptance criteria
+- Reference existing patterns to follow
+- Include both what to do and what not to change
+
+#### Leverage External Resources
+
+- GitHub issues for bug context
+- Monitoring dashboards for performance data
+- Documentation sites for API integration
+- Design tools for UI specifications
+
+### Best Practices
+
+<Callout type="info" title="Best Practices">
+  1. **Be Specific**: Clear, detailed prompts yield better results
+  
+  2. **Provide Context**: Use file mentions to give Terragon the full picture
+  
+  3. **Visual References**: Attach images for UI/UX work
+  
+  4. **External Resources**: Include URLs for issues, docs, or monitoring
+  
+  5. **Voice for Ideas**: Use voice input for brainstorming or detailed requirements
+  
+  6. **Combine Methods**: Mix different context types for complex tasks
+</Callout>
+
+### Tips for Success
+
+- Start with smaller, focused prompts to understand Terragon's capabilities
+- Use file mentions (`@`) liberally - Terragon works best with context
+- For UI work, always include screenshots or mockups
+- For bugs, include error messages, logs, or issue links
+- Break large tasks into smaller, manageable prompts
+- Review the generated PR before merging
+
+<Callout type="info" title="Remember">
+  Terragon excels when you provide rich context. The more relevant information
+  you include, the better Terragon can understand and complete your task.
+</Callout>

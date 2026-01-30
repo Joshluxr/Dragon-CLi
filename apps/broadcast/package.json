@@ -1,0 +1,29 @@
+{
+  "name": "@terragon/broadcast",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts,js --exec 'tsx src/dev.ts'",
+    "deploy": "partykit deploy",
+    "tsc-watch": "tsc --noEmit --watch --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc"
+  },
+  "dependencies": {
+    "@e2b/code-interpreter": "^1.2.0-beta.4",
+    "@terragon/env": "workspace:*",
+    "@terragon/types": "workspace:*",
+    "@types/lodash.debounce": "^4.0.9",
+    "lodash.debounce": "^4.0.8",
+    "partysocket": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "nodemon": "^3.1.10",
+    "partykit": "^0.0.110",
+    "strip-ansi": "^7.1.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}

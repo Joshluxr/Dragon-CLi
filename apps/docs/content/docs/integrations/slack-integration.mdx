@@ -1,0 +1,41 @@
+---
+title: Slack Integration
+description: Interact with Terragon directly from Slack
+---
+
+import { House } from "lucide-react";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## @Terragon on Slack
+
+<Callout type="info">
+  To mention @Terragon on Slack, you must first connect your Slack workspace in [Settings](https://www.terragonlabs.com/settings/integrations).
+</Callout>
+
+### How It Works
+
+Mention `@Terragon` in Slack to create new Terragon tasks. Terragon will kick off a new task with the context of the message and respond with a link to the task created. When used in threads, terragon will include the thread context as well.
+
+### What Happens
+
+When you mention `@Terragon`:
+
+<Steps>
+  <Step>A new task is created automatically with the context of the message</Step>
+  <Step>
+    For messages in threads, Terragon will include the full thread context.
+  </Step>
+  <Step>
+    Terragon will respond with a link to the task created
+  </Step>
+  <Step>Work begins in an isolated sandbox</Step>
+  <Step>
+    You'll see the task appear in [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://www.terragonlabs.com)
+  </Step>
+</Steps>
+
+### Configuration
+
+You can configure the default repository and model for Terragon to use when creating tasks in Slack after connecting your workspace in [Settings](https://www.terragonlabs.com/settings/integrations).

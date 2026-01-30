@@ -1,0 +1,327 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run several Read tool tests with different scenarios to demonstrate various outcomes."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Qa1GvwjdhafB92aavvcMTe",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/README.md"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01UafWW3dHzT2Amy49RNGHmw",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/nonexistent-file.txt"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01SL5YNZxLSmTrr6Sv6gHUZa",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/package.json",
+            "limit": 10
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_011eTAgURZR3oWtVJQunodfM",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "offset": 50,
+            "limit": 20
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FwuTEvX44V6jR3oA35GUdw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01N2wgozHkAywYPqYmwXEn9f",
+          "name": "Read",
+          "input": { "file_path": "/etc/passwd", "limit": 5 }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "File does not exist. Current working directory: /Users/michael/Projects/test-project-2",
+          "is_error": true,
+          "tool_use_id": "toolu_01UafWW3dHzT2Amy49RNGHmw"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01Qa1GvwjdhafB92aavvcMTe",
+          "type": "tool_result",
+          "content": "     1\t# test-project\n     2\t\n     3\tA monorepo project with Next.js frontend and WebSocket services, featuring Claude AI integration and authentication.\n     4\t\n     5\t## Setup\n     6\t\n     7\t1. **Install dependencies**\n     8\t\n     9\t```bash\n    10\tpnpm install\n    11\t```\n    12\t\n    13\t2. **Environment Configuration**\n    14\t\n    15\tYou need to setup environment variables in a few packages. In most of these, you can just copy the `.env.example` file and rename it to `.env.development.local` (except for the `broadcast` package, which needs a `.env` file).\n    16\t\n    17\t# Set things up in this order (follow their README.md)\n    18\t\n    19\t- packages/dev-env\n    20\t- packages/shared\n    21\t- apps/broadcast\n    22\t- apps/www\n    23\t\n    24\t3. **Start Development**\n    25\t\n    26\t```bash\n    27\tpnpm dev\n    28\t```\n    29\t\n    30\t## Key Features\n    31\t\n    32\t- **AI-Powered PRs & Commits**: Automatically generates conventional commit messages and structured PR descriptions using AI\n    33\t- **Claude Integration**: Full Claude AI chat interface with tool support\n    34\t- **Code Sandboxes**: Integrated CodeSandbox environments for safe code execution\n    35\t- **GitHub Integration**: OAuth authentication and repository management\n    36\t- **Real-time Communication**: WebSocket-based real-time features\n    37\t\n    38\t## Documentation\n    39\t\n    40\tFor detailed setup and usage instructions, see [CLAUDE.md](./CLAUDE.md).\n    41\t"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01SL5YNZxLSmTrr6Sv6gHUZa",
+          "type": "tool_result",
+          "content": "     1\t{\n     2\t  \"name\": \"test-project\",\n     3\t  \"version\": \"1.0.0\",\n     4\t  \"private\": true,\n     5\t  \"description\": \"\",\n     6\t  \"scripts\": {\n     7\t    \"dev\": \"concurrently -n \\\"env,www,cron,wss,daemon,daemon-bundled\\\" \\\"pnpm -C packages/dev-env dev\\\" \\\"pnpm -C apps/www dev\\\" \\\"pnpm -C apps/www dev:cron\\\" \\\"pnpm -C apps/broadcast dev\\\" \\\"pnpm -C packages/daemon dev\\\" \\\"pnpm -C packages/daemon-bundled dev\\\"\",\n     8\t    \"tsc-watch\": \"concurrently -n \\\"www,shared,broadcast,daemon,daemon-bundled\\\" \\\"pnpm -C apps/www tsc-watch\\\" \\\"pnpm -C packages/shared tsc-watch\\\" \\\"pnpm -C apps/broadcast tsc-watch\\\" \\\"pnpm -C packages/daemon tsc-watch\\\"\"\n     9\t  },\n    10\t  \"keywords\": [],"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_011eTAgURZR3oWtVJQunodfM",
+          "type": "tool_result",
+          "content": "    50\t    branchName,\n    51\t    model,\n    52\t    images,\n    53\t  }: {\n    54\t    input: string;\n    55\t    repoFullName: string;\n    56\t    branchName: string;\n    57\t    model: \"opus\" | \"sonnet\";\n    58\t    images?: AttachedImage[];\n    59\t  }) => Promise<void>;\n    60\t}) {\n    61\t  const [input, setInput] = React.useState(\"\");\n    62\t  const [repoFullName, setRepoFullName] = React.useState<string | null>(null);\n    63\t  const [branchName, setBranchName] = React.useState<string | null>(null);\n    64\t  const [attachedImages, setAttachedImages] = React.useState<AttachedImage[]>(\n    65\t    [],\n    66\t  );\n    67\t\n    68\t  const [isSubmitting, setIsSubmitting] = React.useState(false);\n    69\t  const [isDragOver, setIsDragOver] = React.useState(false);"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01N2wgozHkAywYPqYmwXEn9f",
+          "type": "tool_result",
+          "content": "     1\t##\n     2\t# User Database\n     3\t# \n     4\t# Note that this file is consulted directly only when the system is running\n     5\t# in single-user mode.  At other times this information is provided by"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01NZHNYEtEcyyzkM1nh9PbJV",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tests completed:\n1. ✓ Full file read (README.md)\n2. ✗ Non-existent file error\n3. ✓ Partial read with limit (package.json first 10 lines)\n4. ✓ Offset + limit read (promptbox.tsx lines 50-69)\n5. ✓ System file read (/etc/passwd)"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 3020,
+        "cache_read_input_tokens": 17079,
+        "output_tokens": 95,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.43686375,
+    "is_error": false,
+    "duration_ms": 17270,
+    "duration_api_ms": 18296,
+    "num_turns": 12,
+    "result": "Tests completed:\n1. ✓ Full file read (README.md)\n2. ✗ Non-existent file error\n3. ✓ Partial read with limit (package.json first 10 lines)\n4. ✓ Offset + limit read (promptbox.tsx lines 50-69)\n5. ✓ System file read (/etc/passwd)",
+    "session_id": "e518d52f-df39-4753-bf00-1cd34da75256",
+    "total_cost": 0.43686375,
+    "usage": {
+      "input_tokens": 10,
+      "cache_creation_input_tokens": 20099,
+      "cache_read_input_tokens": 17079,
+      "output_tokens": 453,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

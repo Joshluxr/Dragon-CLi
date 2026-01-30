@@ -1,0 +1,28 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "---Introduction---",
+    "index",
+    "quick-start",
+    "common-workflows",
+
+    "---Using Terragon---",
+    "tasks",
+    "automations",
+    "integrations/github-integration",
+    "integrations/slack-integration",
+    "integrations/cli",
+    "mobile",
+
+    "---Agents---",
+    "...agent-providers",
+
+    "---Configuration---",
+    ".../configuration",
+
+    "---Help & Resources---",
+    "...resources",
+    "security-permissions",
+    "[Terragon App](https://www.terragonlabs.com)"
+  ]
+}

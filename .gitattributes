@@ -1,0 +1,2 @@
+# Treat test data files as binary to exclude from search
+apps/www/test-data/*.json binary

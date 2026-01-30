@@ -1,0 +1,27 @@
+# Build output
+dist/
+*.log
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Coverage reports
+coverage/
+*.lcov 

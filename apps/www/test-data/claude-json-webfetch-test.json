@@ -1,0 +1,332 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run several WebFetch tool tests with different scenarios to help you test the tool's functionality."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_013VSMiTZLabDdCm1xZMXZgg",
+          "name": "WebFetch",
+          "input": {
+            "url": "https://example.com",
+            "prompt": "What is the main heading on this page?"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01XDeEmXEgjaZjdcT6jZTwXz",
+          "name": "WebFetch",
+          "input": {
+            "url": "https://httpstat.us/404",
+            "prompt": "What is the content of this page?"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01NnvdjNtEDrXFp5e9n4WQ31",
+          "name": "WebFetch",
+          "input": {
+            "url": "https://jsonplaceholder.typicode.com/posts/1",
+            "prompt": "What is the title of this JSON post?"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01XxDhtWxzc5upyEkWP25Hbw",
+          "name": "WebFetch",
+          "input": {
+            "url": "invalid-url-format",
+            "prompt": "This should fail due to invalid URL"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0174EhySfPGLmHCQCskbLHiR",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01DuwwdM1WxWQCH2pquAynGP",
+          "name": "WebFetch",
+          "input": {
+            "url": "https://github.com/anthropics/claude-code",
+            "prompt": "What programming language is this repository primarily written in?"
+          }
+        }
+      ],
+      "stop_reason": "tool_use",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 6889,
+        "cache_read_input_tokens": 10192,
+        "output_tokens": 382,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "Request failed with status code 404",
+          "is_error": true,
+          "tool_use_id": "toolu_01XDeEmXEgjaZjdcT6jZTwXz"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_013VSMiTZLabDdCm1xZMXZgg",
+          "type": "tool_result",
+          "content": "The main heading is \"Example Domain\""
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01NnvdjNtEDrXFp5e9n4WQ31",
+          "type": "tool_result",
+          "content": "The title of this JSON post is: \"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\""
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "InputValidationError: [\n  {\n    \"validation\": \"url\",\n    \"code\": \"invalid_string\",\n    \"message\": \"Invalid url\",\n    \"path\": [\n      \"url\"\n    ]\n  }\n]",
+          "is_error": true,
+          "tool_use_id": "toolu_01XxDhtWxzc5upyEkWP25Hbw"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01DuwwdM1WxWQCH2pquAynGP",
+          "type": "tool_result",
+          "content": "Based on the repository's language breakdown in the page footer, the repository is primarily written in Shell (64.0%) and Dockerfile (36.0%), with Shell being the dominant language."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01WCgAWQF7i2ENv4bMietzYt",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Ran 5 WebFetch tests:\n✅ Successful: example.com, jsonplaceholder API, GitHub repo\n❌ Failed: 404 status page, invalid URL format"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 1316,
+        "cache_read_input_tokens": 17081,
+        "output_tokens": 46,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.24152845,
+    "is_error": false,
+    "duration_ms": 20629,
+    "duration_api_ms": 21844,
+    "num_turns": 12,
+    "result": "Ran 5 WebFetch tests:\n✅ Successful: example.com, jsonplaceholder API, GitHub repo\n❌ Failed: 404 status page, invalid URL format",
+    "session_id": "428ea800-5298-4bc3-95df-d35d921ef166",
+    "total_cost": 0.24152845,
+    "usage": {
+      "input_tokens": 10,
+      "cache_creation_input_tokens": 8205,
+      "cache_read_input_tokens": 27273,
+      "output_tokens": 442,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

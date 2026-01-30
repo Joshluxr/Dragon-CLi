@@ -1,0 +1,51 @@
+---
+title: OpenAI Codex
+description: OpenAI's Coding Agent powered by GPT-5 and GPT-5-Codex.
+---
+
+## Setup
+
+To use Codex, you can connect your ChatGPT Subscription or provide an API key. We recommend using your your ChatGPT account to use Codex as part of your Plus, Pro, Team, Edu, or Enterprise plan.
+
+You can configure this in the [settings](https://www.terragonlabs.com/settings/agent) page.
+
+## Available Models
+
+- GPT-5.1-Codex-Max
+- GPT-5.1-Codex
+- GPT-5.2
+- GPT-5.1
+- GPT-5-Codex
+- GPT-5
+
+Each of these models also have different levels of reasoning: `low`, `medium`, `high` and `xhigh` (for Max). Using `low` will favor speed and fewer tokens, while `high` and `xhigh` favor more thorough reasoning.
+
+The codex models (eg. GPT-5.1-Codex) are further optimized for agentic coding in Codex. GPT-5.1-Codex was trained with a focus on real-world software engineering work; it's equally proficient at quick, interactive sessions and at independently powering through long, complex tasks. Its code review capability can catch critical bugs before they ship.
+
+## Features
+
+### Slash Commands
+
+Codex supports built-in slash commands:
+
+- `/clear` - Clear conversation history
+- `/compact` - Compact conversation
+
+Custom slash commands (like `/init`, `/pr-comments`, `/review`) are not available with Codex. Learn more in the [Slash Commands documentation](/docs/tasks/slash-commands).
+
+### Automatic Rate Limit Handling
+
+When you hit a rate limit associated with your OpenAI subscription, Terragon automatically queues new tasks and messages until your rate limit resets, so that you never lose work. After your rate limit resets, any queued tasks or messages are submitted automatically.
+
+If you upgrade your OpenAI plan after hitting a rate limit, you'll need to disconnect and reconnect your OpenAI subscription for your new limits to take effect in Terragon.
+
+## Limitations
+
+Codex only supports command-based MCP servers.
+
+## Resources
+
+- [Official Documentation](https://developers.openai.com/codex)
+- [GitHub Repository](https://github.com/openai/codex)
+- [Platform Overview](https://platform.openai.com/docs/codex/overview)
+- [Product Page](https://openai.com/codex/)

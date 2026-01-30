@@ -1,0 +1,509 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_011V8BV6o5k8MMNU1kQ5gGgt",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run various write tool tests to demonstrate different scenarios."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_011V8BV6o5k8MMNU1kQ5gGgt",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01QUG5VrPRusdRnfYMP5vqwU",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/test-write-success.txt",
+            "content": "This is a successful write test.\nMultiple lines work fine.\nTesting write functionality."
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_011V8BV6o5k8MMNU1kQ5gGgt",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01P3KAQYBoRF5EtPm1NqizDK",
+          "name": "Write",
+          "input": { "file_path": "/tmp/test-write-empty.txt", "content": "" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_011V8BV6o5k8MMNU1kQ5gGgt",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0192Z8VHLcZRTu1YnLXeU7fe",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/test-write-special-chars.txt",
+            "content": "Special characters test: !@#$%^&*()\nUnicode: 你好世界 🚀 émojis\nTabs:\tbetween\twords\nQuotes: \"double\" and 'single'"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17079,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01QUG5VrPRusdRnfYMP5vqwU",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/test-write-success.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01P3KAQYBoRF5EtPm1NqizDK",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/test-write-empty.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_0192Z8VHLcZRTu1YnLXeU7fe",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/test-write-special-chars.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_018rDxkPoutiMKjvTSc19PEV",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01UxqGhsHr3baqu7aMFqvB2g",
+          "name": "Read",
+          "input": { "file_path": "/tmp/test-write-success.txt" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 814,
+        "cache_read_input_tokens": 17079,
+        "output_tokens": 33,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_018rDxkPoutiMKjvTSc19PEV",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0114CjHdarqwcv6Zg3xnGdRk",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/test-write-success.txt",
+            "content": "Overwriting the existing file.\nThis should replace all previous content."
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 814,
+        "cache_read_input_tokens": 17079,
+        "output_tokens": 33,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_018rDxkPoutiMKjvTSc19PEV",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_012CkhUbuQMZZVeDfbGCztzv",
+          "name": "Write",
+          "input": {
+            "file_path": "/invalid/path/test.txt",
+            "content": "This should fail due to invalid path"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 814,
+        "cache_read_input_tokens": 17079,
+        "output_tokens": 203,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01UxqGhsHr3baqu7aMFqvB2g",
+          "type": "tool_result",
+          "content": "     1\tThis is a successful write test.\n     2\tMultiple lines work fine.\n     3\tTesting write functionality."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_0114CjHdarqwcv6Zg3xnGdRk",
+          "type": "tool_result",
+          "content": "The file /tmp/test-write-success.txt has been updated. Here's the result of running `cat -n` on a snippet of the edited file:\n     1\tOverwriting the existing file.\n     2\tThis should replace all previous content."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "ENOENT: no such file or directory, mkdir '/invalid/path'",
+          "is_error": true,
+          "tool_use_id": "toolu_012CkhUbuQMZZVeDfbGCztzv"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_014iTUVkh55qggmjkBnaykGf",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01RWnEtvVkUo4VQ7njA3oHRi",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/test-write-large.txt",
+            "content": "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 384,
+        "cache_read_input_tokens": 17893,
+        "output_tokens": 25,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_014iTUVkh55qggmjkBnaykGf",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01WPZxRghSUCdWe3bgAEn5ey",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/test with spaces.txt",
+            "content": "Testing filename with spaces"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 384,
+        "cache_read_input_tokens": 17893,
+        "output_tokens": 25,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_014iTUVkh55qggmjkBnaykGf",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_011P6UxfLJC48HuiwtQnKt7F",
+          "name": "Write",
+          "input": {
+            "file_path": "/tmp/deeply/nested/directory/test.txt",
+            "content": "Testing nested directory creation"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 384,
+        "cache_read_input_tokens": 17893,
+        "output_tokens": 25,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01RWnEtvVkUo4VQ7njA3oHRi",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/test-write-large.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01WPZxRghSUCdWe3bgAEn5ey",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/test with spaces.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_011P6UxfLJC48HuiwtQnKt7F",
+          "type": "tool_result",
+          "content": "File created successfully at: /tmp/deeply/nested/directory/test.txt"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01V2eoNxoNx2eJcEa5o25dHQ",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "All write tool tests completed. Successful operations created/overwrote files, while invalid paths generated errors as expected."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 374,
+        "cache_read_input_tokens": 18277,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.49173495,
+    "is_error": false,
+    "duration_ms": 27389,
+    "duration_api_ms": 28489,
+    "num_turns": 20,
+    "result": "All write tool tests completed. Successful operations created/overwrote files, while invalid paths generated errors as expected.",
+    "session_id": "a9c4c0aa-4127-4e3d-95bb-f4e9d1440757",
+    "total_cost": 0.49173495,
+    "usage": {
+      "input_tokens": 24,
+      "cache_creation_input_tokens": 18651,
+      "cache_read_input_tokens": 53249,
+      "output_tokens": 820,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

@@ -1,0 +1,69 @@
+---
+title: Task Follow-ups
+description: Learn how to add context to running tasks and create follow-up tasks
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+
+### While a Task is Running
+
+Send follow up messages to add context or make corrections while Terragon is working:
+
+#### Example queued messages
+
+<Tabs items={["Error handing", "Unit testing", "Code syntax"]}>
+  <Tab value="Error handing">
+    ```text
+    Also make sure the API returns proper error codes
+    ```
+  </Tab>
+
+<Tab value="Unit testing">```text Add unit tests for the new endpoints ```</Tab>
+
+  <Tab value="Code syntax">
+    ```text
+    Use PostgreSQL instead of MySQL for the queries
+    ```
+  </Tab>
+</Tabs>
+
+Messages queue and execute in the order they were sent after the AI agent completes its active work.
+
+### After a Task is Complete
+
+Once your task is finished, you can ask Terragon to create follow-up tasks for any next steps. Terragon will create sub-tasks from the current task that you can submit individually.
+
+#### Follow-up tasks can:
+
+- Build on the completed work
+- Address code review feedback
+- Add tests or documentation
+- Handle edge cases discovered
+- Implement related features
+
+<Callout type="info">
+  Follow-up tasks are currently only supported when using the Claude Code agent
+</Callout>
+
+#### Example follow-up tasks
+
+<Tabs items={["Testing", "Documentation", "Code review"]}>
+  <Tab value="Testing">
+    ```text
+    Create a follow-up task to add integration tests for the authentication changes in PR #123
+    ```
+  </Tab>
+
+  <Tab value="Documentation">
+    ```text
+    Create a follow-up task to update the API documentation to reflect the new endpoints from the previous task
+    ```
+  </Tab>
+  
+  <Tab value="Code review">
+    ```text
+    Address the code review comments on PR #456 in a follow-up task
+    ```
+  </Tab>
+</Tabs>

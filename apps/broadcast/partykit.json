@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.partykit.io/schema.json",
+  "name": "broadcast",
+  "main": "src/server.ts",
+  "parties": {
+    "sandbox": "src/sandbox.ts"
+  },
+  "compatibilityDate": "2025-05-24",
+  "port": 1999
+}

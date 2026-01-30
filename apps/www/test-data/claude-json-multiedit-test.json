@@ -1,0 +1,790 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0135A6Wh4U8Ro7brk194k6fD",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll test the MultiEdit tool with various scenarios to demonstrate successful and failing operations."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2170,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_0135A6Wh4U8Ro7brk194k6fD",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Rtwh9RYStsusVCnW1h2JwA",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "const PromptBox",
+                "new_string": "const PromptBoxComponent"
+              },
+              {
+                "old_string": "className=\"min-h-[100px]\"",
+                "new_string": "className=\"min-h-[120px]\""
+              },
+              {
+                "old_string": "THIS STRING DOES NOT EXIST",
+                "new_string": "This will fail"
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": "tool_use",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2170,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 229,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "File has not been read yet. Read it first before writing to it.",
+          "is_error": true,
+          "tool_use_id": "toolu_01Rtwh9RYStsusVCnW1h2JwA"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HSMbgok9HSaigYSKhkoJL7",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [{ "type": "text", "text": "Let me read the file first:" }],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 464,
+        "cache_read_input_tokens": 17080,
+        "output_tokens": 8,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HSMbgok9HSaigYSKhkoJL7",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01VdVXtZyXQrw3WXZ7SD1u3N",
+          "name": "Read",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 464,
+        "cache_read_input_tokens": 17080,
+        "output_tokens": 8,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01VdVXtZyXQrw3WXZ7SD1u3N",
+          "type": "tool_result",
+          "content": "     1\t\"use client\";\n     2\t\n     3\timport React, { useCallback, useMemo, useEffect } from \"react\";\n     4\timport { Button } from \"@/components/ui/button\";\n     5\timport { Textarea } from \"@/components/ui/textarea\";\n     6\timport { __Atom } from \"@/atoms/user\";\n     7\timport { RepoBranchSelector } from \"@/components/repo-branch-selector\";\n     8\timport { ModelSelector } from \"@/components/model-selector\";\n     9\timport { useAtomCallback } from \"jotai/utils\";\n    10\timport { cn } from \"@/lib/utils\";\n    11\timport {\n    12\t  X,\n    13\t  Plus,\n    14\t  ImagePlus,\n    15\t  CornerDownLeft,\n    16\t  Loader2,\n    17\t  Square,\n    18\t} from \"lucide-react\";\n    19\timport { AttachedImage, entryStatus } from \"@test-project/shared\";\n    20\timport { nanoid } from \"nanoid/non-secure\";\n    21\timport {\n    22\t  DropdownMenu,\n    23\t  DropdownMenuContent,\n    24\t  DropdownMenuItem,\n    25\t  DropdownMenuTrigger,\n    26\t} from \"@/components/ui/dropdown-menu\";\n    27\timport {\n    28\t  Tooltip,\n    29\t  TooltipContent,\n    30\t  TooltipTrigger,\n    31\t} from \"@/components/ui/tooltip\";\n    32\timport { isAgentStoppable } from \"@test-project/shared/model/foobar-utils\";\n    33\t\n    34\texport function PromptBox({\n    35\t  variant,\n    36\t  status,\n    37\t  entryId,\n    38\t  handleStop,\n    39\t  handleSubmit,\n    40\t  placeholder,\n    41\t}: {\n    42\t  variant: \"dashboard\" | \"entry\";\n    43\t  placeholder?: string;\n    44\t  entryId: string | null;\n    45\t  status: entryStatus | null;\n    46\t  handleStop: () => Promise<void>;\n    47\t  handleSubmit: ({\n    48\t    input,\n    49\t    repoFullName,\n    50\t    branchName,\n    51\t    model,\n    52\t    images,\n    53\t  }: {\n    54\t    input: string;\n    55\t    repoFullName: string;\n    56\t    branchName: string;\n    57\t    model: \"opus\" | \"sonnet\";\n    58\t    images?: AttachedImage[];\n    59\t  }) => Promise<void>;\n    60\t}) {\n    61\t  const [input, setInput] = React.useState(\"\");\n    62\t  const [repoFullName, setRepoFullName] = React.useState<string | null>(null);\n    63\t  const [branchName, setBranchName] = React.useState<string | null>(null);\n    64\t  const [attachedImages, setAttachedImages] = React.useState<AttachedImage[]>(\n    65\t    [],\n    66\t  );\n    67\t\n    68\t  const [isSubmitting, setIsSubmitting] = React.useState(false);\n    69\t  const [isDragOver, setIsDragOver] = React.useState(false);\n    70\t\n    71\t  const isSubmitDisabled = useMemo(() => {\n    72\t    if (variant === \"dashboard\") {\n    73\t      if (!repoFullName || !branchName) {\n    74\t        return true;\n    75\t      }\n    76\t    }\n    77\t    return input.length === 0 || isSubmitting;\n    78\t  }, [input, repoFullName, branchName, isSubmitting, variant]);\n    79\t\n    80\t  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {\n    81\t    setInput(event.target.value);\n    82\t    // Auto-resize textarea\n    83\t    const textarea = event.target;\n    84\t    textarea.style.height = 'auto';\n    85\t    textarea.style.height = `${textarea.scrollHeight}px`;\n    86\t  };\n    87\t\n    88\t  const handleImageAttach = useCallback((image: AttachedImage) => {\n    89\t    setAttachedImages((prev) => [...prev, image]);\n    90\t  }, []);\n    91\t\n    92\t  const handlePaste = useCallback(async (event: React.ClipboardEvent) => {\n    93\t    const items = event.clipboardData?.items;\n    94\t    if (!items) {\n    95\t      return;\n    96\t    }\n    97\t    const hasImages = Array.from(items).some((item) =>\n    98\t      item.type.startsWith(\"image/\"),\n    99\t    );\n   100\t    if (!hasImages) {\n   101\t      return;\n   102\t    }\n   103\t    event.preventDefault();\n   104\t    const newImages: AttachedImage[] = await Promise.all(\n   105\t      Array.from(items)\n   106\t        .filter((item) => item.type.startsWith(\"image/\"))\n   107\t        .map(dataTransferItemToAttachedImage)\n   108\t        .filter(Boolean) as Promise<AttachedImage>[],\n   109\t    );\n   110\t    setAttachedImages((prev) => [...prev, ...newImages]);\n   111\t  }, []);\n   112\t\n   113\t  const handleDragOver = useCallback((event: React.DragEvent) => {\n   114\t    event.preventDefault();\n   115\t    const hasFiles = Array.from(event.dataTransfer.types).includes(\"Files\");\n   116\t    if (hasFiles) {\n   117\t      setIsDragOver(true);\n   118\t    }\n   119\t  }, []);\n   120\t\n   121\t  const handleDragEnter = useCallback((event: React.DragEvent) => {\n   122\t    event.preventDefault();\n   123\t    const hasFiles = Array.from(event.dataTransfer.types).includes(\"Files\");\n   124\t    if (hasFiles) {\n   125\t      setIsDragOver(true);\n   126\t    }\n   127\t  }, []);\n   128\t\n   129\t  const handleDragLeave = useCallback((event: React.DragEvent) => {\n   130\t    event.preventDefault();\n   131\t    // Only set drag over to false if we're leaving the container entirely\n   132\t    if (!event.currentTarget.contains(event.relatedTarget as Node)) {\n   133\t      setIsDragOver(false);\n   134\t    }\n   135\t  }, []);\n   136\t\n   137\t  const handleDrop = useCallback(async (event: React.DragEvent) => {\n   138\t    event.preventDefault();\n   139\t    setIsDragOver(false);\n   140\t\n   141\t    const files = Array.from(event.dataTransfer.files);\n   142\t    const imageFiles = files.filter((file) => file.type.startsWith(\"image/\"));\n   143\t\n   144\t    if (imageFiles.length === 0) {\n   145\t      return;\n   146\t    }\n   147\t\n   148\t    const newImages: AttachedImage[] = await Promise.all(\n   149\t      imageFiles\n   150\t        .map(async (file) => {\n   151\t          return await dataTransferItemToAttachedImage({\n   152\t            getAsFile: () => file,\n   153\t          } as DataTransferItem);\n   154\t        })\n   155\t        .filter(Boolean) as Promise<AttachedImage>[],\n   156\t    );\n   157\t\n   158\t    setAttachedImages((prev) => [...prev, ...newImages]);\n   159\t  }, []);\n   160\t\n   161\t  const removeImage = useCallback((id: string) => {\n   162\t    setAttachedImages((prev) => {\n   163\t      const imageToRemove = prev.find((img) => img.id === id);\n   164\t      if (imageToRemove) {\n   165\t        URL.revokeObjectURL(imageToRemove.preview);\n   166\t      }\n   167\t      return prev.filter((img) => img.id !== id);\n   168\t    });\n   169\t  }, []);\n   170\t\n   171\t  const stopentry = useCallback(async () => {\n   172\t    setIsSubmitting(true);\n   173\t    try {\n   174\t      await handleStop();\n   175\t    } finally {\n   176\t      setIsSubmitting(false);\n   177\t    }\n   178\t  }, [entryId]);\n   179\t\n   180\t  const submitForm = useCallback(\n   181\t    useAtomCallback(async (get) => {\n   182\t      const selectedModel = get(__Atom);\n   183\t      if (isSubmitDisabled) {\n   184\t        return;\n   185\t      }\n   186\t      const inputCopy = input;\n   187\t      try {\n   188\t        setIsSubmitting(true);\n   189\t        if (variant === \"entry\") {\n   190\t          setInput(\"\");\n   191\t        }\n   192\t        await handleSubmit({\n   193\t          input,\n   194\t          repoFullName: repoFullName ?? \"\",\n   195\t          branchName: branchName ?? \"\",\n   196\t          model: selectedModel,\n   197\t          images: attachedImages.length > 0 ? attachedImages : undefined,\n   198\t        });\n   199\t        setInput(\"\");\n   200\t        setAttachedImages([]);\n   201\t      } catch (error) {\n   202\t        if (variant === \"entry\") {\n   203\t          setInput(inputCopy);\n   204\t        }\n   205\t        throw error;\n   206\t      } finally {\n   207\t        setIsSubmitting(false);\n   208\t      }\n   209\t    }),\n   210\t    [\n   211\t      handleSubmit,\n   212\t      input,\n   213\t      repoFullName,\n   214\t      branchName,\n   215\t      isSubmitDisabled,\n   216\t      attachedImages,\n   217\t      variant,\n   218\t    ],\n   219\t  );\n   220\t\n   221\t  useEffect(() => {\n   222\t    return () => {\n   223\t      attachedImages.forEach((image) => {\n   224\t        URL.revokeObjectURL(image.preview);\n   225\t      });\n   226\t    };\n   227\t  }, [attachedImages]);\n   228\t\n   229\t  // Auto-resize textarea when input changes (e.g., when cleared after submit)\n   230\t  useEffect(() => {\n   231\t    const textarea = document.querySelector('textarea[data-slot=\"textarea\"]') as HTMLTextAreaElement;\n   232\t    if (textarea) {\n   233\t      textarea.style.height = 'auto';\n   234\t      textarea.style.height = `${textarea.scrollHeight}px`;\n   235\t    }\n   236\t  }, [input]);\n   237\t\n   238\t  return (\n   239\t    <div\n   240\t      className={cn(\n   241\t        \"relative w-full flex flex-col gap-4 bg-background border border-input rounded-md p-4 transition-colors\",\n   242\t        {\n   243\t          \"border-primary bg-primary/5\": isDragOver,\n   244\t        },\n   245\t      )}\n   246\t      onDragOver={handleDragOver}\n   247\t      onDragEnter={handleDragEnter}\n   248\t      onDragLeave={handleDragLeave}\n   249\t      onDrop={handleDrop}\n   250\t    >\n   251\t      {isDragOver && (\n   252\t        <div className=\"absolute inset-0 bg-primary/10 border-2 border-dashed border-primary rounded-md flex items-center justify-center z-10 pointer-events-none\">\n   253\t          <div className=\"text-primary font-medium flex items-center gap-2\">\n   254\t            <ImagePlus className=\"size-5\" />\n   255\t            Drop images here\n   256\t          </div>\n   257\t        </div>\n   258\t      )}\n   259\t      <Textarea\n   260\t        placeholder={placeholder ?? \"Type your message here...\"}\n   261\t        value={input}\n   262\t        onChange={handleInput}\n   263\t        onPaste={handlePaste}\n   264\t        className={cn(\n   265\t          \"max-h-[calc(75dvh)] overflow-auto resize-none !text-base border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 shadow-none placeholder:text-muted-foreground/80\",\n   266\t          variant === \"entry\" ? \"min-h-[40px]\" : \"min-h-[100px]\",\n   267\t        )}\n   268\t        rows={1}\n   269\t        autoFocus\n   270\t        onKeyDown={(event) => {\n   271\t          if (\n   272\t            event.key === \"Enter\" &&\n   273\t            !event.shiftKey &&\n   274\t            !event.nativeEvent.isComposing\n   275\t          ) {\n   276\t            event.preventDefault();\n   277\t            submitForm();\n   278\t          }\n   279\t        }}\n   280\t      />\n   281\t      {attachedImages.length > 0 && (\n   282\t        <div className=\"flex flex-wrap gap-2\">\n   283\t          {attachedImages.map((image) => (\n   284\t            <div key={image.id} className=\"relative group\">\n   285\t              <img\n   286\t                src={image.preview}\n   287\t                alt=\"Attached image\"\n   288\t                className=\"max-w-20 max-h-20 object-cover rounded border\"\n   289\t              />\n   290\t              <button\n   291\t                onClick={() => removeImage(image.id)}\n   292\t                className=\"absolute -top-2 -right-2 bg-accent text-accent-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity\"\n   293\t              >\n   294\t                <X className=\"size-3\" />\n   295\t              </button>\n   296\t            </div>\n   297\t          ))}\n   298\t        </div>\n   299\t      )}\n   300\t      <div className=\"flex flex-row gap-4 items-center\">\n   301\t        <div className=\"flex flex-row gap-2 items-center flex-1 min-w-0\">\n   302\t          {variant === \"dashboard\" && (\n   303\t            <RepoBranchSelector\n   304\t              repoIconClassName=\"hidden show-repo-icon:flex\"\n   305\t              branchSelectorClassName=\"hidden show-branch-selector:flex flex-initial\"\n   306\t              repoSelectorClassName=\"flex-initial\"\n   307\t              onChange={(repo, branch) => {\n   308\t                setRepoFullName(repo);\n   309\t                setBranchName(branch);\n   310\t              }}\n   311\t            />\n   312\t          )}\n   313\t          <ModelSelector\n   314\t            className={cn(\n   315\t              \"flex-initial min-w-0\",\n   316\t              variant === \"entry\" ? \"\" : \"hidden show-model-selector:flex\",\n   317\t            )}\n   318\t          />\n   319\t          <PromptBoxDropdown onImageAttach={handleImageAttach} />\n   320\t        </div>\n   321\t        <div className=\"flex-shrink-0\">\n   322\t          {variant === \"entry\" &&\n   323\t          entryId &&\n   324\t          status &&\n   325\t          isAgentStoppable(status) ? (\n   326\t            <StopButton disabled={isSubmitting} handleStop={stopentry} />\n   327\t          ) : (\n   328\t            <SendButton\n   329\t              isSubmitting={isSubmitting}\n   330\t              disabled={isSubmitDisabled}\n   331\t              submitForm={submitForm}\n   332\t            />\n   333\t          )}\n   334\t        </div>\n   335\t      </div>\n   336\t    </div>\n   337\t  );\n   338\t}\n   339\t\n   340\tfunction StopButton({\n   341\t  disabled,\n   342\t  handleStop,\n   343\t}: {\n   344\t  disabled: boolean;\n   345\t  handleStop: () => void;\n   346\t}) {\n   347\t  return (\n   348\t    <Tooltip>\n   349\t      <TooltipTrigger asChild>\n   350\t        <Button\n   351\t          onClick={(event) => {\n   352\t            event.preventDefault();\n   353\t            handleStop();\n   354\t          }}\n   355\t          disabled={disabled}\n   356\t          className={disabled ? \"\" : \"animate-pulse\"}\n   357\t        >\n   358\t          <Square className=\"size-4 fill-background\" />\n   359\t        </Button>\n   360\t      </TooltipTrigger>\n   361\t      <TooltipContent>Stop</TooltipContent>\n   362\t    </Tooltip>\n   363\t  );\n   364\t}\n   365\t\n   366\tfunction SendButton({\n   367\t  submitForm,\n   368\t  disabled,\n   369\t  isSubmitting,\n   370\t}: {\n   371\t  submitForm: () => void;\n   372\t  disabled: boolean;\n   373\t  isSubmitting: boolean;\n   374\t}) {\n   375\t  return (\n   376\t    <Tooltip>\n   377\t      <TooltipTrigger asChild>\n   378\t        <Button\n   379\t          onClick={(event) => {\n   380\t            event.preventDefault();\n   381\t            submitForm();\n   382\t          }}\n   383\t          disabled={disabled || isSubmitting}\n   384\t        >\n   385\t          {isSubmitting ? (\n   386\t            <Loader2 className=\"size-4 animate-spin\" />\n   387\t          ) : (\n   388\t            <CornerDownLeft className=\"size-4\" />\n   389\t          )}\n   390\t        </Button>\n   391\t      </TooltipTrigger>\n   392\t      <TooltipContent>\n   393\t        {isSubmitting ? \"Submitting...\" : \"Submit\"}\n   394\t      </TooltipContent>\n   395\t    </Tooltip>\n   396\t  );\n   397\t}\n   398\t\n   399\tfunction toBase64(file: File): Promise<string> {\n   400\t  return new Promise((resolve, reject) => {\n   401\t    const reader = new FileReader();\n   402\t    reader.readAsDataURL(file);\n   403\t    reader.onload = () => resolve(reader.result as string);\n   404\t    reader.onerror = (error) => reject(error);\n   405\t  });\n   406\t}\n   407\t\n   408\tasync function dataTransferItemToAttachedImage(\n   409\t  item: DataTransferItem,\n   410\t): Promise<AttachedImage | undefined> {\n   411\t  const file = item.getAsFile();\n   412\t  if (file) {\n   413\t    return {\n   414\t      id: nanoid(),\n   415\t      file,\n   416\t      mimeType: file.type,\n   417\t      preview: URL.createObjectURL(file),\n   418\t      base64: await toBase64(file),\n   419\t    };\n   420\t  }\n   421\t  return undefined;\n   422\t}\n   423\t\n   424\tfunction PromptBoxDropdown({\n   425\t  onImageAttach,\n   426\t}: {\n   427\t  onImageAttach: (image: AttachedImage) => void;\n   428\t}) {\n   429\t  const [isOpen, setIsOpen] = React.useState(false);\n   430\t  return (\n   431\t    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>\n   432\t      <DropdownMenuTrigger asChild>\n   433\t        <Button\n   434\t          variant=\"ghost\"\n   435\t          className={cn(\"rounded-full size-8\", {\n   436\t            \"bg-accent\": isOpen,\n   437\t          })}\n   438\t          size=\"icon\"\n   439\t        >\n   440\t          <Plus className=\"size-4\" />\n   441\t        </Button>\n   442\t      </DropdownMenuTrigger>\n   443\t      <DropdownMenuContent align=\"start\">\n   444\t        <DropdownMenuItem\n   445\t          className=\"gap-2\"\n   446\t          onSelect={() => {\n   447\t            const input = document.createElement(\"input\");\n   448\t            input.type = \"file\";\n   449\t            input.accept = \"image/*\";\n   450\t            input.multiple = true;\n   451\t            input.onchange = async (e) => {\n   452\t              const files = Array.from(\n   453\t                (e.target as HTMLInputElement).files || [],\n   454\t              );\n   455\t              for (const file of files) {\n   456\t                const image = await dataTransferItemToAttachedImage({\n   457\t                  getAsFile: () => file,\n   458\t                } as DataTransferItem);\n   459\t                if (image) {\n   460\t                  onImageAttach(image);\n   461\t                }\n   462\t              }\n   463\t            };\n   464\t            input.click();\n   465\t          }}\n   466\t        >\n   467\t          <ImagePlus className=\"size-4\" />\n   468\t          Attach Image\n   469\t        </DropdownMenuItem>\n   470\t      </DropdownMenuContent>\n   471\t    </DropdownMenu>\n   472\t  );\n   473\t}\n   474\t"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_015X1JQ3MYF4Tb1qqN2z2cGb",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Now let me test MultiEdit with various scenarios:"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 5607,
+        "cache_read_input_tokens": 17544,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_015X1JQ3MYF4Tb1qqN2z2cGb",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01UKqM9PAfbxA7svMSSxLzjJ",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "export function PromptBox({",
+                "new_string": "export function PromptBoxComponent({"
+              },
+              {
+                "old_string": "          variant === \"entry\" ? \"min-h-[40px]\" : \"min-h-[100px]\",",
+                "new_string": "          variant === \"entry\" ? \"min-h-[60px]\" : \"min-h-[120px]\","
+              },
+              {
+                "old_string": "THIS STRING DOES NOT EXIST IN THE FILE",
+                "new_string": "This edit will fail"
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 5607,
+        "cache_read_input_tokens": 17544,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "String to replace not found in file.\nString: THIS STRING DOES NOT EXIST IN THE FILE",
+          "is_error": true,
+          "tool_use_id": "toolu_01UKqM9PAfbxA7svMSSxLzjJ"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01SAqBnoAqpmdPqHrJvHMSAn",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Let me try with all valid edits:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 275,
+        "cache_read_input_tokens": 23151,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01SAqBnoAqpmdPqHrJvHMSAn",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01WKpwdwRrWDVGqWSzRBA2f1",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "export function PromptBox({",
+                "new_string": "export function PromptBoxComponent({"
+              },
+              {
+                "old_string": "          variant === \"entry\" ? \"min-h-[40px]\" : \"min-h-[100px]\",",
+                "new_string": "          variant === \"entry\" ? \"min-h-[60px]\" : \"min-h-[120px]\","
+              },
+              {
+                "old_string": "function StopButton({",
+                "new_string": "function StopButtonComponent({"
+              },
+              {
+                "old_string": "function SendButton({",
+                "new_string": "function SendButtonComponent({"
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": "tool_use",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 275,
+        "cache_read_input_tokens": 23151,
+        "output_tokens": 255,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01WKpwdwRrWDVGqWSzRBA2f1",
+          "type": "tool_result",
+          "content": "Applied 4 edits to /Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx:\n1. Replaced \"export function PromptBox({\" with \"export function PromptBoxComponent({\"\n2. Replaced \"          variant === \"entry\" ? \"min-h-[40px]\" : ...\" with \"          variant === \"entry\" ? \"min-h-[60px]\" : ...\"\n3. Replaced \"function StopButton({\" with \"function StopButtonComponent({\"\n4. Replaced \"function SendButton({\" with \"function SendButtonComponent({\""
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01LSj4czUMH3auktGsfTuXkz",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Now let me try with replace_all:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 413,
+        "cache_read_input_tokens": 23426,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01LSj4czUMH3auktGsfTuXkz",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_016KdpfNXMGejEyCz9r76sqv",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "Component",
+                "new_string": "",
+                "replace_all": true
+              },
+              {
+                "old_string": "imageAttach",
+                "new_string": "imageAttachment",
+                "replace_all": true
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 413,
+        "cache_read_input_tokens": 23426,
+        "output_tokens": 154,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "String to replace not found in file.\nString: imageAttach",
+          "is_error": true,
+          "tool_use_id": "toolu_016KdpfNXMGejEyCz9r76sqv"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FKz3aLGhRdyCGfVRqwseNd",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Let me check what actually exists:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 187,
+        "cache_read_input_tokens": 23839,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FKz3aLGhRdyCGfVRqwseNd",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01EGd21AVpD5QJoeMHQEopPa",
+          "name": "Grep",
+          "input": {
+            "pattern": "imageAttach",
+            "path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 187,
+        "cache_read_input_tokens": 23839,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01EGd21AVpD5QJoeMHQEopPa",
+          "type": "tool_result",
+          "content": "Found 1 file\n/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01USuCa2Xjjm2KpHisM5AX28",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Let me use a more specific pattern:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 145,
+        "cache_read_input_tokens": 24026,
+        "output_tokens": 8,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01USuCa2Xjjm2KpHisM5AX28",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01QDEcyHJTbdfLTy85BwGgne",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "Component",
+                "new_string": "",
+                "replace_all": true
+              },
+              {
+                "old_string": "onImageAttach",
+                "new_string": "onImageAttachment",
+                "replace_all": true
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": "tool_use",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 145,
+        "cache_read_input_tokens": 24026,
+        "output_tokens": 155,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01QDEcyHJTbdfLTy85BwGgne",
+          "type": "tool_result",
+          "content": "Applied 2 edits to /Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx:\n1. Replaced \"Component\" with \"\"\n2. Replaced \"onImageAttach\" with \"onImageAttachment\""
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DWo56uZUz2DpnooVAsxBM1",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Let me try creating a new file:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 227,
+        "cache_read_input_tokens": 24171,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DWo56uZUz2DpnooVAsxBM1",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_017ha2V2vk7HdbhXXtHbc6Au",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/test-multiedit.txt",
+            "edits": [
+              {
+                "old_string": "",
+                "new_string": "This is a test file created with MultiEdit.\nIt has multiple lines.\nLine 3 here."
+              },
+              {
+                "old_string": "Line 3 here.",
+                "new_string": "Line 3 has been modified."
+              },
+              { "old_string": "test file", "new_string": "TEST FILE" }
+            ]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 227,
+        "cache_read_input_tokens": 24171,
+        "output_tokens": 181,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "File does not exist. Current working directory: /Users/michael/Projects/test-project-2",
+          "is_error": true,
+          "tool_use_id": "toolu_017ha2V2vk7HdbhXXtHbc6Au"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01Aw2dxkp5xB7xwUVerSgYzL",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [{ "type": "text", "text": "Let me test some edge cases:" }],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 220,
+        "cache_read_input_tokens": 24398,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01Aw2dxkp5xB7xwUVerSgYzL",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01P42xyoVptG2jvJWxQsWbrP",
+          "name": "MultiEdit",
+          "input": {
+            "file_path": "/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx",
+            "edits": [
+              {
+                "old_string": "export function PromptBox({",
+                "new_string": "export function PromptBox({"
+              },
+              {
+                "old_string": "  const [input, setInput] = React.useState(\"\");",
+                "new_string": "  const [input, setInput] = React.useState(\"\");\n  const [testVar, setTestVar] = React.useState(false);"
+              },
+              {
+                "old_string": "size-4",
+                "new_string": "w-4 h-4",
+                "replace_all": true
+              }
+            ]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 220,
+        "cache_read_input_tokens": 24398,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "No changes to make: old_string and new_string are exactly the same.",
+          "is_error": true,
+          "tool_use_id": "toolu_01P42xyoVptG2jvJWxQsWbrP"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_016uy8EAaV1Fd2mbmfXWcbTy",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I tested MultiEdit with various scenarios:\n\n**Successful operations:**\n- Multiple sequential edits (renaming functions)\n- Using replace_all to replace all occurrences\n- Modifying different parts of the same file\n\n**Failed operations:**\n- Attempting to edit without reading file first\n- Trying to replace non-existent strings\n- Attempting to create new files (not supported)\n- Making no-op edits (old_string = new_string)\n\nThe tool works as expected with proper error handling."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 264,
+        "cache_read_input_tokens": 24618,
+        "output_tokens": 117,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.6496078999999999,
+    "is_error": false,
+    "duration_ms": 67572,
+    "duration_api_ms": 69018,
+    "num_turns": 28,
+    "result": "I tested MultiEdit with various scenarios:\n\n**Successful operations:**\n- Multiple sequential edits (renaming functions)\n- Using replace_all to replace all occurrences\n- Modifying different parts of the same file\n\n**Failed operations:**\n- Attempting to edit without reading file first\n- Trying to replace non-existent strings\n- Attempting to create new files (not supported)\n- Making no-op edits (old_string = new_string)\n\nThe tool works as expected with proper error handling.",
+    "session_id": "4e6fb4dd-d0d3-4773-95d4-c5a54ee3b1de",
+    "total_cost": 0.6496078999999999,
+    "usage": {
+      "input_tokens": 62,
+      "cache_creation_input_tokens": 9972,
+      "cache_read_input_tokens": 217163,
+      "output_tokens": 1808,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

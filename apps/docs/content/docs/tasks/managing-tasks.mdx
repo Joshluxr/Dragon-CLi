@@ -1,0 +1,54 @@
+---
+title: Managing Tasks
+description: Track and manage your Terragon tasks from creation to merged PR
+---
+
+import {
+  Circle,
+  CircleDashed,
+  Check,
+  X,
+  GitPullRequestArrow,
+  GitMerge,
+  GitPullRequestClosed,
+  GitPullRequestDraft,
+  Clock,
+} from "lucide-react";
+import { Callout } from "fumadocs-ui/components/callout";
+
+#### Task Information
+
+Each task displays: [`Task status`](/tasks/managing-tasks#task-status), an automatically generated title based on your original prompt, when the task was created, repository and branch information, [`PR status`](/tasks/managing-tasks#pr-status) (if applicable), [`CI status`](/tasks/managing-tasks#ci-status) (if applicable), lines of code changed (if applicable), and the agent icon (for running tasks).
+
+### Task Status
+
+Tasks display visual indicators on the left showing their current state.
+
+| Icon                                                                                                                        | Status   | Description                           |
+| --------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------- |
+| <div className="inline-flex items-center justify-center w-3 h-3"><div className="w-1 h-1 rounded-full bg-blue-500" /></div> | Unread   | Task updated, but not been viewed yet |
+| <Clock className="inline w-3 h-3 text-yellow-600/90" strokeWidth={3} />                                                     | Pending  | Task is queued or waiting for sandbox |
+| <CircleDashed className="inline w-3 h-3 text-muted-foreground animate-[spin_1.5s_linear_infinite]" strokeWidth={2} />       | Running  | Task is actively being worked on      |
+| <Check className="inline w-3 h-3 text-green-600/90" strokeWidth={3} />                                                      | Complete | Task completed successfully           |
+| <X className="inline w-3 h-3 text-red-600/90" strokeWidth={3} />                                                            | Error    | Task encountered an error             |
+
+### PR Status
+
+Once a task completes successfully, an icon will appear to the right indicating its PR's state.
+
+| Icon                                                               | Status | Description                             |
+| ------------------------------------------------------------------ | ------ | --------------------------------------- |
+| <GitPullRequestDraft className="inline w-4 h-4 text-[#656c76]" />  | Draft  | PR created as draft `default`           |
+| <GitPullRequestArrow className="inline w-4 h-4 text-[#238636]" />  | Open   | PR is open and ready for review         |
+| <GitMerge className="inline w-4 h-4 text-[#8957e5]" />             | Merged | PR has been merged into the base branch |
+| <GitPullRequestClosed className="inline w-4 h-4 text-[#da3633]" /> | Closed | PR was closed without merging           |
+
+### CI Status
+
+When a PR is open, you can monitor your continuous integration checks directly from Terragon next to the PR status.
+
+| Icon                                                                                                                | Status  | Description                            |
+| ------------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------- |
+| <img src="https://github.githubassets.com/favicons/favicon-pending.png" alt="Pending" className="inline w-4 h-4" /> | Pending | CI checks are currently running        |
+| <img src="https://github.githubassets.com/favicons/favicon-success.png" alt="Success" className="inline w-4 h-4" /> | Success | All CI checks have passed successfully |
+| <img src="https://github.githubassets.com/favicons/favicon-failure.png" alt="Failure" className="inline w-4 h-4" /> | Failure | One or more CI checks have failed      |

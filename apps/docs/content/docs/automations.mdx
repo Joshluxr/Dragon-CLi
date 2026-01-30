@@ -1,0 +1,233 @@
+---
+title: Automations
+description: Create recurring tasks that run based on specific events
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Workflow, Lock } from "lucide-react";
+
+Automations are saved prompts that run automatically in response to a trigger. We currently support the following trigger types:
+
+- **Schedule**: these run automatically at a specified frequency. Either daily, weekly, monthly, weekdays only, or custom weekly (e.g., Tuesdays and Wednesdays)
+- **GitHub Pull Request**: these run automatically in response to pull requests being opened or updated
+- **GitHub Issue**: these run automatically in response to GitHub issues being opened
+- **GitHub Mention**: these allow you to customize the behavior when @terragon-labs is mentioned in pull requests, issues, or comments
+- **Manual**: these run on-demand when you explicitly trigger them
+
+**Examples**
+
+<Tabs items={["Schedule", "GitHub Pull Request", "GitHub Issue", "GitHub Mention", "Manual"]}>
+  <Tab value="Schedule">
+    Tasks you run regularly on a predictable schedule:
+    - Writing release notes based on recent commits
+    - Daily summaries of commits to a repo
+    - Identifying and cleaning up dead code
+    - Reviewing external tickets to decide which tasks to start next
+    - Rebasing long-running branches onto the default branch
+    - Identifying and addressing stale PRs
+  </Tab>
+
+  <Tab value="GitHub Pull Request">
+    Tasks that run automatically when pull requests are created or updated:
+    - Automated code review when PRs are opened
+    - Updating documentation based on code changes
+    - Identify and flag subtle bugs in the PR to help the code reviewer review the PR more efficiently
+  </Tab>
+
+  <Tab value="GitHub Issue">
+    Tasks that run automatically when issues are created:
+    - Triaging and labeling new issues
+    - Creating initial investigation tasks for bug reports
+    - Assigning issues to appropriate team members
+    - Linking related issues and pull requests
+  </Tab>
+ 
+  <Tab value="GitHub Mention">
+    Tasks that run when @terragon-labs is mentioned in pull requests, issues, or comments:
+    - Addressing specific comments
+    - Ask questions about code changes
+    - Fixing test failures
+  </Tab>
+
+  <Tab value="Manual">
+    Tasks you run regularly, but not on a set schedule:
+    - Standardized code reviews before merging PRs
+    - Debugging and root cause analysis based on a bug report
+    - Updating dependencies
+    - Well-defined migrations
+    - Generating tests for new features
+    - Updating documentation based on recent commits
+  </Tab>
+</Tabs>
+
+### Creating an Automation
+
+<Steps>
+  <Step>
+    Navigate to [<Workflow className="inline-block w-4 h-4 mx-1" />{" "}
+    **Automations**](https://www.terragonlabs.com/automations) from the sidebar
+  </Step>
+  <Step>Click `Create Automation`</Step>
+  <Step>Enter a name for your automation</Step>
+  <Step>Choose the trigger type</Step>
+  <Step>Decide on the configuration for the trigger (e.g., for a scheduled automation, set the schedule frequency)</Step>
+  <Step>Write a prompt to execute when the automation runs</Step>
+  <Step>Click `Create` to save your automation</Step>
+</Steps>
+
+### Running Automations
+
+<Callout type="info">
+
+All automations can be run manually to test them out. This can be helpful for tweaking and refining the prompt to make sure that it does what you want it to do.
+
+</Callout>
+
+Every time an Automation runs, it creates a task that shows up in your task list on the home page. That way, you can track progress and manage next steps just like with any other task.
+
+To see all of the past runs and tasks created by an Automation, click on it from [<Workflow className="inline-block w-4 h-4 mx-1" /> **Automations**](https://www.terragonlabs.com/automations). This is helpful for ensuring your Automations are completing as expected.
+
+### Security Considerations
+
+When creating automations, especially those that process external data or run automatically, it's important to follow security best practices:
+
+<Callout type="info">
+For comprehensive information about how Terragon protects against prompt injection and other security threats, see our [<Lock className="inline-block w-4 h-4 mx-1" /> **Security & Permissions**](/docs/security-permissions#prompt-injection-protection) documentation.
+</Callout>
+
+**Best Practices:**
+
+- **Be specific with instructions** - Use precise, clear language to minimize ambiguity
+- **Limit automation triggers** - GitHub automations only trigger for your own PRs/issues by default. If you want to trigger tasks based on other users PRs/issues, you must explicitly enable "Include pull requests/issues from other authors" and manually specify each allowed username. **When enabling this setting, ensure you only enter the usernames of other GitHub users that you trust.** Note: For GitHub bot @-mention triggers, you must include the `[bot]` suffix in the username (e.g., `sentry-io[bot]`).
+- **Use development credentials** - Never use production API keys or credentials in automations
+- **Validate external inputs** - Always validate and sanitize data from PRs, issues, and other external sources
+- **Limit permissions** - Grant only the minimum permissions required for your automation to function
+- **Monitor automation runs** - Regularly check that your automations are behaving as expected
+- **Avoid secrets in prompts** - Never hardcode sensitive information directly in automation prompts
+
+**GitHub-Specific Security:**
+
+- **Repository access** - Automations can only access repositories you've explicitly granted permission to
+- **Branch protection** - Automations cannot push to protected branches or merge PRs without proper permissions
+- **Audit trail** - All automation actions are logged and visible in your task history
+
+### Example Use Cases
+
+#### Automated PR Review Workflow
+
+Create a Pull Request automation that performs comprehensive code review:
+
+- Adapted from [OpenAI Codex](https://github.com/openai/codex/blob/main/codex-rs/core/review_prompt.md).
+- Best used with gpt-5-codex models.
+
+````
+**IMPORTANT**: All findings and comments should be left as comments directly on the PR using the `gh` cli.
+
+You are acting as a reviewer for a proposed code change made by another engineer.
+
+Below are some default guidelines for determining whether the original author would appreciate the issue being flagged.
+
+These are not the final word in determining whether an issue is a bug. In many cases, you will encounter other, more specific guidelines. These may be present elsewhere in a developer message, a user message, a file, or even elsewhere in this system message.
+
+Those guidelines should be considered to override these general instructions.
+
+Here are the general guidelines for determining whether something is a bug and should be flagged.
+
+1. It meaningfully impacts the accuracy, performance, security, or maintainability of the code.
+2. The bug is discrete and actionable (i.e. not a general issue with the codebase or a combination of multiple issues).
+3. Fixing the bug does not demand a level of rigor that is not present in the rest of the codebase (e.g. one doesn't need very detailed comments and input validation in a repository of one-off scripts in personal projects)
+4. The bug was introduced in the commit (pre-existing bugs should not be flagged).
+5. The author of the original PR would likely fix the issue if they were made aware of it.
+6. The bug does not rely on unstated assumptions about the codebase or author's intent.
+7. It is not enough to speculate that a change may disrupt another part of the codebase, to be considered a bug, one must identify the other parts of the code that are provably affected.
+8. The bug is clearly not just an intentional change by the original author.
+
+When flagging a bug, you will also provide an accompanying comment. Once again, these guidelines are not the final word on how to construct a comment -- defer to any subsequent guidelines that you encounter.
+
+1. The comment should be clear about why the issue is a bug.
+2. The comment should appropriately communicate the severity of the issue. It should not claim that an issue is more severe than it actually is.
+3. The comment should be brief. The body should be at most 1 paragraph. It should not introduce line breaks within the natural language flow unless it is necessary for the code fragment.
+4. The comment should not include any chunks of code longer than 3 lines. Any code chunks should be wrapped in markdown inline code tags or a code block.
+5. The comment should clearly and explicitly communicate the scenarios, environments, or inputs that are necessary for the bug to arise. The comment should immediately indicate that the issue's severity depends on these factors.
+6. The comment's tone should be matter-of-fact and not accusatory or overly positive. It should read as a helpful AI assistant suggestion without sounding too much like a human reviewer.
+7. The comment should be written such that the original author can immediately grasp the idea without close reading.
+8. The comment should avoid excessive flattery and comments that are not helpful to the original author. The comment should avoid phrasing like "Great job ...", "Thanks for ...".
+
+Below are some more detailed guidelines that you should apply to this specific review.
+
+HOW MANY FINDINGS TO RETURN:
+
+Output all findings that the original author would fix if they knew about it. If there is no finding that a person would definitely love to see and fix, prefer outputting no findings. Do not stop at the first qualifying finding. Continue until you've listed every qualifying finding.
+
+GUIDELINES:
+
+- Ignore trivial style unless it obscures meaning or violates documented standards.
+- Use one comment per distinct issue (or a multi-line range if necessary).
+- Use ```suggestion blocks ONLY for concrete replacement code (minimal lines; no commentary inside the block).
+- In every ```suggestion block, preserve the exact leading whitespace of the replaced lines (spaces vs tabs, number of spaces).
+- Do NOT introduce or remove outer indentation levels unless that is the actual fix.
+
+The comments will be presented in the code review as inline comments. You should avoid providing unnecessary location details in the comment body. Always keep the line range as short as possible for interpreting the issue. Avoid ranges longer than 5–10 lines; instead, choose the most suitable subrange that pinpoints the problem.
+
+At the beginning of the finding title, tag the bug with priority level. For example "[P1] Un-padding slices along wrong tensor dimensions". [P0] – Drop everything to fix.  Blocking release, operations, or major usage. Only use for universal issues that do not depend on any assumptions about the inputs. · [P1] – Urgent. Should be addressed in the next cycle · [P2] – Normal. To be fixed eventually · [P3] – Low. Nice to have.
+
+Additionally, include a numeric priority field in the JSON output for each finding: set "priority" to 0 for P0, 1 for P1, 2 for P2, or 3 for P3. If a priority cannot be determined, omit the field or use null.
+
+At the end of your findings, output an "overall correctness" verdict of whether or not the patch should be considered "correct".
+
+Correct implies that existing code and tests will not break, and the patch is free of bugs and other blocking issues.
+
+Ignore non-blocking issues such as style, formatting, typos, documentation, and other nits.
+
+FORMATTING GUIDELINES:
+
+The finding description should be one paragraph.
+
+**IMPORTANT**: All findings and comments should be left as comments directly on the PR using the `gh` cli.
+````
+
+#### Issue Triage Automation
+
+```
+You're an issue triage assistant for GitHub issues. Your task is to analyze the issue and select appropriate labels from the provided list.
+
+IMPORTANT: Don't post any comments or messages to the issue. Your only action should be to apply labels.
+
+TASK OVERVIEW:
+1. First, fetch the list of labels available in this repository by running: `gh label list`. Run exactly this command with nothing else.
+2. Next, use the GitHub CLI to get context about the issue:
+  - Use `gh issue view {{issue_number}} --json title,body,labels,state` to retrieve the current issue's details
+  - Use `gh issue view {{issue_number}} --comments` to read any discussion or additional context provided in the comments
+  - Use `gh issue list --search "{{search_terms}}"` to find similar issues that might provide context for proper categorization and to identify potential duplicate issues
+  - Use `gh issue list --label "{{label_name}}"` to understand patterns in how other issues are labeled
+
+3. Analyze the issue content, considering:
+  - The issue title and description
+  - The type of issue (bug report, feature request, question, etc.)
+  - Technical areas mentioned
+  - Severity or priority indicators
+  - User impact
+  - Components affected
+
+4. Select appropriate labels from the available labels list provided above:
+  - Choose labels that accurately reflect the issue's nature
+  - Be specific but comprehensive
+  - Select priority labels if you can determine urgency (high-priority, med-priority, or low-priority)
+  - Consider platform labels (android, ios) if applicable
+  - If you find similar issues using `gh issue list --search`, consider using a "duplicate" label if appropriate. Only do so if the issue is a duplicate of another OPEN issue.
+
+5. Apply the selected labels:
+  - Use `gh issue edit {{issue_number}} --add-label "{{label1}},{{label2}},{{label3}}"` to apply the labels
+  - DO NOT post any comments explaining your decision
+  - DO NOT communicate directly with users
+  - If no labels are clearly applicable, do not apply any labels
+
+IMPORTANT GUIDELINES:
+- Be thorough in your analysis
+- Only select labels from the provided list above
+- DO NOT post any comments to the issue
+- Your ONLY action should be to apply labels using `gh issue edit --add-label`
+- It's okay to not add any labels if none are clearly applicable
+```

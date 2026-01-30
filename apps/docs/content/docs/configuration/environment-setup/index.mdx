@@ -1,0 +1,49 @@
+---
+title: Environment Setup
+description: Configure custom sandbox environments for each of your repositories with user-specific environment variables, MCP servers, and setup scripts.
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Card, Cards } from "fumadocs-ui/components/card";
+import { Container, Variable, FileCode } from "lucide-react";
+
+Terragon provides powerful environment configuration options to customize your cloud sandbox environments. Each environment is tailored to your specific needs for each repository you work with.
+
+<Cards>
+  <Card
+    href="/docs/configuration/environment-setup/sandbox"
+    title="Sandbox Environment"
+    description="Learn about the cloud sandbox specifications and pre-installed tools"
+    icon={<Container />}
+  />
+  <Card
+    href="/docs/configuration/environment-setup/environment-variables"
+    title="Environment Variables"
+    description="Configure secrets, API keys, and configuration values"
+    icon={<Variable />}
+  />
+  <Card
+    href="/docs/configuration/environment-setup/setup-scripts"
+    title="Setup Scripts"
+    description="Customize sandbox initialization with custom setup scripts"
+    icon={<FileCode />}
+  />
+</Cards>
+
+## Creating an Environment
+
+Each environment is specific to you and a repository. This means:
+
+- Your environment variables are private to you
+- Different users working on the same repository have their own separate environments
+- You can have different configurations for each repository you work with
+
+<Steps>
+  <Step>
+    Navigate to [<Container className="inline-block w-4 h-4 mx-1" />{" "}
+    **Environments**](https://www.terragonlabs.com/environments)
+  </Step>
+  <Step>Click **`Create Environment`** in the top right</Step>
+  <Step>Select a repository from your authorized GitHub repos</Step>
+  <Step>Configure your environment settings</Step>
+</Steps>

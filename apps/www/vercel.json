@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "src/app/**/*": {
+      "maxDuration": 800
+    },
+    "app/**/*": {
+      "maxDuration": 800
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/internal/cron/stalled-tasks",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/internal/cron/scheduled-tasks",
+      "schedule": "*/1 * * * *"
+    },
+    {
+      "path": "/api/internal/cron/queued-tasks",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/internal/cron/automations",
+      "schedule": "*/30 * * * *"
+    }
+  ]
+}

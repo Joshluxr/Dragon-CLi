@@ -1,0 +1,26 @@
+/* Ensure xterm container fills available space */
+.xterm-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure terminal fills container */
+.xterm-container .xterm {
+  height: 100%;
+  width: 100%;
+}
+
+/* Fix DOM renderer stacking issues */
+.xterm-container [class^="xterm-dom-renderer-owner-"] {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: auto !important;
+}
+
+/* Ensure only one DOM renderer is visible */
+.xterm-container [class^="xterm-dom-renderer-owner-"]:not(:first-of-type) {
+  display: none !important;
+}

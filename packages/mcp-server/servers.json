@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "terry": {
+      "command": "node",
+      "args": ["dist/bundled.js"]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@terragon/agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils.ts",
+    "./tool-calls": "./src/tool-calls.ts",
+    "./types": "./src/types.ts",
+    "./versions": "./src/versions.ts",
+    "./proxy": "./src/proxy.ts"
+  },
+  "scripts": {
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "zod": "4.1.11"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.4"
+  },
+  "packageManager": "pnpm@10.14.0"
+}

@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(git:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)",
+      "Bash(rg:*)",
+      "Bash(pwd)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(echo:*)",
+      "Bash(cp:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(which:*)",
+      "Bash(ps:*)",
+      "mcp__ide__getDiagnostics"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}

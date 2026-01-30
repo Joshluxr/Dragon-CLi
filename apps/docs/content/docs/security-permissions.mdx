@@ -1,0 +1,88 @@
+---
+title: Security & Permissions
+description: How Terragon handles data access and storage
+---
+
+import { Settings } from "lucide-react";
+import { Callout } from "fumadocs-ui/components/callout";
+
+Terragon only accesses data on your behalf when you authorize it to, and only in response to your direct actions.
+
+## Data Privacy
+
+### Your Code is Private
+
+- **We do not train on your codebase** - Your code is never used to train AI models
+- Code is only accessed during active task execution when you request it
+- All code access is ephemeral and tied to your specific tasks
+
+### Sandbox Lifecycle
+
+- Sandboxes are ephemeral and managed by our sandbox providers
+- Inactive sandboxes are hibernated to conserve resources
+- Sandboxes can be resumed when you continue working on a thread
+- Your code and development environments don't persist indefinitely
+
+## GitHub Access
+
+### What Terragon Can Do
+
+- Clone repositories you've granted access to
+- Create branches and commits
+- Open pull requests
+- Read issues and PR comments
+
+### What Terragon **Cannot** Do
+
+- Access repositories without your permission
+- Push to protected branches
+- Access your code outside of task execution
+
+## Environment Variables
+
+### Security Best Practices
+
+- **Never use production keys** - Always use development or test API keys for automations and tasks
+- **Scope keys appropriately** - Use API keys with the minimum required permissions
+- **Rotate keys regularly** - Update your API keys periodically to maintain security
+- **Use repository-specific variables** - Configure different keys for different repositories when possible
+
+Environment variables you configure for your repositories are encrypted at rest and in transit using industry-standard encryption.
+
+## AI Agent Credentials
+
+When you connect your AI agent subscription or API key:
+
+- Your API key is encrypted and stored securely
+- It's used only to make requests on your behalf during task execution
+- You can disconnect your subscription or API key at any time from [<Settings className="inline-block w-4 h-4 mx-1" /> **Settings**](https://www.terragonlabs.com/settings/agent)
+
+## Prompt Injection Protection
+
+Terragon employs multiple layers of security to protect against prompt injection attacks, where malicious actors attempt to manipulate AI agent behavior through crafted inputs.
+
+### Core Security Measures
+
+- **Execution sandboxing** - All code execution happens in isolated sandbox environments
+- **API authentication** - API keys with 24-hour expiration are used for authenticating sandbox communication with our servers
+- **Thread Isolation** - Each thread runs in its own isolated sandbox environment. Sandboxes are tied to threads and can be resumed for continued work within the same thread.
+
+### Built-in Protections
+
+Terragon's AI agents include several automatic safeguards:
+
+- **Git-based access control** - Agents can only access repositories you've explicitly granted permission to
+- **User-scoped operations** - All operations are strictly scoped to the authenticated user's permissions
+- **Explicit author allowlisting** - [Automations](/docs/automations) that create tasks in response to GitHub issues or PRs being created only trigger for your own PRs/issues by default, and for the repositories you explicitly specify. To automatically create tasks in response to other users' GitHub issues/PRs, you must manually specify each GitHub username when creating an Automation.
+
+## Best Practices for Users
+
+To maximize security when using Terragon:
+
+1. **Review automations carefully** - Particularly for tasks that take external data as input, such as PRs or issues. Make sure to only allow trusted users to trigger your automations.
+2. **Review prompts carefully** - Ensure your prompts don't contain instructions that could be exploited by malicious external data, such as web searches, PRs issue content
+3. **Use development environments** - Configure your environments and MCP servers to use development databases and non-production resources
+4. **Use environment variables for secrets** - Always use [environment variables](/docs/configuration/environment-setup/environment-variables) for sensitive information, such as API keys, and avoid hardcoding them directly in your prompts or codebase.
+5. **Limit the scope of MCP servers** - Use MCP servers with read-only access where possible, and only grant MCP servers access to the specific resources they need.
+
+While Terragon's security measures significantly reduce the risk of prompt injection attacks, no system is completely immune. Always review agent actions and maintain good security hygiene when working with external data sources.

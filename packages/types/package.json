@@ -1,0 +1,27 @@
+{
+  "name": "@terragon/types",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": {
+      "import": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc"
+  },
+  "dependencies": {
+    "zod": "4.1.11"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.2"
+  },
+  "packageManager": "pnpm@10.14.0"
+}

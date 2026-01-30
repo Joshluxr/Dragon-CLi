@@ -1,0 +1,4 @@
+{
+  "title": "Agent Providers",
+  "pages": ["claude-code", "codex", "opencode", "gemini", "amp"]
+}

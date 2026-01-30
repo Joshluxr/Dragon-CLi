@@ -1,0 +1,41 @@
+{
+  "name": "@terragon/sandbox-image",
+  "version": "0.0.1",
+  "description": "Sandbox Dockerfile and code to create template images for sandbox providers",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.js --sourcemap",
+    "dev": "pnpm build --watch",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "create-template": "NODE_ENV=production tsx scripts/create-template.ts",
+    "create-template:e2b:small": "NODE_ENV=production tsx scripts/create-template.ts --size=small --provider=e2b",
+    "create-template:e2b:large": "NODE_ENV=production tsx scripts/create-template.ts --size=large --provider=e2b",
+    "create-template:daytona:small": "NODE_ENV=production tsx scripts/create-template.ts --size=small --provider=daytona",
+    "create-template:daytona:large": "NODE_ENV=production tsx scripts/create-template.ts --size=large --provider=daytona",
+    "create-template:all": "pnpm create-template:e2b:small && pnpm create-template:e2b:large && pnpm create-template:daytona:small && pnpm create-template:daytona:large",
+    "update-dockerfile-versions": "bun scripts/update-dockerfile-versions.ts"
+  },
+  "devDependencies": {
+    "@e2b/cli": "^1.5.1",
+    "@terragon/tsconfig": "workspace:*",
+    "@terragon/types": "workspace:*",
+    "@types/node": "^22.10.6",
+    "esbuild": "^0.25.5",
+    "tsx": "^4.20.3",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  }
+}

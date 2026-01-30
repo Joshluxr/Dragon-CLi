@@ -1,0 +1,26 @@
+---
+title: Tasks Overview
+description: Tasks in Terragon
+---
+
+## What are Tasks?
+
+Tasks are the core unit of work in Terragon:
+
+- Each task runs in its own [sandbox](/docs/configuration/environment-setup/sandbox)
+- Each task is scoped to a specific git repository and branch
+- Each task is assigned to a single [agent](/docs/agent-providers)
+
+You can think of a task as a conversation with an Agent with access to a specific repository and branch. The agent will be able to plan, edit and verify the changes it makes to the repository.
+
+## Different ways to create a task
+
+Tasks can be created in a few different ways:
+
+- Run a task immediately from the dashboard
+- [Schedule a task](/docs/tasks/scheduled-tasks) to run at a specific time in the future
+- [Retry an existing task](/docs/tasks/retry) with a new prompt
+- `@terragon-labs` in a [GitHub issue or pull request](/docs/integrations/github-integration)
+- `@terragon` in a [Slack message](/docs/integrations/slack-integration)
+- `terry create` via the [CLI](/docs/integrations/cli)
+- An [Automation](/docs/automations) in response to a predefined event (eg. Pull Request Code Reviews, Issue Triage, etc.)

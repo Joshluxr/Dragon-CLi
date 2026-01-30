@@ -1,0 +1,121 @@
+---
+title: Environment Variables
+description: Configure secrets and environment variables for your Terragon sandboxes.
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Container } from "lucide-react";
+
+<Callout type="info">
+  All environment variables are encrypted at rest and in transit for optimal security.
+</Callout>
+
+Environment variables allow you to add secrets and configuration values that will be available in your sandbox. You can configure environment variables at two levels:
+
+- **Global Environment**: Variables that apply to all your repositories
+- **Repository-Specific Environment**: Variables scoped to individual repositories
+
+Repository-specific variables take precedence over global variables when both define the same key. This allows you to set common defaults globally while overriding them per repository as needed.
+
+## Common Use Cases
+
+Environment variables are perfect for:
+
+- **API Keys**: Store credentials for third-party services
+- **Database URLs**: Connection strings for databases
+- **Feature Flags**: Toggle features on/off
+- **Configuration Values**: Any settings that vary between environments
+- **Webhook URLs**: Endpoints for external services
+- **SDK Keys**: Authentication for various SDKs
+
+## Adding Environment Variables
+
+<Steps>
+  <Step>Click **`Add Variable`**</Step>
+  <Step>Enter the variable name and value</Step>
+  <Step>Click **`Save Environment Variables`**</Step>
+</Steps>
+
+## Importing from .env File
+
+You can quickly import multiple environment variables from a `.env` file:
+
+<Steps>
+  <Step>Click the **`Import from .env`** button</Step>
+  <Step>Paste the contents of your `.env` file</Step>
+  <Step>Review the parsed variables</Step>
+  <Step>Click **`Import`** to add them all at once</Step>
+</Steps>
+
+### Example .env Format
+
+```bash
+# API Keys
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+REDIS_URL=redis://localhost:6379
+
+# Feature Flags
+ENABLE_NEW_FEATURE=true
+DEBUG_MODE=false
+
+# External Services
+WEBHOOK_URL=https://api.example.com/webhook
+SLACK_TOKEN=xoxb-...
+```
+
+## Default Environment Variables
+
+Terragon automatically sets the following environment variables in your sandbox:
+
+| Name       | Description                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TERRAGON` | Always set to `true` when running in a Terragon sandbox. You can use this variable to differentiate when the agent/code is running in a Terragon sandbox versus locally. |
+| `GH_TOKEN` | GitHub access token for the `gh` CLI. You can override this by setting your own `GH_TOKEN` environment variable.                                                         |
+
+<Callout type="info">
+  **Custom GitHub Token**: If you need to use a different GitHub token (e.g., for accessing private packages or repositories), you can add your own `GH_TOKEN` environment variable. Your custom token will take precedence over the default token provided by Terragon.
+</Callout>
+
+## Using Environment Variables
+
+### In Setup Scripts
+
+Environment variables are automatically available in your `terragon-setup.sh` script:
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+echo "API Key: $MY_API_KEY"
+echo "Database URL: $DATABASE_URL"
+
+# Configure application with environment variables
+export NODE_ENV=production
+export API_ENDPOINT=$API_URL
+```
+
+### In Your Code
+
+Access environment variables as you normally would in your application:
+
+```javascript
+// Node.js/JavaScript
+const apiKey = process.env.OPENAI_API_KEY;
+const dbUrl = process.env.DATABASE_URL;
+```
+
+```python
+# Python
+import os
+api_key = os.environ.get('OPENAI_API_KEY')
+db_url = os.environ.get('DATABASE_URL')
+```
+
+```bash
+# Shell scripts
+echo "Using API key: $OPENAI_API_KEY"
+psql "$DATABASE_URL"
+```

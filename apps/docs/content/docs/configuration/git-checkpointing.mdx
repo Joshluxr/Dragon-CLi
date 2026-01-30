@@ -1,0 +1,41 @@
+---
+title: Git Checkpointing
+description: Control automatic git commits and branch management during task execution
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Container, CloudOff, Settings } from "lucide-react";
+
+Git checkpointing is enabled by default when creating tasks and does the following:
+
+- **Default branch protection**: By default, tasks create new branches to prevent accidental pushes to the main/default branch
+- **Automatic commits**: When a task finishes, Terragon automatically commits all changes made during the session to the remote branch with descriptive commit messages and PR descriptions
+- **Git diff tracking**: The system captures and stores git diffs to track changes between checkpoints
+- **Auto-recovery**: If a commit/push fails, the system can automatically retry with a follow-up message to the agent
+
+Git checkpointing is helpful for the following reasons:
+
+- **Version control safety**: Protects your default branch from experimental or accidental changes
+- **Automatic documentation**: Creates a clear history of what changes were made and why
+- **Easy review process and rollback**: Changes are isolated in feature branches with descriptive pull requests, which can be easily reverted if they don't work out
+
+### Disabling Checkpointing
+
+You may want to disable git checkpointing if you're working alone and want to commit directly to the default branch, or use 3rd party tools that may interfere with Terragon's git checkpointing (eg like Graphite), or otherwise have custom git workflows.
+
+Git checkpointing can be controlled on a per-task basis when creating a new task:
+
+<Steps>
+  <Step>
+    Navigate to the [**Home**](https://www.terragonlabs.com) page
+  </Step>
+  <Step>Look for the git checkpointing toggle button (cloud icon) in the bottom right area below the prompt box</Step>
+  <Step>Click the toggle to disable checkpointing for this task</Step>
+  <Step>A confirmation dialog will appear - click **"Yes"** to confirm</Step>
+  <Step>Submit your task normally</Step>
+</Steps>
+
+<Callout type="warning" title="Important Considerations">
+  When git checkpointing is disabled changes aren't isolated in branches, pull requests won't be automatically created, and you're responsible for prompting the agent to commit and publish work.
+</Callout>

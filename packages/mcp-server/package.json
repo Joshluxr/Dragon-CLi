@@ -1,0 +1,45 @@
+{
+  "name": "@terragon/mcp-server",
+  "version": "1.0.0",
+  "description": "Enhanced MCP server for Terragon with sandbox, database, storage, agent, and GitHub tools",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./raw-txt": {
+      "import": "./dist/raw.txt",
+      "types": "./src/raw-txt.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/bundled.js --sourcemap && cp dist/bundled.js dist/raw.txt",
+    "build:all": "pnpm build",
+    "dev": "nodemon --watch src --ext ts,js --exec 'pnpm build'",
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "start": "node dist/index.js",
+    "inspect": "pnpx @modelcontextprotocol/inspector node dist/bundled.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.6"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.10.5",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.8.3",
+    "nodemon": "^3.1.10",
+    "vitest": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,170 @@
+---
+title: MCP Setup
+description: Configure Model Context Protocol (MCP) servers to give Terragon access to external tools, databases, and services.
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Container } from "lucide-react";
+
+### What is MCP?
+
+Model Context Protocol is an open standard that enables AI assistants to interact with external systems through a unified interface. In Terragon, MCP servers provide Terragon with additional capabilities beyond code editing.
+
+### Configuring MCP Servers
+
+<Callout type="warning">
+
+The Codex agent only supports command-based MCP servers.
+
+</Callout>
+
+<Callout type="warning">
+
+The Playwright MCP server is not currently supported. We recommended a hosted browser MCP like Browserbase.
+
+</Callout>
+
+<Steps>
+  <Step>
+    Navigate to [<Container className="inline-block w-4 h-4 mx-1" />{" "}
+    **Environments**](https://www.terragonlabs.com/environments)
+  </Step>
+  <Step>Click on the environment you want to configure</Step>
+  <Step>Find the "MCP Server Configuration" section</Step>
+  <Step>Add your configuration in JSON format</Step>
+  <Step>Click `Save MCP Config`</Step>
+</Steps>
+
+### Configuration Format
+
+MCP configurations use JSON format with the following structure:
+
+```json title="mcp-server.json"
+{
+  "mcpServers": {
+    "server-name": {
+      // Server configuration
+    }
+  }
+}
+```
+
+## Server Types
+
+Terragon supports three types of MCP servers:
+
+### 1. Command-based Servers
+
+Command-based servers run as local processes within your sandbox:
+
+```json title="mcp-server.json"
+{
+  "mcpServers": {
+    "my-custom-server": {
+      "command": "node",
+      "args": ["/path/to/server.js"],
+      "env": {
+        "API_KEY": "your-api-key",
+        "OTHER_CONFIG": "value"
+      }
+    }
+  }
+}
+```
+
+- **command** (required): The executable command to run
+- **args** (optional): Array of command-line arguments
+- **env** (optional): Environment variables to pass to the server
+
+### 2. HTTP-based Servers
+
+HTTP-based servers connect to remote MCP endpoints using standard HTTP requests:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "Authorization": "Bearer your-token"
+      }
+    }
+  }
+}
+```
+
+- **type** (required): Must be `"http"` for HTTP servers
+- **url** (required): The full URL of the MCP endpoint
+- **headers** (optional): HTTP headers to include with requests
+- **env** (optional): Environment variables for the server
+
+### 3. SSE-based Servers
+
+SSE (Server-Sent Events) servers connect to MCP endpoints that use server-sent events for real-time communication:
+
+```json
+{
+  "mcpServers": {
+    "sse-server": {
+      "type": "sse",
+      "url": "https://example.com/mcp-sse",
+      "headers": {
+        "Authorization": "Bearer your-token"
+      }
+    }
+  }
+}
+```
+
+- **type** (required): Must be `"sse"` for SSE servers
+- **url** (required): The full URL of the SSE endpoint
+- **headers** (optional): HTTP headers to include with the connection
+- **env** (optional): Environment variables for the server
+
+## Multiple Servers
+
+You can configure multiple MCP servers in a single configuration:
+
+```json
+{
+  "mcpServers": {
+    "custom-tools": {
+      "command": "python",
+      "args": ["/home/user/mcp-server.py"]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "sse-server": {
+      "type": "sse",
+      "url": "https://example.com/mcp-sse"
+    },
+    "another-server": {
+      "command": "mcp-server",
+      "env": {
+        "CONFIG_PATH": "/etc/mcp/config.yaml"
+      }
+    }
+  }
+}
+```
+
+## Finding MCP Servers
+
+MCP servers can be found on the a variety of MCP server repositories. Here are some examples:
+
+- [Smithery](https://smithery.ai/)
+- [Awesome MCP Servers](https://github.com/wong2/awesome-mcp-servers)
+- [Model Context Protocol servers](https://github.com/modelcontextprotocol/servers)
+
+### Sample MCP Servers
+
+Here are some popular MCP servers you can use with Terragon:
+
+- [Ref Tools](https://ref.tools/mcp) - Pull in content from various sources
+- [Notion MCP](https://github.com/makenotion/notion-mcp-server) - Integrate with Notion workspaces
+- [Figma MCP](https://github.com/GLips/Figma-Context-MCP) - Access Figma designs and resources

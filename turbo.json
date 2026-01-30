@@ -1,0 +1,58 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "typegen": {},
+    "tsc-check": {
+      "dependsOn": ["typegen"]
+    },
+    "tsc-watch": {
+      "persistent": true,
+      "cache": false
+    },
+    "lint": {},
+    "format": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/.prettierignore",
+        "$TURBO_ROOT$/.prettierrc"
+      ]
+    },
+    "format-check": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/.prettierignore",
+        "$TURBO_ROOT$/.prettierrc"
+      ]
+    },
+    "test": {
+      "dependsOn": ["^build", "^test"],
+      "passThroughEnv": ["*"]
+    },
+    "build": {
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["*"]
+    },
+    "dev-setup": {
+      "cache": false
+    },
+    "dev": {
+      "dependsOn": ["^dev-setup", "^build"],
+      "persistent": true,
+      "cache": false
+    },
+    "dev:cron": {
+      "persistent": true,
+      "cache": false
+    },
+    "dev:stripe": {
+      "persistent": true,
+      "cache": false
+    },
+    "test-sandbox-image": {
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["*"]
+    }
+  }
+}

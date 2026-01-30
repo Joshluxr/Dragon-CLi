@@ -1,0 +1,76 @@
+---
+title: Sandbox Environment
+description: Learn about the cloud sandbox environments that Terragon provides for running your code.
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "fumadocs-ui/components/tabs";
+import { CircleCheckBig } from "lucide-react";
+
+## Sandbox Specifications
+
+When Terragon runs your code, it uses cloud sandboxes with:
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **2 CPU
+cores**
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **4 GB RAM**
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **20 GB disk
+space**
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **Ubuntu
+24.04**
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **Latest
+version of Claude Code CLI**
+
+<CircleCheckBig className="inline h-4 w-4 mr-1 text-green-600" /> **Latest
+version of Codex CLI**
+
+## Pre-installed Tools
+
+The sandbox environment includes a comprehensive set of development tools:
+
+### Languages
+
+- Python 3
+- Node.js 22
+- PHP
+- Bun
+- Rust
+
+### Package Managers
+
+- npm
+- pnpm
+- bun
+- pip
+- Composer (PHP)
+- cargo
+
+### Development Tools
+
+- GCC compiler
+- Docker CE (with docker-compose and buildx)
+- GitHub CLI (gh)
+- curl, unzip, gnupg, and other utilities
+
+## Sandbox Customization
+
+You can customize the tools available in your sandbox by configuring custom [setup scripts](/docs/configuration/environment-setup/setup-scripts).
+
+## Sandbox Terminal
+
+You can open an terminal connected directly to your task's sandbox for debugging purposes. Access this from the `...` menu at the top of each tasks.
+
+This is useful for:
+
+- Debugging issues in the sandbox environment
+- Inspecting the state of your code and dependencies
+- Running ad-hoc commands

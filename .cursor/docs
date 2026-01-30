@@ -1,0 +1,84 @@
+# Terragon Documentation Index
+
+## Quick Reference
+
+### Project Overview
+Terragon is an AI-powered coding assistant platform that integrates Claude AI with real development environments through multi-provider sandbox orchestration.
+
+### Key Documentation Files
+- `CLAUDE.md` - Comprehensive repository information and architecture
+- `README.md` - Project overview and setup instructions
+- `apps/www/README.md` - Frontend application details
+- `apps/broadcast/README.md` - WebSocket service documentation
+
+### Architecture Quick Reference
+
+#### Core Components
+- **Frontend**: Next.js 15.3.3 + React 19 (`apps/www`)
+- **WebSocket**: PartyKit service (`apps/broadcast`) 
+- **Agent System**: Multi-provider sandboxes with Node.js daemon
+- **Database**: PostgreSQL with Drizzle ORM
+- **Auth**: Better Auth with GitHub OAuth
+
+#### Key Directories
+```
+apps/www/src/
+├── agent/           # Sandbox orchestration & Claude integration
+├── components/chat/ # Real-time chat UI components
+├── server-actions/  # GitHub integration & workflows
+├── lib/            # Core utilities (auth, db, etc.)
+└── app/            # Next.js App Router pages & API
+
+packages/
+├── shared/         # Database schemas & shared utilities
+├── daemon/         # Autonomous sandbox agent
+├── env/           # Environment configuration
+└── r2/            # Cloudflare R2 integration
+```
+
+### Development Commands
+```bash
+# Start full development environment
+pnpm dev
+
+# Run tests
+cd apps/www && pnpm test
+
+# Database operations
+cd apps/www && pnpm drizzle-kit-push-dev
+cd apps/www && pnpm drizzle-kit-studio-dev
+
+# Type checking
+cd apps/www && pnpm check
+
+# Deploy WebSocket service
+cd apps/broadcast && pnpm deploy
+```
+
+### Technology Stack Summary
+
+**Frontend Stack**:
+- Next.js 15.3.3, React 19, Tailwind CSS v4
+- Jotai, TanStack React Query, Radix UI + shadcn/ui
+
+**Backend Stack**:
+- Drizzle ORM, Better Auth, Hono, tRPC
+- Anthropic Claude SDK, E2B, CodeSandbox APIs
+
+**Infrastructure**:
+- PostgreSQL, Redis (Upstash), Cloudflare R2
+- PartyKit (WebSocket), Vercel (hosting)
+
+### Key Features
+- Multi-provider sandbox environments (E2B, CodeSandbox)
+- Real-time collaborative coding with Claude AI
+- Automated GitHub workflows (commits, PRs)
+- Resource management with hibernation
+- Mobile-responsive design
+
+### Important Patterns
+- Use workspace packages (`@terragon/*`) for shared code
+- Follow established component patterns in `src/components/`
+- Implement proper error handling and loading states
+- Use TypeScript interfaces with strict typing
+- Leverage server components where possible

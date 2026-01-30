@@ -1,0 +1,33 @@
+{
+  "name": "@terragon/supermemory",
+  "version": "1.0.0",
+  "description": "Supermemory integration for persistent memory across Claude sessions",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./utils/*": "./src/utils/*.ts"
+  },
+  "scripts": {
+    "build": "pnpm build:hooks && pnpm build:commands",
+    "build:hooks": "node --import tsx scripts/build-hooks.ts",
+    "build:commands": "node --import tsx scripts/build-commands.ts",
+    "tsc-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "supermemory": "^4.0.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@types/node": "^22.15.29",
+    "@types/uuid": "^10.0.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

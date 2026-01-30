@@ -1,0 +1,13 @@
+{
+  "proseWrap": "preserve",
+  "overrides": [
+    {
+      "files": "*.mdx",
+      "options": {
+        "proseWrap": "preserve",
+        "printWidth": 200,
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
+}

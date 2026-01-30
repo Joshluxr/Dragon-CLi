@@ -1,0 +1,9 @@
+{
+  "title": "Configuration",
+  "pages": [
+    "environment-setup",
+    "mcp-setup",
+    "custom-system-prompts",
+    "git-checkpointing"
+  ]
+}

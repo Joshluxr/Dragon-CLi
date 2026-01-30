@@ -1,0 +1,45 @@
+---
+title: Scheduled Tasks
+description: Schedule tasks to run at a specific time in the future
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { File, House } from "lucide-react";
+
+Scheduling a task if helpful when you want to run a task once at a specific time in the future. See [Automations](/docs/automations) for setting up recurring tasks.
+
+![Creating a scheduled task](https://cdn.terragonlabs.com/schedule-tasks-esMN.png)
+
+### Creating a Scheduled Task
+
+<Steps>
+  <Step>
+    Start writing a prompt as usual from [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://www.terragonlabs.com)
+  </Step>
+  <Step>Click the dropdown arrow next to the submit button</Step>
+  <Step>Select `Schedule Task`</Step>
+  <Step>Select a time in the future to run the task</Step>
+  <Step>Click the submit button to run the task</Step>
+</Steps>
+
+### Canceling a Scheduled Task
+
+Scheduled tasks can be canceled up until they are about to run.
+
+<Callout type="info">
+Cancelling a scheduled task will simply stop it from running at the scheduled time. You can send a follow up message to the task to ask the agent to kick it off again.
+</Callout>
+
+<Steps>
+  <Step>Click on the scheduled task from your task list</Step>
+  <Step>Click the cancel button to cancel the task</Step>
+</Steps>
+
+### Running a Scheduled Task Immediately
+
+If you change your mind and want to run the task immediately, you can click the run now button.
+
+<Steps>
+  <Step>Click on the scheduled task from your task list</Step>
+  <Step>Click the run now button to run the task immediately</Step>
+</Steps>

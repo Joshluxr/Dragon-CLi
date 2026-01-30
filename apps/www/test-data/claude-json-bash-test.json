@@ -1,0 +1,571 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run a variety of bash commands to test different scenarios - some that pass, some that fail, and some with different outputs."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_015YssQLPFpJGSuiMn1NLgaf",
+          "name": "Bash",
+          "input": {
+            "command": "echo \"Test 1: Simple echo command\"",
+            "description": "Test basic echo output"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01PHaTeccmyV3s5cByfDXLkT",
+          "name": "Bash",
+          "input": {
+            "command": "ls -la /Users/michael/Projects/test-project-2/apps/www/src/components | head -5",
+            "description": "List files with details"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_019ZMyHwn4CyQ6rdgJ7Y88d6",
+          "name": "Bash",
+          "input": {
+            "command": "cat /nonexistent/file.txt",
+            "description": "Test file not found error"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Baw239SHJrvSHFsuS4KgCV",
+          "name": "Bash",
+          "input": {
+            "command": "false",
+            "description": "Test command that returns false"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01U7XQNL1DmoyqGhwCQC7hZf",
+          "name": "Bash",
+          "input": {
+            "command": "pwd && echo \"Current directory: $(pwd)\"",
+            "description": "Test command chaining"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01TDvT6TD9bpxF8srBArVHHf",
+          "name": "Bash",
+          "input": {
+            "command": "sleep 2 && echo \"Slept for 2 seconds\"",
+            "timeout": 5000,
+            "description": "Test command with delay"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0151TPPQNkhNQS8wEY8foVUo",
+          "name": "Bash",
+          "input": {
+            "command": "invalidcommand --help",
+            "description": "Test command not found"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01MGejpc8FL3veH19EbPH9bU",
+          "name": "Bash",
+          "input": {
+            "command": "echo \"Line 1\" && echo \"Line 2\" && echo \"Line 3\"",
+            "description": "Test multiple echo outputs"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_014VJ9VzHunYKWix2YbjgUnv",
+          "name": "Bash",
+          "input": {
+            "command": "cd /tmp && touch test_file_$(date +%s).txt && ls -la test_file_*.txt | tail -1",
+            "description": "Create and list temp file"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01DPf9Z29t75QAwrYmKmJuMK",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Cfn1J5Z7sKVVeiCy8rRes4",
+          "name": "Bash",
+          "input": {
+            "command": "echo $HOME && echo $PATH | cut -d: -f1-3",
+            "description": "Test environment variables"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 17080,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_015YssQLPFpJGSuiMn1NLgaf",
+          "type": "tool_result",
+          "content": "Test 1: Simple echo command",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01PHaTeccmyV3s5cByfDXLkT",
+          "type": "tool_result",
+          "content": "total 712\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx\ndrwxr-xr-x@ 25 michael  staff     800 Jun  6 16:03 .\ndrwxr-xr-x@ 11 michael  staff     352 Jun  5 10:09 ..\n-rw-r--r--@  1 michael  staff     762 Jun  5 09:20 auth-server.tsx\n-rw-r--r--@  1 michael  staff    2978 Jun  6 16:03 auth.tsx",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "cat: /nonexistent/file.txt: No such file or directory",
+          "is_error": true,
+          "tool_use_id": "toolu_019ZMyHwn4CyQ6rdgJ7Y88d6"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "Error",
+          "is_error": true,
+          "tool_use_id": "toolu_01Baw239SHJrvSHFsuS4KgCV"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01U7XQNL1DmoyqGhwCQC7hZf",
+          "type": "tool_result",
+          "content": "/Users/michael/Projects/test-project-2\nCurrent directory: /Users/michael/Projects/test-project-2",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01TDvT6TD9bpxF8srBArVHHf",
+          "type": "tool_result",
+          "content": "Slept for 2 seconds",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "(eval):1: command not found: invalidcommand",
+          "is_error": true,
+          "tool_use_id": "toolu_0151TPPQNkhNQS8wEY8foVUo"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01MGejpc8FL3veH19EbPH9bU",
+          "type": "tool_result",
+          "content": "Line 1\nLine 2\nLine 3",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "ERROR: cd to '/tmp' was blocked. For security, Claude Code may only change directories to child directories of the original working directory (/Users/michael/Projects/test-project-2) for this session.",
+          "is_error": true,
+          "tool_use_id": "toolu_014VJ9VzHunYKWix2YbjgUnv"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01Cfn1J5Z7sKVVeiCy8rRes4",
+          "type": "tool_result",
+          "content": "/Users/michael\n/Users/michael/Library/pnpm:/Users/michael/.local/bin:/opt/homebrew/bin",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01L89LsCTCyQgC4eCx6zgM2w",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "The Bash tool works as expected with various test scenarios:\n\n**Successful commands:**\n- Echo, ls, pwd, sleep with timeout, multiple commands, environment variables\n\n**Failed commands:**\n- File not found (cat nonexistent file)\n- Command not found (invalidcommand)\n- False command (returns error)\n- Security restriction (cd to parent directory blocked)"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 4719,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 84,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.5068632500000002,
+    "is_error": false,
+    "duration_ms": 33398,
+    "duration_api_ms": 45789,
+    "num_turns": 22,
+    "result": "The Bash tool works as expected with various test scenarios:\n\n**Successful commands:**\n- Echo, ls, pwd, sleep with timeout, multiple commands, environment variables\n\n**Failed commands:**\n- File not found (cat nonexistent file)\n- Command not found (invalidcommand)\n- False command (returns error)\n- Security restriction (cd to parent directory blocked)",
+    "session_id": "9c3fc96f-5c01-4799-918f-0634283e1ada",
+    "total_cost": 0.5068632500000002,
+    "usage": {
+      "input_tokens": 11,
+      "cache_creation_input_tokens": 21799,
+      "cache_read_input_tokens": 14910,
+      "output_tokens": 838,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

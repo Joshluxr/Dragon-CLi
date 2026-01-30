@@ -1,0 +1,485 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HxyvBeghJLB1GK8erBaSfk",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run various WebSearch tool tests to demonstrate different scenarios."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2170,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HxyvBeghJLB1GK8erBaSfk",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01HooZ87V1vgAMrQ9vKFNK4w",
+          "name": "WebSearch",
+          "input": { "query": "latest news technology 2025" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2170,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 4,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01HooZ87V1vgAMrQ9vKFNK4w",
+          "type": "tool_result",
+          "content": "Web search results for query: \"latest news technology 2025\"\n\nI'll search for the latest technology news in 2025 for you.I'll search for the latest technology news in 2025 for you.\n\nLinks: [{\"title\":\"10 Breakthrough Technologies 2025 | MIT Technology Review\",\"url\":\"https://www.technologyreview.com/2025/01/03/1109178/10-breakthrough-technologies-2025/\"},{\"title\":\"25 New Technology Trends for 2025 | Emerging Technologies 2025\",\"url\":\"https://www.simplilearn.com/top-technology-trends-and-jobs-article\"},{\"title\":\"Seven advances in technology that we’re likely to see in 2025\",\"url\":\"https://theconversation.com/seven-advances-in-technology-that-were-likely-to-see-in-2025-245203\"},{\"title\":\"Top Tech Trends of 2025 | Capgemini\",\"url\":\"https://www.capgemini.com/insights/research-library/top-tech-trends-2025/\"},{\"title\":\"Latest AI Breakthroughs and News: May-June 2025 | News\",\"url\":\"https://www.crescendo.ai/news/latest-ai-news-and-updates\"},{\"title\":\"5 Leading Tech Stocks to Buy in 2025\",\"url\":\"https://finance.yahoo.com/news/5-leading-tech-stocks-buy-081500401.html\"},{\"title\":\"Top 10 in Tech – February 2025 - Digitopia\",\"url\":\"https://digitopia.co/blog/top-10-in-tech-february-2025/\"},{\"title\":\"The coolest — and arguably most useful — new technology at CES 2025 - Nextgov/FCW\",\"url\":\"https://www.nextgov.com/emerging-tech/2025/01/coolest-and-arguably-most-useful-new-technology-ces-2025/402490/\"},{\"title\":\"What are 2025’s emerging technology trends? | The global house of tech and transformation recruitment | Lorien\",\"url\":\"https://www.lorienglobal.com/insights/2025-emerging-tech-trends\"},{\"title\":\"The 11 most exciting tech trends of 2025, according to CES 2025 | TechRadar\",\"url\":\"https://www.techradar.com/tech-events/the-11-most-exciting-tech-trends-of-2025-according-to-ces-2025\"}]\n\nBased on my search results, here are the latest technology news and trends for 2025:\n\n## Major Technology Breakthroughs in 2025\n\nMIT Technology Review has identified several breakthrough technologies for 2025, including new fuels made from used cooking oil, industrial waste, or even gasses in the air that could help power planes without fossil fuels.\n\nA powerful new telescope with the largest digital camera ever made for astronomy will come online this year in a remote region of Chile and begin a decade-long survey of the southern sky, helping astronomers study dark matter and explore cosmic unknowns.\n\n## AI Developments\n\n### AI Agents and Automation\nAI agents - intelligent programs that are given objectives by humans and work out the best ways to achieve those objectives - are likely to take off in 2025. These agents can write computer code, which could have a big impact on the way that tech companies work and could allow people without advanced coding skills to develop programs, apps or games.\n\nAgentic AI is expected to revolutionize decision-making processes across various industries, with 15% of day-to-day work decisions predicted to be made autonomously by 2028.\n\n### Robotics Integration\nTesla will start using its humanoid Optimus robots from 2025, with Elon Musk saying that the electric car maker will start using Optimus for tasks within the company. Thanks to today's generative AI boom, robots are now learning new tasks faster than ever, and we're getting closer to general-purpose robots that could be dropped into new environments and tackle a variety of tasks on our behalf, almost instantly.\n\n### Generative Search\nGenerative search promises to make finding what you're looking for simple and quick. When you type in a query, an AI model summarizes information from many online sources to return a unique answer.\n\n## Major Tech Industry News\n\n### Apple's Investment\nApple has unveiled a $500 billion investment plan in the United States over the next four years, including building an AI server factory in Texas and creating 20,000 research and development jobs, underscoring Apple's commitment to advancing AI technologies.\n\n### AI Industry Developments\nElon Musk offered $97.4 billion to buy OpenAI but said he would withdraw the bid if OpenAI's board stops its transition into a for-profit entity. OpenAI CEO Sam Altman rejected the offer.\n\nLarry Page, co-founder of Google, has launched Dynatomics, an AI startup focused on next-generation manufacturing that aims to integrate AI-driven automation into industrial production.\n\n## Other Key Technology Trends\n\n### Supply Chain Innovation\nOrganizations are focusing on improving the efficiency, resilience, agility, circularity, and sustainability of their supply chains. Technologies like AI, data, blockchain, IoT, and terrestrial-satellite network connectivity will all play a role in achieving improvements in global logistics.\n\n### Small Modular Reactors\n2025 will be an important year for the advancement of small modular reactors (SMRs).\n\n### Spatial Computing\nSpatial computing integrates AR (augmented reality), VR (virtual reality) and mixed reality to enhance interactions between physical and digital worlds, enabling devices, applications and environments to intuitively interact.\n\n### Healthcare Innovation\nA trial of a new HIV prevention medicine found that 100% of treated women and girls were protected from acquiring HIV infections.\n\nGoogle introduces AMIE, an AI-powered medical imaging assistant capable of interpreting X-rays and MRIs. The tool helps clinicians by automatically highlighting abnormalities, potentially speeding up diagnosis and improving patient outcomes.\n\n### Gaming Industry\nNintendo's new Switch 2 device will arrive in June, which could be a significant catalyst for the gaming industry.\n\nThese developments show that 2025 is shaping up to be a transformative year for technology, with AI integration accelerating across all sectors, significant advances in robotics and automation, and major investments from tech giants positioning for the future."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_015vEEPt2Fpjyw2vDTCgb4JT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Now let me test with domain filtering:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 5,
+        "cache_creation_input_tokens": 3052,
+        "cache_read_input_tokens": 17080,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_015vEEPt2Fpjyw2vDTCgb4JT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01WDbaicopbCcFAGRNJqpkdF",
+          "name": "WebSearch",
+          "input": {
+            "query": "python programming tutorials",
+            "allowed_domains": ["python.org", "realpython.com"]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 5,
+        "cache_creation_input_tokens": 3052,
+        "cache_read_input_tokens": 17080,
+        "output_tokens": 93,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01WDbaicopbCcFAGRNJqpkdF",
+          "type": "tool_result",
+          "content": "Web search results for query: \"python programming tutorials\"\n\nI'll search for Python programming tutorials for you.I'll search for Python programming tutorials for you.\n\nLinks: [{\"title\":\"Python GUI Programming – Real Python\",\"url\":\"https://realpython.com/tutorials/gui/\"},{\"title\":\"The Python Tutorial — Python 3.13.4 documentation\",\"url\":\"https://docs.python.org/3/tutorial/index.html\"},{\"title\":\"Python For Beginners | Python.org\",\"url\":\"https://www.python.org/about/gettingstarted/\"},{\"title\":\"Design and Guidance: Object-Oriented Programming in Python – Certificate of Completion\",\"url\":\"https://realpython.com/certificates/31e3518c-7201-4558-abe8-f9901160c86c/\"},{\"title\":\"Python Tutorials – Real Python\",\"url\":\"https://realpython.com/\"},{\"title\":\"Advanced Python Tutorials – Real Python\",\"url\":\"https://realpython.com/tutorials/advanced/\"},{\"title\":\"Python Game Development Tutorials\",\"url\":\"https://realpython.com/tutorials/gamedev/\"},{\"title\":\"BeginnersGuide/Programmers - Python Wiki\",\"url\":\"https://wiki.python.org/moin/BeginnersGuide/Programmers\"},{\"title\":\"Python Basics – Real Python\",\"url\":\"https://realpython.com/tutorials/basics/\"},{\"title\":\"Python Tutorial\",\"url\":\"https://bugs.python.org/file47781/Tutorial_EDIT.pdf\"}]\n\nBased on the search results, I found several excellent Python programming tutorial resources for you:\n\n## Official Python Resources\n\nThe official Python Tutorial from Python.org introduces the reader informally to the basic concepts and features of the Python language and system.(no content)This tutorial is designed for programmers that are new to the Python language, not beginners who are new to programming. You can find it at docs.python.org/3/tutorial/index.html.\n\nPython.org also offers a \"Python For Beginners\" section that's easy for beginners to use and learn, available at python.org/about/gettingstarted/.\n\n## Real Python\n\nReal Python offers Python tutorials for developers of all skill levels, Python books and courses, Python news, code examples, articles, and more. They have tutorials organized by skill level:\n\n- **Basics**: Begin your Python journey with these beginner-friendly tutorials. Learn fundamental Python concepts to kickstart your career.\n- **Advanced**: Explore advanced Python tutorials to master the Python programming language. Dive deeper into Python and enhance your coding skills.\n- **Specialized Topics**: Including GUI Programming and Game Development tutorials\n\n## Community Resources\n\nThe Python Wiki offers tutorials aimed at people with previous experience with other programming languages (C, Perl, Lisp, Visual Basic, etc.). Some notable resources mentioned include:\n\n- A beginner-friendly Python course with interactive, bite-size lessons, and over 100 challenges\n- A beginner-friendly Python tutorial that starts with the absolute basics but also covers more advanced stuff like Python software deployment\n- LabEx - Hands-on Labs - Practice Python programming with interactive exercises in a web-based coding environment\n\n## Getting Started\n\nInstalling Python is generally easy, and nowadays many Linux and UNIX distributions include a recent Python. Even some Windows computers (notably those from HP) now come with Python already installed.(no content)The official documentation includes a fairly brief tutorial that gives you basic information about the language and gets you started. You can follow this by looking at the library reference for a full description of Python's many libraries and the language reference for a complete (though somewhat dry) explanation of Python's syntax.\n\nThese resources should provide you with a comprehensive starting point for learning Python programming, whether you're a complete beginner or have experience with other programming languages."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01MDeZ9BvfpdKnJ7WwQWQCBM",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Now testing with blocked domains:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 951,
+        "cache_read_input_tokens": 20132,
+        "output_tokens": 2,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01MDeZ9BvfpdKnJ7WwQWQCBM",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01SsgsKUeJaUF1kn6WVnxWxR",
+          "name": "WebSearch",
+          "input": {
+            "query": "climate change news",
+            "blocked_domains": ["facebook.com", "twitter.com", "x.com"]
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 951,
+        "cache_read_input_tokens": 20132,
+        "output_tokens": 2,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01SsgsKUeJaUF1kn6WVnxWxR",
+          "type": "tool_result",
+          "content": "Web search results for query: \"climate change news\"\n\nI'll search for the latest climate change news for you.I'll search for the latest climate change news for you.\n\nLinks: [{\"title\":\"Climate change and grazing goats threaten the survival of these rare dragon's blood trees | AP News\",\"url\":\"https://apnews.com/article/dragons-blood-trees-climate-change-conservation-3968466a5ce2653e64a59b545ef94660\"},{\"title\":\"Hawaii may hike its tax on tourists and vacationers for climate change fund | Fox News\",\"url\":\"https://www.foxnews.com/travel/state-tourist-tax-popular-vacation-destination-would-pour-funds-climate-change-mitigation\"},{\"title\":\"Schwarzenegger: Hey, stop whining, do something on climate change\",\"url\":\"https://www.bbc.com/news/videos/ce80kyxd05wo\"},{\"title\":\"Banana: Climate change threatens banana exports, key to the Latin American economy | Climate | EL PAÍS English\",\"url\":\"https://english.elpais.com/climate/2025-06-07/climate-change-threatens-banana-exports-key-to-the-latin-american-economy.html\"},{\"title\":\"NASA scientists describe ‘absolute sh*tshow’ at agency as Trump budget seeks to dismantle top US climate lab | CNN\",\"url\":\"https://www.cnn.com/2025/06/05/climate/nasa-giss-lab-turmoil-trump-budget\"},{\"title\":\"Wildfires in Canada are becoming the norm, thanks to climate change : NPR\",\"url\":\"https://www.npr.org/2025/06/06/nx-s1-5424434/wildfires-canada-u-s-climate-change\"},{\"title\":\"Earth's atmosphere hasn't had this much CO2 in millions of years\",\"url\":\"https://www.nbcnews.com/science/climate-change/earth-co2-record-global-warming-rcna210974\"},{\"title\":\"Striking images showing climate change aim to ‘inspire action’ | CNN\",\"url\":\"https://www.cnn.com/climate/climate-change-images-exhibit-c2e-spc\"},{\"title\":\"Bay Area Transportation and Housing Policies Cannot Stop Climate Change | California Policy Center\",\"url\":\"https://californiapolicycenter.org/bay-area-transportation/\"},{\"title\":\"Should polluters pay? California’s climate ‘superfund’ plan may have stalled | LAist\",\"url\":\"https://laist.com/news/climate-environment/california-climate-superfund-plan-may-have-stalled\"}]\n\nHere are the latest climate change news stories:\n\n## Recent Climate News Headlines\n\nArnold Schwarzenegger has told the BBC people should \"stop whining\" about US President Donald Trump's approach to climate change, speaking at the Austrian World Summit organized by his Climate Initiative.\n\nNASA scientists are in a state of anxious limbo after the Trump administration proposed a budget that would eliminate one of the United States' top climate labs – the NASA Goddard Institute for Space Studies, or GISS – as a standalone entity. The lab, founded in 1961, is still known worldwide for its computer modeling of the planet that enable scientists to make projections for how climate change may affect global temperatures, precipitation, extreme weather events and other variables.\n\nEarth's atmosphere now has more carbon dioxide in it than it has in millions — and possibly tens of millions — of years, according to data released Thursday by the National Oceanic and Atmospheric Administration and scientists at the University of California San Diego. New data shows that CO2 levels have broken through 430 parts per million, an indication that human-caused global warming will continue to warp the environment.\n\n## Climate Impacts on Ecosystems and Agriculture\n\nIncreasingly severe cyclones, grazing by invasive goats, and persistent turmoil in Yemen have threatened the survival of the country's iconic dragon's blood tree — a species found only on the Yemeni island of Socotra that is now struggling to survive intensifying threats from climate change. The frequency of severe cyclones has increased dramatically across the Arabian Sea in recent decades, according to a 2017 study in the journal Nature Climate Change, and Socotra's dragon's blood trees are paying the price.\n\nBanana crops are particularly vulnerable to climate change, and the devastating effects on its cultivation could begin to manifest in the next 50 years. A report published in May by Christian Aid found that 60% of banana-growing areas are at risk of disappearing within the next five decades due to extreme weather, rising temperatures, and pests. This is particularly concerning as 80% of the world's exports of the fruit originate from Latin America and the Caribbean.\n\n## Wildfire and Weather Impacts\n\nMore than 200 wildfires are raging across Canada, sending a thick blanket of choking smoke through the U.S. Midwest. Experts says climate change means U.S. residents better get used to it. The hotter, drying conditions that come with climate change are making these annual fires across North America, and in other parts of the world, the new norm.\n\n## Policy and Financial Responses\n\nA bill to raise the tourist tax to 11% in 2025, increasing to 12% in 2026, has been passed by the Hawaii Senate, with funds to be allocated to climate resilience and economic development initiatives. \"The legislature further finds that given the scale and impact of the climate emergency, the state must invest in bold actions to prepare for, mitigate, and adapt to climate change, including resiliency to intensifying natural disasters,\" according to the bill's text.\n\nIn the battle over how to pay for damage wrought by climate change, California lawmakers had an idea: Create a \"superfund\" that makes big polluters pay. Proposed legislation hasn't moved out of the Assembly and Senate, raising questions about how far California will go in efforts to make oil and gas companies pay for climate damage.\n\nStriking images, exhibited as part of the Right Here, Right Now Global Climate Summit, show the devastating effects of climate change. The summit, held at the University of Oxford in the UK and supported by UN Human Rights (OHCHR), aims to reframe climate change as a human rights crisis and spotlight climate solutions."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_013FuF3fY5dpAmBJXSuGJfUo",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Testing with a very short query (should meet minimum length requirement):"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 1510,
+        "cache_read_input_tokens": 21083,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_013FuF3fY5dpAmBJXSuGJfUo",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01BZQjYCE56KHTvbKD48TgWv",
+          "name": "WebSearch",
+          "input": { "query": "AI" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 1510,
+        "cache_read_input_tokens": 21083,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01BZQjYCE56KHTvbKD48TgWv",
+          "type": "tool_result",
+          "content": "Web search results for query: \"AI\"\n\nI'll search for \"AI\" to get current information about artificial intelligence.I'll search for information about AI for you.\n\nLinks: [{\"title\":\"Superblocks CEO: How to find a unicorn idea by studying AI system prompts | TechCrunch\",\"url\":\"https://techcrunch.com/2025/06/07/superblocks-ceo-how-to-find-a-unicorn-idea-by-studying-ai-system-prompts/\"},{\"title\":\"AI analysis says Dead Sea Scrolls are older than thought\",\"url\":\"https://www.yahoo.com/news/ai-analysis-says-dead-sea-194652189.html\"},{\"title\":\"AI analysis of ancient handwriting gives new age estimates for Dead Sea Scrolls | KSL.com\",\"url\":\"https://www.ksl.com/article/51326577/ai-analysis-of-ancient-handwriting-gives-new-age-estimates-for-dead-sea-scrolls\"},{\"title\":\"Prediction: This Artificial Intelligence (AI) Stock Could Hit a $6 Trillion Valuation by 2030 @themotleyfool #stocks $NVDA\",\"url\":\"https://www.fool.com/investing/2025/06/07/prediction-this-artificial-intelligence-ai-stock-c/\"},{\"title\":\"AI Program Rewrites Timeline of Dead Sea Scrolls\",\"url\":\"https://www.mensjournal.com/news/dead-sea-scrolls-ai-enoch\"},{\"title\":\"AI analysis of ancient handwriting gives new age estimates for Dead Sea Scrolls | CNN\",\"url\":\"https://www.cnn.com/2025/06/07/science/dead-sea-scrolls-older-ai-carbon-dating\"},{\"title\":\"FDA approves first AI tool to predict breast cancer risk | Fox News\",\"url\":\"https://www.foxnews.com/tech/ai-newsletter-fda-approves-cancer-fighting-tech-tool\"},{\"title\":\"OpenAI\",\"url\":\"https://openai.com/\"},{\"title\":\"Google Gemini\",\"url\":\"https://gemini.google.com\"},{\"title\":\"Perplexity AI\",\"url\":\"https://www.perplexity.ai/\"}]\n\nBased on the web search results, here's what's currently happening with AI:\n\n## Recent AI News and Developments\n\n### AI in Startup Innovation\nBrad Menezes, CEO of enterprise vibe coding startup Superblocks, believes the next crop of billion-dollar startup ideas are hiding in almost plain sight: the system prompts used by existing unicorn AI startups. System prompts are the lengthy prompts — over 5,000-6,000 words — that AI startups use to instruct the foundational models from companies like OpenAI or Anthropic on how to generate their application-level AI products.\n\n### AI in Archaeological Research\nThe ancient Dead Sea Scrolls likely are much older than originally thought, a new artificial intelligence analysis suggests. The scrolls could be centuries older than initially thought, according to a study that combined radiocarbon dating with AI to better analyze the remnants of ancient documents. The AI program, named Enoch, estimated manuscript ages, showing some are 50-100 years older than previously thought.\n\n### AI in Healthcare\nFox News' AI Newsletter brings you the latest on this rapidly evolving technology. Marc Siegel discusses advancements in artificial intelligence aimed at predicting an individuals future risk of breast cancer, indicating the FDA has approved the first AI tool for breast cancer risk prediction.\n\n### AI Market Growth\nNvidia (NVDA 1.26%) is the most valuable company in the world as of this writing, with a market cap of $3.4 trillion, and it has reached this position thanks to a tremendous rally of more than 1,500% in its stock price in the past five years. The semiconductor giant still has a lot of room for growth, considering the potential investment in artificial intelligence (AI) infrastructure over the next five years.\n\n## Major AI Companies and Platforms\n\nThe search results show several leading AI companies:\n- **OpenAI**: We believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems. Building safe and beneficial AGI is our mission.\n- **Google Gemini**: Google's AI platform\n- **Perplexity AI**: Perplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question.\n\nAI continues to evolve rapidly across multiple sectors, from enterprise coding and healthcare to archaeological research and financial markets."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HiVXeCecoimXqVhyJ9F2Zw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Testing with empty query (should fail):" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 1113,
+        "cache_read_input_tokens": 22593,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01HiVXeCecoimXqVhyJ9F2Zw",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_015nmX3dMUFYw2Q26kRcpgFu",
+          "name": "WebSearch",
+          "input": { "query": "" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 1113,
+        "cache_read_input_tokens": 22593,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "content": "InputValidationError: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 2,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at least 2 character(s)\",\n    \"path\": [\n      \"query\"\n    ]\n  }\n]",
+          "is_error": true,
+          "tool_use_id": "toolu_015nmX3dMUFYw2Q26kRcpgFu"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_016f3j8Fcd5kbYprY5HiKWBN",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        { "type": "text", "text": "Testing with special characters in query:" }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 164,
+        "cache_read_input_tokens": 23706,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_016f3j8Fcd5kbYprY5HiKWBN",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0173bisJjPJNsh4dq6uqA3SE",
+          "name": "WebSearch",
+          "input": {
+            "query": "site:reddit.com \"best programming languages\" 2025"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 164,
+        "cache_read_input_tokens": 23706,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_0173bisJjPJNsh4dq6uqA3SE",
+          "type": "tool_result",
+          "content": "Web search results for query: \"site:reddit.com \"best programming languages\" 2025\"\n\nI'll search for that specific query on Reddit about the best programming languages in 2025.I'll search for discussions about the best programming languages in 2025 on Reddit.\n\nNo links found.\n\nNo links found.\n\nI notice the searches aren't returning results. Let me try a modified search without the site operator and quotes to find Reddit discussions about programming languages in 2025.\n\nLinks: [{\"title\":\"Top 10 programming languages in 2025\",\"url\":\"https://www.pluralsight.com/resources/blog/upskilling/top-programming-languages-2025\"},{\"title\":\"10 Best Programming Languages To Learn In 2025\",\"url\":\"https://digitalarcane.com/best-programming-languages-to-learn-in-2025/\"},{\"title\":\"Top 10 Programming Languages For 2025 - GeeksforGeeks\",\"url\":\"https://www.geeksforgeeks.org/top-programming-languages-of-the-future-2025/\"},{\"title\":\"Best Programming Languages to Learn in 2025 | Complete List\",\"url\":\"https://www.simplilearn.com/best-programming-languages-start-learning-today-article\"},{\"title\":\"Top-10 programming languages to learn in 2025 - SoftServe\",\"url\":\"https://career.softserveinc.com/en-us/stories/top-10-programming-languages-to-learn\"},{\"title\":\"20 Most Popular Programming Languages in 2025 (Worldwide Ranking)\",\"url\":\"https://www.index.dev/blog/most-popular-programming-languages-\"},{\"title\":\"Top 10 Programming Languages to Learn in 2025 | ULaw\",\"url\":\"https://www.law.ac.uk/resources/blog/top-programming-languages-to-learn/\"},{\"title\":\"Top 10 Future Programming Languages for 2025\",\"url\":\"https://www.crossover.com/blog/future-programming-languages-for-2025\"},{\"title\":\"What’s the Best Programming Language to Learn in 2025? - Devōt\",\"url\":\"https://devot.team/blog/best-programming-languages-to-learn-in-2025\"},{\"title\":\"Best Programming Languages To Learn In 2025 | Zero To Mastery\",\"url\":\"https://zerotomastery.io/blog/best-programming-languages-to-learn/\"}]\n\nBased on the search results, I found several articles discussing the best programming languages to learn in 2025. While these aren't specifically Reddit discussions (the site:reddit.com operator didn't return results), the search did find comprehensive articles about programming languages trending in 2025. Here's what the sources indicate:\n\n## Top Programming Languages for 2025\n\nAccording to multiple sources, the most recommended programming languages to learn in 2025 are:\n\n### 1. **Python** - The Clear Leader\nPython continues its multi-year domination across all major rankings. The fact Python has all the data science and machine learning libraries makes it more relevant than ever in 2025 with so many companies madly rushing to adopt AI. Python remains the undisputed leader, with a massive +8.72% increase in ratings. It continues to be the go-to language for AI, data science, automation, and web development.\n\n### 2. **Java** - Consistent Runner-Up\nJava has been a consistent entry on our list, remaining in #2 since 2022. Java moved from #4 to #3, with a +1.79% boost. Despite competition from newer languages like Kotlin and Go, Java remains widely used in enterprise software, Android development, and backend systems.\n\n### 3. **JavaScript** - Essential for Web Development\nJavaScript remain strong in the rankings. JavaScript remains in the same positions. JavaScript remains essential for web development.\n\n### 4. **C++** - Rising in Systems Programming\nIf you're in system programming: C++ is overtaking C, making it the better long-term investment. This suggests that while both languages remain important for systems programming, game development, and performance-critical applications, developers may prefer C++ due to modern features and better abstractions.\n\n### 5. **Rust** - Growing for Safety and Performance\nRust and Swift are slowly increasing in year-over-year popularity. Rust is a newer language that focuses on safety and speed. It's perfect for building systems that need to be super reliable. Rust is growing fast because it's safe and fast. It's a great language to learn if you want to work on cutting edge projects.\n\n### Other Notable Languages:\n- **Go/Golang**: If you're into cloud and backend engineering: Go is a good option for the future\n- **TypeScript**: TypeScript is like JavaScript but with extra features that make it easier to build big apps. TypeScript is becoming the standard for modern web development. Learning it will make you a better developer\n- **Swift**: Swift are slowly increasing in year-over-year popularity\n- **Kotlin**: Among tech learners on the Pluralsight platform, languages such as Kotlin are very popular, but this is not reflected in industry usage just yet\n- **C#**: C# remains at #5, but it suffered the biggest drop in ratings (-3.41%)\n\n### Key Trends for 2025:\n1. Python, JavaScript, and Java have always been among the top suggestions due to their versatility, as well as job market demand. Other languages, like Go and Rust, gain a lot of prominence owing to their performance coupled with modern features\n\n2. AI and machine learning are driving Python's continued dominance\n\n3. Systems programming is shifting from C to C++\n\n4. Modern languages like Rust and Go are gaining traction for their safety and performance features\n\nThe sources also mention that the Rust community on Reddit is active, and Stack Overflow or Reddit are mentioned as places where developers ask questions and learn from others about programming languages like Kotlin."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01F1dHU35sn3yvvgCkLmWxRH",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Successfully tested WebSearch with various scenarios including successful searches, domain filtering, and validation errors."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 1,
+        "cache_creation_input_tokens": 1414,
+        "cache_read_input_tokens": 23870,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.5107459499999999,
+    "is_error": false,
+    "duration_ms": 258578,
+    "duration_api_ms": 259355,
+    "num_turns": 19,
+    "result": "Successfully tested WebSearch with various scenarios including successful searches, domain filtering, and validation errors.",
+    "session_id": "6f607536-b993-478c-b18d-e57eb15daea5",
+    "total_cost": 0.5107459499999999,
+    "usage": {
+      "input_tokens": 21,
+      "cache_creation_input_tokens": 10374,
+      "cache_read_input_tokens": 143374,
+      "output_tokens": 487,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

@@ -1,0 +1,120 @@
+---
+title: Creating Tasks
+description: Create coding tasks in Terragon
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+import { House, Paperclip, Mic } from "lucide-react";
+
+### Starting a New Task
+
+<Steps>
+  <Step>
+    Click on [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://www.terragonlabs.com) from the sidebar
+  </Step>
+  <Step>Select your repository, your branch and model near the prompt box</Step>
+  <Step>Write in your prompt and include any context</Step>
+  <Step>Submit</Step>
+</Steps>
+
+### Adding Context
+
+<Tabs items={['File References', 'Images & PDFs', 'Voice Input', 'URLs']}>
+  <Tab value="File References">
+    Reference specific files with `@`:
+    <Steps>
+      <Step>Type `@` to trigger autocomplete</Step>
+      <Step>Start typing the filename</Step>
+      <Step>Select from suggestions</Step>
+    </Steps>
+    ```text
+    Refactor the authentication logic in @src/auth/login.ts to match the patterns used in
+    @src/auth/register.ts
+    ```
+
+  </Tab>
+  
+  <Tab value="Images & PDFs">
+    Attach images, PDFs, and text files:
+    <Steps>
+      <Step>Click the <Paperclip className="inline-block w-4 h-4 mx-1" /> icon or drag-and-drop</Step>
+      <Step>Paste images from clipboard with `CMD + V` / `Ctrl + V`</Step>
+      <Step>Supports images (`PNG`, `JPG`, `GIF`, `WebP`, etc.), `PDF`, and text files (`TXT`, `JSON`, etc.) up to 10MB each</Step>
+    </Steps>
+
+  </Tab>
+  
+  <Tab value="Voice Input">
+    Dictate complex requirements:
+
+    <Steps>
+      <Step>Click the <Mic className="inline-block w-4 h-4 mx-1" /> icon</Step>
+      <Step>Prompt at the speed of thought</Step>
+      <Step>Review and edit the transcription</Step>
+    </Steps>
+
+  </Tab>
+  
+  <Tab value="URLs">
+      Include links for additional context:
+    ```text
+      Fix the bug described in this issue:
+      https://github.com/myorg/myapp/issues/234
+    ```
+    
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Best Practices">
+  **Write Descriptive Prompts**: The more context you give the AI agent, the better. Meaty task descriptions often require little or no follow-up.
+
+**Think Parallel**: Terragon shines when you split your work between multiple async AI agents—whether it's fixing bugs, starting new features, or doing background research.
+
+**Be Specific**
+
+❌ Fix the bug
+
+✅ Fix the authentication timeout bug where users are logged out after 30 minutes of inactivity. The issue is likely in @src/auth/session.ts where we handle token refresh.
+
+**Provide Context**
+
+❌ Add tests
+
+✅ Add unit tests for the payment processing module in @src/payments/. Cover successful transactions, failed payments, refund processing, and webhook handling. Use existing patterns from @src/payments/stripe.test.ts
+
+**Set Clear Goals**
+
+❌ Improve performance
+
+✅ Optimize dashboard loading time by implementing lazy loading for charts, adding pagination to the activity feed (10 items per page), and using React.memo for expensive components. Target: under 1 second load time.
+
+</Callout>
+
+### Multi-Agent Mode
+
+You can run multiple AI agents from a single prompt to compare different approaches or evaluate which model is best suited for your task:
+
+![Multi-Agent Mode](https://cdn.terragonlabs.com/multi-agent-mode-5K1D.png)
+
+Each selected agent will create a separate task, working independently on your prompt. This is particularly useful when:
+
+- You're exploring different implementation approaches
+- You're unsure which model will perform best for your specific task
+- You want to compare outputs from different AI agents
+- You're prototyping and want to see multiple solutions quickly
+
+### After Submission
+
+Your task will:
+
+<Steps>
+  <Step>Provision a development environment</Step>
+  <Step>
+    Clone the repository, install dependencies and run your setup script
+  </Step>
+  <Step>Execute the requested changes</Step>
+  <Step>Run tests if specified</Step>
+  <Step>Create a pull request when complete</Step>
+</Steps>

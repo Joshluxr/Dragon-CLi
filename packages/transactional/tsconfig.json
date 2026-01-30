@@ -1,0 +1,9 @@
+{
+  "extends": "@terragon/tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx"
+  }
+}

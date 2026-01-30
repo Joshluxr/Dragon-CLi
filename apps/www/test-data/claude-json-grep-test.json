@@ -1,0 +1,362 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/michael/Projects/test-project-2",
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "LS",
+      "Read",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "NotebookRead",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch"
+    ],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll run various grep commands to test different scenarios - successful matches, failures, and edge cases."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Xjm3nsyQ7bL9YZTQUAFyd7",
+          "name": "Grep",
+          "input": { "pattern": "TODO", "include": "*.tsx" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01EQfC5QXYCefG5hBrqDHWzx",
+          "name": "Grep",
+          "input": { "pattern": "function\\s+\\w+", "include": "*.ts" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01Dq8VoiXDx8CZ5MyEkHL7q5",
+          "name": "Grep",
+          "input": { "pattern": "this_definitely_does_not_exist_anywhere" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01X4MZCsQW3aKtThr8pTBRvT",
+          "name": "Grep",
+          "input": {
+            "pattern": "import.*from.*react",
+            "include": "*.tsx",
+            "path": "apps/www/src/components"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01MTG5FqWy4zgPineBu4kcKJ",
+          "name": "Grep",
+          "input": { "pattern": "\\d{3,4}", "include": "*.json" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01QgoTgpdQ3Zqwam57CH9PWT",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_0139cTTAw4z51Qn4p74Vo6Ms",
+          "name": "Grep",
+          "input": { "pattern": "class\\s+\\w+", "include": "*.py" }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 2169,
+        "cache_read_input_tokens": 14910,
+        "output_tokens": 3,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_0139cTTAw4z51Qn4p74Vo6Ms",
+          "type": "tool_result",
+          "content": "No files found"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01Xjm3nsyQ7bL9YZTQUAFyd7",
+          "type": "tool_result",
+          "content": "Found 6 files\n/Users/michael/Projects/test-project-2/apps/www/src/components/repo-branch-selector.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/shared/todo-list.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/auth.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/todo-write-tool.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/todo-read-tool.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tool-part.tsx"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01X4MZCsQW3aKtThr8pTBRvT",
+          "type": "tool_result",
+          "content": "Found 58 files\n/Users/michael/Projects/test-project-2/apps/www/src/components/promptbox.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/tooltip.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/textarea.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/tabs.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/switch.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/sonner.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/sheet.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/select.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/scroll-area.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/responsive-combobox.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/popover.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/label.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/input.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/dropdown-menu.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/drawer.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/drawer-or-menu.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/dialog.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/command.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/combobutton.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/combobox.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/checkbox.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/card.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/button.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/breadcrumb.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/avatar.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/entry-list.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/repo-branch-selector.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/page-loader.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/environments.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/environment-variables-editor.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/diff-view.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/dashboard.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/shared/todo-list.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/daemon-logs-ui.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/chat-ui.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/chat-messages.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/chat-message.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/chat-header.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/auth.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/ui/sheet-or-menu.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/site-header.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/settings.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/providers.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/model-selector.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/magic-link-auth.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/landing-page.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/create-pr.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/todo-write-tool.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/todo-read-tool.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tools/shared/common-components.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tool-part.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tool-components/tool-header.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/tool-components/collapsible-details.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/text-part.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/message-part.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/git-diff-part.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/chat-error.tsx\n/Users/michael/Projects/test-project-2/apps/www/src/components/auth-server.tsx"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01MTG5FqWy4zgPineBu4kcKJ",
+          "type": "tool_result",
+          "content": "Found 10 files\n/Users/michael/Projects/test-project-2/apps/www/package.json\n/Users/michael/Projects/test-project-2/packages/dev-env/package.json\n/Users/michael/Projects/test-project-2/packages/tsconfig/base.json\n/Users/michael/Projects/test-project-2/packages/r2/tsconfig.json\n/Users/michael/Projects/test-project-2/packages/r2/package.json\n/Users/michael/Projects/test-project-2/packages/daemon/tsconfig.json\n/Users/michael/Projects/test-project-2/apps/www/vercel.json\n/Users/michael/Projects/test-project-2/apps/broadcast/tsconfig.json\n/Users/michael/Projects/test-project-2/apps/broadcast/partykit.json\n/Users/michael/Projects/test-project-2/apps/broadcast/package.json"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01Dq8VoiXDx8CZ5MyEkHL7q5",
+          "type": "tool_result",
+          "content": "No files found"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01EQfC5QXYCefG5hBrqDHWzx",
+          "type": "tool_result",
+          "content": "Found 73 files\n/Users/michael/Projects/test-project-2/packages/shared/src/utils/git-diff.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/test-setup.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/realtime/helpers.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/user.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/entrys.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/github.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/environments.ts\n/Users/michael/Projects/test-project-2/packages/r2/r2.ts\n/Users/michael/Projects/test-project-2/packages/daemon/src/daemon.ts\n/Users/michael/Projects/test-project-2/packages/daemon/src/__tests__/daemon.test.ts\n/Users/michael/Projects/test-project-2/packages/daemon/scripts/test-pipe.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/update-github-pr-status.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/stop-entry.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/retry-entry.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/pull-request.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/new-entry.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/generate-entry-name.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/follow-up.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/rate-limit.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/image-upload.ts\n/Users/michael/Projects/test-project-2/apps/www/src/hooks/useScrollToBottom.ts\n/Users/michael/Projects/test-project-2/apps/www/src/hooks/useRealtime.ts\n/Users/michael/Projects/test-project-2/apps/www/src/hooks/useInterval.ts\n/Users/michael/Projects/test-project-2/apps/www/src/components/msg/toUIMessages.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/poll-github/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/cron/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/daemon-event/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/sandbox.test.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/sandbox-setup.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/sandbox-resource.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/index.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/get-sandbox-provider.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/docker-provider.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/sandbox/codesandbox-provider.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/daemon.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/commands.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/claude/toDBMessage.ts\n/Users/michael/Projects/test-project-2/apps/www/src/agent/claude/startClaudeMessage.ts\n/Users/michael/Projects/test-project-2/apps/broadcast/src/server.ts\n/Users/michael/Projects/test-project-2/apps/www/src/test-setup.ts\n/Users/michael/Projects/test-project-2/packages/dev-env/src/test-setup.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/utils.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/realtime/server.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/foobar-utils.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/model/test-helpers.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/github-api/helpers.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/db/index.ts\n/Users/michael/Projects/test-project-2/packages/shared/src/auth.ts\n/Users/michael/Projects/test-project-2/packages/env/src/next-public.ts\n/Users/michael/Projects/test-project-2/packages/env/src/apps-broadcast.ts\n/Users/michael/Projects/test-project-2/packages/dev-env/scripts/tunnel.ts\n/Users/michael/Projects/test-project-2/packages/daemon/src/index.ts\n/Users/michael/Projects/test-project-2/packages/daemon/src/__tests__/runtime.test.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/user-settings.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/publish-msg.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/get-entrys.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/get-entry.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/environments.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/environment-variables.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/daemon-logs.ts\n/Users/michael/Projects/test-project-2/apps/www/src/foobar-actions/archive-entry.ts\n/Users/michael/Projects/test-project-2/apps/www/src/scripts/kill-sb.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/utils.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/server-utils.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/query-client.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/jotai.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/github.ts\n/Users/michael/Projects/test-project-2/apps/www/src/lib/auth-server.ts\n/Users/michael/Projects/test-project-2/apps/www/src/hooks/useTypewriter.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/test-redis/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/test-rate-limit/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/test-daemon/route.ts\n/Users/michael/Projects/test-project-2/apps/www/src/app/api/internal/broadcast/route.ts"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FrReFijebjT1qSg12yzSbn",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Tested grep with various scenarios:\n- **✓ TODO in .tsx files**: Found 6 matches\n- **✓ function patterns in .ts files**: Found 73 matches  \n- **✓ Non-existent pattern**: Correctly returned \"No files found\"\n- **✓ React imports in specific path**: Found 58 files in components directory\n- **✓ Numbers in JSON files**: Found 10 matches with 3-4 digit numbers\n- **✓ Python classes**: No matches (no .py files in this TypeScript project)"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 1920,
+        "cache_creation_input_tokens": 7073,
+        "cache_read_input_tokens": 17079,
+        "output_tokens": 132,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "cost_usd": 0.29057900000000003,
+    "is_error": false,
+    "duration_ms": 24104,
+    "duration_api_ms": 25026,
+    "num_turns": 14,
+    "result": "Tested grep with various scenarios:\n- **✓ TODO in .tsx files**: Found 6 matches\n- **✓ function patterns in .ts files**: Found 73 matches  \n- **✓ Non-existent pattern**: Correctly returned \"No files found\"\n- **✓ React imports in specific path**: Found 58 files in components directory\n- **✓ Numbers in JSON files**: Found 10 matches with 3-4 digit numbers\n- **✓ Python classes**: No matches (no .py files in this TypeScript project)",
+    "session_id": "7d33b727-7911-433b-927f-2fc236e89f0d",
+    "total_cost": 0.29057900000000003,
+    "usage": {
+      "input_tokens": 1923,
+      "cache_creation_input_tokens": 9242,
+      "cache_read_input_tokens": 31989,
+      "output_tokens": 537,
+      "server_tool_use": { "web_search_requests": 0 }
+    }
+  }
+]

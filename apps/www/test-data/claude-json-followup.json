@@ -1,0 +1,85 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/Users/test/test-project",
+    "session_id": "session_followup_001",
+    "tools": ["mcp__terry__SuggestFollowupTask"],
+    "mcp_servers": [],
+    "model": "claude-opus-4-20250514",
+    "permissionMode": "bypassPermissions",
+    "apiKeySource": "none"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FOLLOWUP001",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "text",
+          "text": "Based on our recent progress, I recommend a follow-up task to further improve the codebase."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 3,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 16,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "session_followup_001"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "id": "msg_01FOLLOWUP002",
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-opus-4-20250514",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01FOLLOWUP",
+          "name": "mcp__terry__SuggestFollowupTask",
+          "input": {
+            "title": "Implement End-to-End Authentication Tests",
+            "description": "Set up Cypress and write comprehensive end-to-end tests covering the full authentication flow (sign-up, login, password reset, and OAuth). Integrate the tests into the CI pipeline, mock external services where appropriate, minimize flakiness, and document the setup in the README."
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 50,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "session_followup_001"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01FOLLOWUP",
+          "type": "tool_result",
+          "content": "✅ Follow-up task suggestion displayed to the user."
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "session_followup_001"
+  }
+]

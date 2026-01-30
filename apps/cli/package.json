@@ -1,0 +1,73 @@
+{
+  "name": "@terragon-labs/cli",
+  "version": "0.1.21",
+  "type": "module",
+  "bin": {
+    "terry": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "lint": "tsc --noEmit",
+    "install:dev": "./scripts/install-cli-dev.sh",
+    "uninstall:dev": "./scripts/uninstall-cli.sh",
+    "release": "./scripts/release.sh"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.6",
+    "@orpc/client": "^1.6.0",
+    "@orpc/contract": "1.6.0",
+    "@tanstack/react-query": "^5.76.1",
+    "commander": "^12.1.0",
+    "ink": "^6.0.0",
+    "ink-select-input": "^6.2.0",
+    "ink-spinner": "^5.0.0",
+    "ink-text-input": "^6.0.0",
+    "node-fetch": "^3.3.2",
+    "react": "19.1.2",
+    "update-notifier": "^7.3.1"
+  },
+  "devDependencies": {
+    "@terragon/agent": "workspace:*",
+    "@terragon/cli-api-contract": "workspace:*",
+    "@types/node": "^22.6.1",
+    "@types/react": "^19.1.8",
+    "@types/update-notifier": "^6.0.8",
+    "dotenv": "^16.5.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [
+    "terragon",
+    "cli",
+    "terry",
+    "ai",
+    "coding-assistant"
+  ],
+  "author": "Terragon Labs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terragon-labs/terragon.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://www.terragonlabs.com",
+  "bugs": {
+    "url": "https://github.com/terragon-labs/terragon/issues"
+  }
+}

@@ -1,0 +1,73 @@
+---
+title: Custom System Prompts
+description: Configure custom system prompts to give Terragon specific instructions for your development workflow.
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Settings } from "lucide-react";
+
+### Accessing System Prompts
+
+<Steps>
+  <Step>
+    Navigate to [<Settings className="inline-block w-4 h-4 mx-1" /> **Settings**](https://www.terragonlabs.com/settings/agent)
+  </Step>
+  <Step>Find the `Custom System Prompt` section</Step>
+  <Step>Enter your custom instructions</Step>
+  <Step>Click `Save Changes`</Step>
+</Steps>
+
+### Writing Effective System Prompts
+
+System prompts provide persistent instructions that apply to all tasks. Use them to:
+
+- Define coding standards and conventions
+- Specify preferred libraries or frameworks
+- Set behavioral guidelines
+- Include project-specific context
+
+### Example System Prompts
+
+<Tabs items={["Code Style", "Testing", "Project-Specific"]}>
+  <Tab value="Code Style">
+```text
+Always use TypeScript with strict mode enabled.
+Prefer functional components with hooks in React.
+Use Tailwind CSS for styling, avoid inline styles.
+Include JSDoc comments for all exported functions.
+```
+  </Tab>
+
+<Tab value="Testing">
+  ```text Write unit tests for all new functions using Vitest. Ensure test
+  coverage remains above 80%. Follow the AAA pattern: Arrange, Act, Assert. Mock
+  external dependencies appropriately. ```
+</Tab>
+
+  <Tab value="Project-Specific">
+```text
+This is a Next.js 14 app using the App Router.
+All API routes should validate input with Zod schemas.
+Use our custom logger from @/lib/logger for debugging.
+Follow our error handling patterns in @/lib/errors.
+```
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Best Practices">
+  **Be Specific**: Clear, actionable instructions work best. **Keep it
+  Concise**: Focus on the most important guidelines. **Update Regularly**:
+  Adjust as your project evolves. **Test Your Prompts**: Verify the AI follows
+  your instructions.
+</Callout>
+
+### Combining with Task Prompts
+
+System prompts work alongside task-specific prompts:
+
+- **System Prompt**: General guidelines that always apply
+- **Task Prompt**: Specific instructions for the current task
+
+Terragon considers both when working on your code.

@@ -1,0 +1,40 @@
+---
+title: Common Issues
+description: Quick solutions to common issues
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Settings } from "lucide-react";
+
+## Task Creation & Execution
+
+### Tasks is stuck on `Waiting for a Sandbox to be Available`
+
+This status means that you've hit a soft limit on the number of new sandboxes that can be created per user per hour. The system will start your new tasks as soon as the limit is reset typically within 5-10 minutes.
+
+<Callout type="info">
+  Tasks will automatically start once the limit is reset. You don't need to take any action.
+</Callout>
+
+### Environment Variables are not working
+
+Changes to environment variables are only available for tasks created after the changes are made. Double check for typos in variable names, trailing spaces, and ensure the variables are saved.
+
+## GitHub Integration
+
+### Can't See My GitHub Repositories
+
+- Confirm which repositories you've granted access to in <a href="https://www.terragonlabs.com/settings/github"><Settings className="inline-block w-4 h-4 mx-1" /> Settings</a>
+- Ensure you're logged in with the correct GitHub account
+
+### GitHub PRs are not being created
+
+- Check for branch protection rules that may be preventing Terragon from pushing to the branch
+- Verify you have push access to the repository
+
+### GitHub @-mentions are not working
+
+- Verify GitHub App is installed on the repository
+- Check you have a Terragon account with the same GitHub email
+- Ensure you're mentioning `@terragon-labs` exactly
+- Make sure you're tagging `@terragon-labs` in a repository you've granted access to in <a href="https://www.terragonlabs.com/settings/github"><Settings className="inline-block w-4 h-4 mx-1" /> Settings</a>

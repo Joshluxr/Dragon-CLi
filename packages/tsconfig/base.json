@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitReturns": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "downlevelIteration": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "module": "ESNext"
+  },
+  "exclude": ["node_modules", "dist"]
+}

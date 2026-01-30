@@ -1,0 +1,50 @@
+---
+title: Claude Code
+description: Anthropic's Coding Agent powered by Claude Opus 4.1 and Claude Sonnet 4.5.
+
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Settings } from "lucide-react";
+
+## Setup
+
+To use Claude Code, you can connect your Claude Subscription or provide an API key. You can configure this in the [settings](https://www.terragonlabs.com/settings/agent) page.
+
+## Available Models
+
+- [Claude Opus 4.5](https://www.anthropic.com/news/claude-opus-4-5) (Most capable for complex work)
+- [Claude Sonnet 4.5](https://www.anthropic.com/news/claude-sonnet-4-5) (Recommended for everyday tasks)
+- [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5) (Fastest for quick answers tasks)
+
+## Features
+
+### Slash Commands
+
+Claude Code supports more built-in slash command and custom slash commands defined in the `.claude/commands` directory.
+
+Learn more about them here: [Slash Commands](https://docs.claude.com/en/docs/claude-code/slash-commands).
+
+### Automatic Rate Limit Handling
+
+When you hit a rate limit associated with your Claude subscription, Terragon automatically queues new tasks and messages until your rate limit resets, so that you never lose work. After your rate limit resets, any queued tasks or messages are submitted automatically.
+
+If you upgrade your Claude plan after hitting a rate limit, you'll need to disconnect and reconnect your Claude subscription for your new limits to take effect in Terragon.
+
+<Steps>
+  {/* prettier-ignore */}
+  <Step>Navigate to [<Settings className="inline-block w-4 h-4 mx-1" />Agent Settings](https://www.terragonlabs.com/settings/agent)</Step>
+  <Step>Click `Disconnect` under your Claude subscription</Step>
+  <Step>
+    Click `Connect Your Claude Subscription` and follow instructions to complete
+    connecting your Claude subscription
+  </Step>
+</Steps>
+
+After reconnecting your Claude subscription, your new rate limit will take effect for all new tasks going forward. Your previous plan's rate limit will still be in effect for any tasks that were queued before you reconnected your Claude subscription. To kick them off, you can manually stop and restart those tasks.
+
+## Resources
+
+- [Official Documentation](https://docs.claude.com/en/docs/claude-code/overview)
+- [Best Practices Guide](https://www.anthropic.com/engineering/claude-code-best-practices)
+- [Product Page](https://www.anthropic.com/claude-code)

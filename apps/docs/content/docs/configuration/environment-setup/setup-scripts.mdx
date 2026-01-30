@@ -1,0 +1,193 @@
+---
+title: Setup Scripts
+description: Configure custom setup scripts that run when your Terragon sandbox starts.
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Container } from "lucide-react";
+
+<Callout type="warning">
+  Setup scripts run **every time a sandbox starts**, not just on initial setup. Scripts have a **15-minute timeout**. If your script takes longer than 15 minutes, the sandbox initialization will fail.
+</Callout>
+
+The agent runs inside a Bash shell environment where the `~/.bashrc` file is automatically sourced.
+
+If you install binaries, tools, SDKs, or other dependencies make sure they are added to the PATH when the `~/.bashrc` file is sourced.
+
+```bash title="terragon-setup.sh"
+echo "export PATH='$PATH:/path/to/bin'" >> ~/.bashrc
+```
+
+## Configuration Methods
+
+There are two ways to configure setup scripts:
+
+### 1. Environment-Specific Script
+
+<Callout type="info">
+  Configured in your Terragon environment settings, this script is private to you and takes precedence over repository scripts.
+
+This is useful for user-specific customizations.
+
+</Callout>
+
+<Steps>
+  <Step>
+    Navigate to [<Container className="inline-block w-4 h-4 mx-1" />{" "}
+    **Environments**](https://www.terragonlabs.com/environments)
+  </Step>
+  <Step>Click on the relevant repository</Step>
+  <Step>Find the **Edit Setup Script** button at the bottom</Step>
+  <Step>Enter your custom setup script</Step>
+  <Step>Click **`Save to Environment`**</Step>
+</Steps>
+
+### 2. Repository Script
+
+Add a `terragon-setup.sh` file to the root of your repository
+
+<Callout type="info">
+  This is version controlled with your code and shared across all users working with this repository.
+
+This is useful for standard project setup.
+
+</Callout>
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+
+# This script runs for all users working with this repository
+pnpm install
+./scripts/setup.sh
+```
+
+## Skipping Setup Scripts
+
+You can skip running the `terragon-setup.sh` script when creating tasks and automations by toggling the **Skip Repository Setup** setting in the task or automation creation UI.
+
+This is useful for quick operations that don't require the full environment setup, such as simple bug fixes or documentation updates.
+
+## Example Setup Scripts
+
+### Go
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+
+INSTALL_DIR="/usr/local"
+curl -fsSL https://go.dev/dl/go1.25.0.linux-amd64.tar.gz | tar -C ${INSTALL_DIR} -xz
+
+# Make sure that the go binary is in the PATH when bashrc is sourced
+echo "export PATH=\$PATH:${INSTALL_DIR}/go/bin" >> ~/.bashrc
+```
+
+### Custom Node.js Version
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+
+node -v
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# initialize nvm in this shell
+source ~/.nvm/nvm.sh >/dev/null
+
+# install the version we want
+nvm install 20
+nvm use 20
+nvm alias default 20
+
+# Add nvm to the bashrc
+echo 'source ~/.nvm/nvm.sh >/dev/null 2>&1' >> ~/.bashrc
+```
+
+### Ruby
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+
+# Install RVM
+gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys \
+  409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+curl -sSL https://get.rvm.io | bash -s stable
+
+# Source RVM
+source /etc/profile.d/rvm.sh
+
+# Ruby install + default
+rvm install 3.4.4
+rvm --default use 3.4.4
+
+# Persist to future shells
+echo '[[ -s /etc/profile.d/rvm.sh ]] && source /etc/profile.d/rvm.sh >/dev/null 2>&1' >> ~/.bashrc
+```
+
+### Java
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+
+JAVA_VERSION="21"
+JAVA_DOWNLOAD_URL="https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz"
+
+echo "Downloading OpenJDK $JAVA_VERSION from Oracle..."
+curl -fsSL "$JAVA_DOWNLOAD_URL" -o /tmp/openjdk.tar.gz
+
+echo "Extracting to /usr/local/java..."
+mkdir -p /usr/local/java
+tar -xzf /tmp/openjdk.tar.gz -C /usr/local/java --strip-components=1
+rm /tmp/openjdk.tar.gz
+
+# Make sure that the java binary is in the PATH when bashrc is sourced
+echo 'export JAVA_HOME=/usr/local/java' >> ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+```
+
+### Swift
+
+```bash title="terragon-setup.sh"
+#!/bin/bash
+set -euo pipefail
+
+# Desired Swift version
+SWIFT_VERSION="6.1"
+
+# Install runtime dependencies for Swift toolchains
+sudo apt-get update -y
+sudo apt-get install -y \
+  libncurses6 \
+  libcurl4 \
+  libxml2 \
+  libedit2 \
+  libsqlite3-0 \
+  zlib1g \
+  ca-certificates
+
+# Install mise
+curl -fsSL https://mise.run | sh
+export PATH="$HOME/.local/bin:$PATH"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+# Ensure mise is active in THIS shell
+eval "$("$HOME/.local/bin/mise" activate bash)"
+
+# Enable experimental features for Swift
+mise settings experimental=true
+
+# Install Swift version
+mise install "swift@${SWIFT_VERSION}"
+
+# Set it as global default
+mise use --global "swift@${SWIFT_VERSION}"
+
+# Verify installation
+mise x -- swift --version
+
+# (Optional) clear caches to save space
+mise cache clear || true
+rm -rf "$HOME/.cache/mise" "$HOME/.local/share/mise/downloads"
+
+# Ensure mise activates in future shells
+echo 'eval "$(mise activate bash)"' >> ~/.bashrc
+```

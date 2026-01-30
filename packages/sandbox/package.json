@@ -1,0 +1,47 @@
+{
+  "name": "@terragon/sandbox",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./mcp-config": "./src/mcp-config.ts",
+    "./commands": "./src/commands/index.ts",
+    "./daemon": "./src/daemon.ts",
+    "./utils": "./src/utils.ts",
+    "./env": "./src/env.ts",
+    "./constants": "./src/constants.ts",
+    "./circuit-breakers": "./src/circuit-breakers.ts"
+  },
+  "scripts": {
+    "tsc-watch": "tsc --watch --noEmit --preserveWatchOutput",
+    "tsc-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "format-check": "prettier --check . --ignore-path ../../.prettierignore --config ../../.prettierrc",
+    "test": "vitest",
+    "test-sandbox-image": "SANDBOX_IMAGE_TEST=true dotenv -e .env -- vitest sandbox-image",
+    "test-sandbox-provider": "dotenv -e .env -- vitest sandbox.test.ts",
+    "test-sandbox-e2b": "SANDBOX_PROVIDER=e2b pnpm test-sandbox-provider",
+    "test-sandbox-daytona": "SANDBOX_PROVIDER=daytona pnpm test-sandbox-provider"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "@daytonaio/sdk": "0.115.2",
+    "@e2b/code-interpreter": "^1.2.0-beta.4",
+    "@iarna/toml": "^3.0.0",
+    "@terragon/agent": "workspace:*",
+    "@terragon/bundled": "workspace:*",
+    "@terragon/daemon": "workspace:*",
+    "@terragon/sandbox-image": "workspace:*",
+    "@terragon/utils": "workspace:*",
+    "nanoid": "^3.3.8",
+    "zod": "4.1.11"
+  },
+  "devDependencies": {
+    "@terragon/tsconfig": "workspace:*",
+    "@terragon/types": "workspace:*",
+    "@types/node": "^22.5.5",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.4"
+  }
+}
