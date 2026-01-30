@@ -93,7 +93,7 @@ toothless pull <taskId>
 toothless pull <taskId> --resume
 ```
 
-**Getting the task ID**: You can find the task ID at the end of the URL when viewing a task in Dragon. For example, in `https://terragonlabs.com/tasks/abc123-def456`, the task ID is `abc123-def456`.
+**Getting the task ID**: You can find the task ID at the end of the URL when viewing a task in Dragon. For example, in `https://dragon-labz.vercel.app/tasks/abc123-def456`, the task ID is `abc123-def456`.
 
 #### Options
 
@@ -153,5 +153,5 @@ The MCP server acts as a bridge between Claude Code and Dragon, allowing you to 
 
 ## Support
 
-- **Documentation**: [https://docs.terragonlabs.com](https://docs.terragonlabs.com)
-- **Website**: [https://terragonlabs.com](https://terragonlabs.com)
+- **Documentation**: [https://dragon-labz-docs.vercel.app](https://dragon-labz-docs.vercel.app)
+- **Website**: [https://dragon-labz.vercel.app](https://dragon-labz.vercel.app)

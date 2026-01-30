@@ -95,8 +95,8 @@ export function CreateCommand({
           <Text>Branch: {createMutation.data.branchName}</Text>
         )}
         <Text dimColor>
-          Visit https://www.terragonlabs.com/task/{createMutation.data.threadId}{" "}
-          to view your task
+          Visit https://dragon-labz.vercel.app/task/
+          {createMutation.data.threadId} to view your task
         </Text>
       </Box>
     );

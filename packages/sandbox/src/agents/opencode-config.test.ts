@@ -6,7 +6,7 @@ import { validateProviderModel } from "@dragon/agent/proxy";
 describe("buildOpencodeConfig", () => {
   it("should build a valid opencode config", () => {
     const config = buildOpencodeConfig({
-      publicUrl: "https://www.terragonlabs.com",
+      publicUrl: "https://dragon-labz.vercel.app",
       userMcpConfig: {
         mcpServers: {
           toothless: {
@@ -43,7 +43,7 @@ describe("buildOpencodeConfig", () => {
             "npm": "@ai-sdk/openai-compatible",
             "name": "Dragon",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/openrouter/v1",
+              "baseURL": "https://dragon-labz.vercel.app/api/proxy/openrouter/v1",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
               }
@@ -79,7 +79,7 @@ describe("buildOpencodeConfig", () => {
             "npm": "@ai-sdk/google",
             "name": "Dragon Google",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/google/v1",
+              "baseURL": "https://dragon-labz.vercel.app/api/proxy/google/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
@@ -100,7 +100,7 @@ describe("buildOpencodeConfig", () => {
             "npm": "@ai-sdk/anthropic",
             "name": "Dragon Anthropic",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/anthropic/v1",
+              "baseURL": "https://dragon-labz.vercel.app/api/proxy/anthropic/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
@@ -117,7 +117,7 @@ describe("buildOpencodeConfig", () => {
             "npm": "@ai-sdk/openai",
             "name": "Dragon OpenAI",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/openai/v1",
+              "baseURL": "https://dragon-labz.vercel.app/api/proxy/openai/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"

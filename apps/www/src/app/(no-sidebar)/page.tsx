@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "Dragon - Delegate coding tasks to AI background agents",
     description:
       "Run coding agents in parallel inside remote sandboxes. Automate multiple development tasks concurrently with AI-powered assistance.",
-    url: "https://www.terragonlabs.com",
+    url: "https://dragon-labz.vercel.app",
     siteName: "Dragon",
     type: "website",
     locale: "en_US",
@@ -66,9 +66,9 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.terragonlabs.com",
+    canonical: "https://dragon-labz.vercel.app",
   },
-  metadataBase: new URL("https://www.terragonlabs.com"),
+  metadataBase: new URL("https://dragon-labz.vercel.app"),
 };
 
 export default async function Home() {

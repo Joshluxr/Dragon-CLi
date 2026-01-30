@@ -66,7 +66,7 @@
     "url": "https://github.com/terragon-labs/dragon.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://www.terragonlabs.com",
+  "homepage": "https://dragon-labz.vercel.app",
   "bugs": {
     "url": "https://github.com/terragon-labs/dragon/issues"
   }

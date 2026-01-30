@@ -29,7 +29,7 @@ export function IntegrationsSettings({
           <>
             Connect your Slack workspace to interact with Dragon through Slack.{" "}
             <Link
-              href="https://docs.terragonlabs.com/docs/integrations/slack-integration"
+              href="https://dragon-labz-docs.vercel.app/docs/integrations/slack-integration"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"

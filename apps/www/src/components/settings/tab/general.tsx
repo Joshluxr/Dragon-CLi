@@ -54,7 +54,7 @@ export function GeneralSettings() {
                 Opt in to new features while they are being developed. They will
                 change frequently and may be unstable.{" "}
                 <a
-                  href="https://docs.terragonlabs.com/docs/resources/early-access-features"
+                  href="https://dragon-labz-docs.vercel.app/docs/resources/early-access-features"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-primary hover:underline"

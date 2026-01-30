@@ -54,7 +54,7 @@ When you mention Dragon:
   </Step>
   <Step>Work begins in an isolated sandbox</Step>
   <Step>
-    You'll see the task appear in [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://www.terragonlabs.com)
+    You'll see the task appear in [<House className="inline-block w-4 h-4 mx-1" /> **Home**](https://dragon-labz.vercel.app)
   </Step>
 </Steps>
 
@@ -62,7 +62,7 @@ When you mention Dragon:
 
 By default, Dragon keeps a single task per pull request or issue. Repeat mentions of `@terragon-labs` on the same thread are added as follow-up messages so the conversation history stays in one place.
 
-If you want each mention to kick off a fresh task, enable **Create new task when @terragon-labs is tagged on GitHub** in [GitHub & Pull Request Settings](https://www.terragonlabs.com/settings/github). With this toggle on, Dragon always creates a brand-new task—complete with its own sandbox and timeline—whenever you tag the app on GitHub, even if a task already exists for that PR or issue.
+If you want each mention to kick off a fresh task, enable **Create new task when @terragon-labs is tagged on GitHub** in [GitHub & Pull Request Settings](https://dragon-labz.vercel.app/settings/github). With this toggle on, Dragon always creates a brand-new task—complete with its own sandbox and timeline—whenever you tag the app on GitHub, even if a task already exists for that PR or issue.
 
 <Callout type="warning">
   Separate tasks mean separate sandboxes and timelines. Enabling this setting is useful for parallel work or reviewer-specific follow-ups, but you will lose the consolidated discussion history and may need to keep an eye out for duplicated effort.
@@ -76,7 +76,7 @@ The model selected for a github mention is selected based on the following prior
 
 1. Model specified in the comment (e.g., `@terragon-labs [sonnet] ...`)
 2. Model configured in a "Github Mention" automation (if exists)
-3. Your default model specified in [GitHub & Pull Request Settings](https://www.terragonlabs.com/settings/github).
+3. Your default model specified in [GitHub & Pull Request Settings](https://dragon-labz.vercel.app/settings/github).
 4. The last model used in the task (If not creating a new task)
 5. Your last selected model in the dashboard.
 

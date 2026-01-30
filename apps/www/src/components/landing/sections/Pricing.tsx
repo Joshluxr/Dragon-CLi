@@ -35,7 +35,7 @@ const ENTERPRISE_PLAN: PricingPlan = {
   cta: (
     <Button asChild variant="outline" className="w-full" size="lg">
       <Link
-        href="mailto:enterprise@terragonlabs.com?subject=[Dragon]%20Enterprise%20Plan%20Request"
+        href="mailto:enterprise@dragon-labz.vercel.app?subject=[Dragon]%20Enterprise%20Plan%20Request"
         target="_blank"
       >
         Contact Us

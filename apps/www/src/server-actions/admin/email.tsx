@@ -52,9 +52,9 @@ export const sendOnboardingEmail = adminOnly(async function sendOnboardingEmail(
   const resend = new Resend(env.RESEND_API_KEY ?? "DUMMY_KEY");
 
   const result = await resend.emails.send({
-    from: "The Dragon Team <onboarding@mail.terragonlabs.com>",
+    from: "The Dragon Team <onboarding@mail.dragon-labz.vercel.app>",
     to: email,
-    replyTo: "support@terragonlabs.com",
+    replyTo: "support@dragon-labz.vercel.app",
     subject: "Welcome to the Dragon Alpha!",
     react: <WaitlistWelcomeEmail accessLink={accessLink} />,
   });
@@ -124,9 +124,9 @@ export const sendReengagementEmails = adminOnly(async (adminUser: User) => {
       const accessLink = `${baseUrl}/invited?code=${recipient.code}`;
 
       const result = await resend.emails.send({
-        from: "The Dragon Team <onboarding@mail.terragonlabs.com>",
+        from: "The Dragon Team <onboarding@mail.dragon-labz.vercel.app>",
         to: recipient.email,
-        replyTo: "support@terragonlabs.com",
+        replyTo: "support@dragon-labz.vercel.app",
         subject: "Reminder: Redeem Dragon Access Code",
         react: <WaitlistWelcomeEmail accessLink={accessLink} />,
       });
@@ -209,9 +209,9 @@ export const sendOnboardingCompletionEmails = adminOnly(
         const dashboardLink = `${baseUrl}/`;
 
         const result = await resend.emails.send({
-          from: "The Dragon Team <onboarding@mail.terragonlabs.com>",
+          from: "The Dragon Team <onboarding@mail.dragon-labz.vercel.app>",
           to: user.email,
-          replyTo: "support@terragonlabs.com",
+          replyTo: "support@dragon-labz.vercel.app",
           subject: "Forget something?",
           react: (
             <OnboardingCompletionReminderEmail dashboardLink={dashboardLink} />

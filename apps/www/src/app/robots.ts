@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/internal/", "/admin/"],
     },
-    sitemap: "https://www.terragonlabs.com/sitemap.xml",
+    sitemap: "https://dragon-labz.vercel.app/sitemap.xml",
   };
 }

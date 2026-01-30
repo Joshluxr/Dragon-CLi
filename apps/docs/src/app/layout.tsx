@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Dragon Labs" }],
   creator: "Dragon Labs",
   publisher: "Dragon Labs",
-  metadataBase: new URL("https://docs.terragonlabs.com"),
+  metadataBase: new URL("https://dragon-labz-docs.vercel.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://docs.terragonlabs.com",
+    url: "https://dragon-labz-docs.vercel.app",
     siteName: "Dragon Documentation",
     title: "Dragon Documentation",
     description:
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://docs.terragonlabs.com",
+    canonical: "https://dragon-labz-docs.vercel.app",
   },
 };
 
@@ -86,7 +86,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     publisher: {
       "@type": "Organization",
       name: "Dragon Labs",
-      url: "https://www.terragonlabs.com",
+      url: "https://dragon-labz.vercel.app",
     },
     inLanguage: "en-US",
   };

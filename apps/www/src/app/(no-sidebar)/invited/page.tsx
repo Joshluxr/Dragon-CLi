@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "You've been invited to Dragon",
     description:
       "Join Dragon with your exclusive access code and start using background agents for Claude Code.",
-    url: "https://www.terragonlabs.com/invited",
+    url: "https://dragon-labz.vercel.app/invited",
     siteName: "Dragon",
     images: [
       {
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     "exclusive access",
   ],
   alternates: {
-    canonical: "https://www.terragonlabs.com/invited",
+    canonical: "https://dragon-labz.vercel.app/invited",
   },
   robots: {
     index: false,
