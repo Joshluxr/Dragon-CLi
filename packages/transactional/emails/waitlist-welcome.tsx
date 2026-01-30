@@ -33,7 +33,7 @@ export const WaitlistWelcomeEmail = ({
               <Text className="text-base text-gray-700 mb-3">👋 Hi there,</Text>
 
               <Text className="text-base text-gray-700 mb-3">
-                Thanks for signing up for the dragonlabs.com alpha program!
+                Thanks for signing up for the terragonlabs.com alpha program!
               </Text>
 
               <Text className="text-base text-gray-700 mb-4">
@@ -77,7 +77,7 @@ export const WaitlistWelcomeEmail = ({
                 <ul className="list-disc pl-6 mb-4">
                   <li className="text-base text-gray-700 mb-1">
                     <Link
-                      href="https://docs.dragonlabs.com/docs/"
+                      href="https://docs.terragonlabs.com/docs/"
                       className="text-green-600 underline"
                     >
                       Documentation & release notes
@@ -118,10 +118,10 @@ export const WaitlistWelcomeEmail = ({
                   <li className="text-base text-gray-700 mb-1">
                     <strong>Direct support email:</strong> email{" "}
                     <Link
-                      href="mailto:support@dragonlabs.com"
+                      href="mailto:support@terragonlabs.com"
                       className="text-green-600 underline"
                     >
-                      support@dragonlabs.com
+                      support@terragonlabs.com
                     </Link>
                   </li>
                 </ul>

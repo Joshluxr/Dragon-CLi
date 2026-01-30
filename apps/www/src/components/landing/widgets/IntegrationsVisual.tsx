@@ -145,7 +145,7 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub Issue #42",
       subtitle: "Fix login redirect bug",
-      action: "@dragon-labs please fix this",
+      action: "@terragon-labs please fix this",
     },
     {
       icon: <SlackIcon className="size-5" />,
@@ -169,7 +169,7 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #128",
       subtitle: "Add authentication",
-      action: "@dragon-labs review this",
+      action: "@terragon-labs review this",
     },
     {
       icon: <SlackIcon className="size-5" />,
@@ -187,7 +187,7 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub Issue #89",
       subtitle: "Update dependencies",
-      action: "@dragon-labs upgrade pkgs",
+      action: "@terragon-labs upgrade pkgs",
     },
     {
       icon: <SlackIcon className="size-5" />,
@@ -205,7 +205,7 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #156",
       subtitle: "Refactor auth flow",
-      action: "@dragon-labs optimize this",
+      action: "@terragon-labs optimize this",
     },
     {
       icon: <SlackIcon className="size-5" />,
@@ -217,7 +217,7 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #201",
       subtitle: "Add dark mode toggle",
-      action: "@dragon-labs implement this",
+      action: "@terragon-labs implement this",
     },
     {
       icon: <SlackIcon className="size-5" />,

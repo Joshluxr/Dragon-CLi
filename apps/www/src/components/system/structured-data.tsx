@@ -8,11 +8,11 @@ export function StructuredData() {
     applicationCategory: "DeveloperApplication",
     description:
       "AI-powered coding assistant platform that allows you to run coding agents in parallel inside remote sandboxes",
-    url: "https://www.dragonlabs.com",
+    url: "https://www.terragonlabs.com",
     creator: {
       "@type": "Organization",
       name: "Dragon Labs",
-      url: "https://www.dragonlabs.com",
+      url: "https://www.terragonlabs.com",
     },
     offers: {
       "@type": "Offer",
@@ -35,15 +35,15 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Dragon Labs",
-    url: "https://www.dragonlabs.com",
-    logo: "https://www.dragonlabs.com/favicon.png",
+    url: "https://www.terragonlabs.com",
+    logo: "https://www.terragonlabs.com/favicon.png",
   };
 
   const websiteData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Dragon",
-    url: "https://www.dragonlabs.com",
+    url: "https://www.terragonlabs.com",
   };
 
   return (

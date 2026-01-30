@@ -285,13 +285,13 @@ export const auth = betterAuth({
         const url =
           process.env.NEXT_PUBLIC_VERCEL_ENV === "preview"
             ? rawUrl.replace(
-                "https://www.dragonlabs.com",
+                "https://www.terragonlabs.com",
                 `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
               )
             : rawUrl;
         const resend = new Resend(env.RESEND_API_KEY ?? "DUMMY_KEY");
         const result = await resend.emails.send({
-          from: "Toothless <onboarding@mail.dragonlabs.com>",
+          from: "Toothless <onboarding@mail.terragonlabs.com>",
           to: email,
           subject: "Sign in to Dragon",
           html: `
@@ -315,8 +315,8 @@ export const auth = betterAuth({
     ...stripePlugins,
   ],
   trustedOrigins: [
-    "www.dragonlabs.com",
-    "dragonlabs.com",
+    "www.terragonlabs.com",
+    "terragonlabs.com",
     process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL &&
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
     process.env.NODE_ENV === "development" && publicAppUrl(),

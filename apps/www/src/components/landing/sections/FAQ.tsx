@@ -53,7 +53,7 @@ const faqs = [
         encryption.
         <Link
           target="_blank"
-          href="https://docs.dragonlabs.com/docs/security-permissions"
+          href="https://docs.terragonlabs.com/docs/security-permissions"
           className="underline hover:no-underline"
         >
           Learn more →

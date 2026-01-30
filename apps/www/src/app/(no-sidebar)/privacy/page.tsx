@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.dragonlabs.com/privacy",
+    canonical: "https://www.terragonlabs.com/privacy",
   },
 };
 
@@ -34,7 +34,7 @@ export default function PrivacyPolicy() {
                 Dragon Labs Inc. ("Dragon Labs," "we," "us," or "our") is
                 committed to protecting your privacy. This Privacy Policy
                 describes how we collect, use, share, and protect information
-                when you access or use our website at dragonlabs.com, its
+                when you access or use our website at terragonlabs.com, its
                 documentation, and related services (the "Services").
               </p>
             </section>
@@ -245,7 +245,7 @@ export default function PrivacyPolicy() {
                   <p>131 Continental Dr Suite 305</p>
                   <p>Newark, DE 19713, USA</p>
                   <p>Telephone: (415) 707-2952</p>
-                  <p>Email: support@dragonlabs.com</p>
+                  <p>Email: support@terragonlabs.com</p>
                 </div>
               </div>
             </section>

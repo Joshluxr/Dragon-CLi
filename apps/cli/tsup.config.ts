@@ -14,7 +14,7 @@ export default defineConfig({
   noExternal: ["@dragon/cli-api-contract"],
   define: {
     "process.env.DRAGON_WEB_URL": JSON.stringify(
-      process.env.DRAGON_WEB_URL || "https://www.dragonlabs.com",
+      process.env.DRAGON_WEB_URL || "https://www.terragonlabs.com",
     ),
     "process.env.TERRY_NO_AUTO_UPDATE": JSON.stringify(
       process.env.TERRY_NO_AUTO_UPDATE || "0",

@@ -50,7 +50,7 @@ For production use:
 ```bash
 [model_providers.toothless]
 name = "toothless"
-base_url = "http://dragonlabs.com/api/proxy/openai/v1"
+base_url = "http://terragonlabs.com/api/proxy/openai/v1"
 env_http_headers = { "X-Daemon-Token" = "DAEMON_TOKEN" }
 
 DAEMON_TOKEN=*** codex -m gpt-5 -c 'model_provider="toothless"'

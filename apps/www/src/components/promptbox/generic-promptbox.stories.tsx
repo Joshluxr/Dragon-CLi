@@ -69,7 +69,7 @@ export const Basic: Story = () => {
     <div className="p-4 space-y-4">
       <GenericPromptBox
         message={message}
-        repoFullName="dragon-labs/dragon"
+        repoFullName="terragon-labs/dragon"
         branchName="main"
         onSubmit={handleSubmit}
         hideSubmitButton={false}
@@ -107,7 +107,7 @@ export const WithImage: Story = () => {
       </div>
       <GenericPromptBox
         message={message}
-        repoFullName="dragon-labs/dragon"
+        repoFullName="terragon-labs/dragon"
         branchName="main"
         onSubmit={handleSubmit}
         hideSubmitButton={false}

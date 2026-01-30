@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Dragon Labs" }],
   creator: "Dragon Labs",
   publisher: "Dragon Labs",
-  metadataBase: new URL("https://docs.dragonlabs.com"),
+  metadataBase: new URL("https://docs.terragonlabs.com"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://docs.dragonlabs.com",
+    url: "https://docs.terragonlabs.com",
     siteName: "Dragon Documentation",
     title: "Dragon Documentation",
     description:
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://docs.dragonlabs.com",
+    canonical: "https://docs.terragonlabs.com",
   },
 };
 
@@ -86,7 +86,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     publisher: {
       "@type": "Organization",
       name: "Dragon Labs",
-      url: "https://www.dragonlabs.com",
+      url: "https://www.terragonlabs.com",
     },
     inLanguage: "en-US",
   };

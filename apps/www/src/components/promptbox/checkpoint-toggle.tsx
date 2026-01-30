@@ -84,7 +84,7 @@ export function CheckpointToggle({
               <br />
               Are you sure you want to disable{" "}
               <a
-                href="https://docs.dragonlabs.com/docs/configuration/git-checkpointing"
+                href="https://docs.terragonlabs.com/docs/configuration/git-checkpointing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-foreground"

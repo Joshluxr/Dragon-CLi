@@ -27,10 +27,9 @@ export function IntegrationsSettings({
         label="Slack"
         description={
           <>
-            Connect your Slack workspace to interact with Dragon through
-            Slack.{" "}
+            Connect your Slack workspace to interact with Dragon through Slack.{" "}
             <Link
-              href="https://docs.dragonlabs.com/docs/integrations/slack-integration"
+              href="https://docs.terragonlabs.com/docs/integrations/slack-integration"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"

@@ -47,8 +47,8 @@ export async function generateMetadata(props: {
 
   const slug = params.slug?.join("/") || "";
   const url = slug
-    ? `https://docs.dragonlabs.com/docs/${slug}`
-    : "https://docs.dragonlabs.com/docs";
+    ? `https://docs.terragonlabs.com/docs/${slug}`
+    : "https://docs.terragonlabs.com/docs";
 
   return {
     title: page.data.title,

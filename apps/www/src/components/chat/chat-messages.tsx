@@ -84,7 +84,7 @@ function getAgentRateLimitMessage({
       Agent rate limit reached. {retryAtStr}{" "}
       {agent === "claudeCode" && (
         <Link
-          href="https://docs.dragonlabs.com/docs/agent-providers/claude-code#automatic-rate-limit-handling"
+          href="https://docs.terragonlabs.com/docs/agent-providers/claude-code#automatic-rate-limit-handling"
           target="_blank"
           rel="noopener noreferrer"
           className="underline hover:no-underline text-sm"

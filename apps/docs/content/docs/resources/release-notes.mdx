@@ -15,7 +15,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 **Out of [early access](/docs/resources/early-access-features)**:
 
 - **Git diff viewer and file tree**: View diffs in a responsive secondary panel inside of tasks.
-- **Dynamic model selection with GitHub mentions**: When mentioning @dragon-labs in GitHub issues or PRs, you can now specify which model to use for the task by including it in brackets, e.g., `@dragon-labs [model-name] your request here`. [Learn more](/docs/integrations/github-integration#model-selection).
+- **Dynamic model selection with GitHub mentions**: When mentioning @terragon-labs in GitHub issues or PRs, you can now specify which model to use for the task by including it in brackets, e.g., `@terragon-labs [model-name] your request here`. [Learn more](/docs/integrations/github-integration#model-selection).
 
 **UX Improvements & Bug Fixes**
 
@@ -28,8 +28,8 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 **Features**
 
 - **GPT-5.1**: GPT-5.1 and GPT-5.1 Codex models are now supported.
-  - You can still access the older GPT-5 models by enabling them in [Settings](https://www.dragonlabs.com/settings/agent).
-- **Gemini 2.5 Pro**: The OpenCode agent now supports Gemini 2.5 Pro. Enable this model in [Settings](https://www.dragonlabs.com/settings/agent) to use it.
+  - You can still access the older GPT-5 models by enabling them in [Settings](https://www.terragonlabs.com/settings/agent).
+- **Gemini 2.5 Pro**: The OpenCode agent now supports Gemini 2.5 Pro. Enable this model in [Settings](https://www.terragonlabs.com/settings/agent) to use it.
 - **Connect multiple credentials for the same agent**: You can now connect multiple API keys or subscriptions for each agent provider, allowing you to easily switch between them. Each connected credential is distinguished by the email associated with it.
 
 ![Multiple credentials](/cdn/multiple-credentials-1zLJ.png)
@@ -46,7 +46,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 ![Task forking](/cdn/fork-task-yW3l.png)
 
-- **Dynamic model selection with GitHub mentions**: When mentioning @dragon-labs in GitHub issues or PRs, you can now specify which model to use for the task by including it in brackets, e.g., `@dragon-labs [model-name] your request here`. [Learn more](/docs/integrations/github-integration#model-selection).
+- **Dynamic model selection with GitHub mentions**: When mentioning @terragon-labs in GitHub issues or PRs, you can now specify which model to use for the task by including it in brackets, e.g., `@terragon-labs [model-name] your request here`. [Learn more](/docs/integrations/github-integration#model-selection).
 
 **UX Improvements & Bug Fixes**
 
@@ -87,7 +87,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 **Features**
 
-- **GitHub Mention Automation**: Customize the behavior when @dragon-labs is mentioned in GitHub by creating a "GitHub Mention" automation.
+- **GitHub Mention Automation**: Customize the behavior when @terragon-labs is mentioned in GitHub by creating a "GitHub Mention" automation.
   - Pro users can additionally have the automation trigger in response to mentions from bot users.
 - **Schedule Multi-Hour Automations**: Pro users can now schedule automations that run at multiple hours on a given day. When creating an automation with a "Schedule" trigger, you can configure it to run at at 9am and 5pm, for example, instead of just once each day.
 - **Codex Rate Limit Queueing**: When you hit a rate limit associated with your ChatGPT subscription, Dragon automatically queues new tasks and messages until your rate limit resets. This behavior is similar to how we handle Claude rate limit errors and should help make it easier to continue working when you hit a rate limit.
@@ -140,12 +140,12 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 **Features**
 
-- **Slack Integration**: Create tasks directly in Slack! Connect your Slack workspace from the new [Integration Settings page](https://www.dragonlabs.com/settings/integrations), where you can also set a default repo and default model for tasks created from Slack. Check out the [Slack integration documentation](/docs/integrations/slack-integration) for setup instructions and usage examples.
+- **Slack Integration**: Create tasks directly in Slack! Connect your Slack workspace from the new [Integration Settings page](https://www.terragonlabs.com/settings/integrations), where you can also set a default repo and default model for tasks created from Slack. Check out the [Slack integration documentation](/docs/integrations/slack-integration) for setup instructions and usage examples.
 
   ![Slack integration settings](/cdn/slack-integration-QVNL.png)
 
 - **Upload Text Files**: You can now upload text files (e.g. .json, .md, .txt, .csv) in addition to PDFs and images when creating tasks. Drop files directly into the prompt box or click the paperclip icon to access.
-- **Environment Management**: You can now delete environments and their associated data after selecting an environment from the [Environments](https://www.dragonlabs.com/environments) page.
+- **Environment Management**: You can now delete environments and their associated data after selecting an environment from the [Environments](https://www.terragonlabs.com/environments) page.
 - **Quick GitHub Actions** ([Early access](/docs/resources/early-access-features)):
 
   - For tasks with associated PRs, certain quick actions are available above the prompt box:
@@ -172,12 +172,12 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 **Features**
 
-- **Amp Agent**: Dragon now supports [Amp](https://ampcode.com). Configure your Amp API key in [Settings](https://www.dragonlabs.com/settings/agent) to use this powerful alternative to Claude and Codex.
+- **Amp Agent**: Dragon now supports [Amp](https://ampcode.com). Configure your Amp API key in [Settings](https://www.terragonlabs.com/settings/agent) to use this powerful alternative to Claude and Codex.
 - **Sonnet 4.5**: Dragon now supports Sonnet 4.5 when using the Claude Code agent.
 - **GitHub Integration Improvements**:
-  - When you mention `@dragon-labs` in a PR comment, we now include more context from the full comment thread
+  - When you mention `@terragon-labs` in a PR comment, we now include more context from the full comment thread
   - PRs created from GitHub issues now automatically include "#issueNumber" in their body, properly linking PRs to their corresponding issues
-  - You can now specify a default model for new tasks when @dragon-labs is mentioned. Update this in [Settings](https://www.dragonlabs.com/settings/github)
+  - You can now specify a default model for new tasks when @terragon-labs is mentioned. Update this in [Settings](https://www.terragonlabs.com/settings/github)
 - **Disable Git Checkpointing (out of early access)**: You can now toggle [git checkpointing](/docs/configuration/git-checkpointing) when creating new tasks. You may want to disable git checkpointing if you're working alone and want to commit directly to the default branch, use 3rd party tools like Graphite, or otherwise have custom git workflows. Click the cloud icon under the prompt box on the Home page to toggle this setting.
 - **New features in [early access](/docs/resources/early-access-features)**:
   - **Skip Setup Script**: New option to skip running setup scripts when creating tasks, useful for quick operations that don't require the full environment setup. Click the file icon under the prompt box on the Home page to toggle this setting.
@@ -200,10 +200,10 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 **Features**
 
-- **Schedule individual tasks**: You can now schedule individual tasks to run at a specific time in the future from the prompt box. Note: If you want to run a task on a recurring schedule, do so from the [Automations](https://www.dragonlabs.com/automations) page.
+- **Schedule individual tasks**: You can now schedule individual tasks to run at a specific time in the future from the prompt box. Note: If you want to run a task on a recurring schedule, do so from the [Automations](https://www.terragonlabs.com/automations) page.
   ![Schedule tasks](/cdn/schedule-tasks-esMN.png)
 
-- **GitHub issue and pull request automation triggers**: Automations can now be triggered when GitHub issues and pull requests are created or updated in a repository. Helpful for automatically triaging new GitHub issues, creating tasks to implement a GitHub issue, or doing custom code reviews on pull requests. Accessible from the [Automations](https://www.dragonlabs.com/automations) page. Check out our docs for [example prompts](/docs/tasks//automations#example-use-cases).
+- **GitHub issue and pull request automation triggers**: Automations can now be triggered when GitHub issues and pull requests are created or updated in a repository. Helpful for automatically triaging new GitHub issues, creating tasks to implement a GitHub issue, or doing custom code reviews on pull requests. Accessible from the [Automations](https://www.terragonlabs.com/automations) page. Check out our docs for [example prompts](/docs/tasks//automations#example-use-cases).
 - **Group tasks by repository**: You can now group tasks by their repository or their last updated time in the task list
 
 **UX Improvements & Bug Fixes**
@@ -223,16 +223,16 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 - **Documentation updates**:
   - Added comprehensive [git checkpointing documentation](/docs/configuration/git-checkpointing)
   - Added [example setup scripts](/docs/configuration/environment-setup/setup-scripts) for Go, using a custom Node.js version, Ruby, Java, and Swift
-- **Branch name prefix customization**: You can now customize the branch prefix added to Dragon-generated branches (defaults to `dragon/`). Update this in [Settings](https://www.dragonlabs.com/settings).
+- **Branch name prefix customization**: You can now customize the branch prefix added to Dragon-generated branches (defaults to `dragon/`). Update this in [Settings](https://www.terragonlabs.com/settings).
 - **Codex Agent Improvements**: MCP tool calls and errors are now rendered and surfaced in the task output
 - **Support for Claude Teams and Enterprise**: You can now use Claude Teams and Claude Enterprise subscriptions in Dragon
 - **Dragon Sandbox Environment Variable**: Added `DRAGON` environment variable to sandbox environments so you can distinguish when the agent is running in a Dragon sandbox versus elsewhere.
-- **Setup Script Editor Improvements**: The setup script editor now streams output in real-time so you'll see live feedback as you test changes. Access this by clicking on one of your environments from the [Environments](https://www.dragonlabs.com/environments) page.
+- **Setup Script Editor Improvements**: The setup script editor now streams output in real-time so you'll see live feedback as you test changes. Access this by clicking on one of your environments from the [Environments](https://www.terragonlabs.com/environments) page.
 
 **UX Improvements & Bug Fixes**
 
 - Fixed `docker` support in sandbox environments. There was an issue with our sandbox provider that prevented docker from working correctly.
-- Fixed page load performance when loading dragonlabs.com. There were some cases of very slow connections, which are now resolved.
+- Fixed page load performance when loading terragonlabs.com. There were some cases of very slow connections, which are now resolved.
 - Fixed the Claude rate limit message parsing to support the new Claude Code format
 - You can now manually run "Scheduled" automations from the automations page to test them more easily
 - When you reference a file, we now automatically scroll the list so your selection is always visible
@@ -289,7 +289,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 **Features**
 
-- **Connect your ChatGPT subscription to use with Codex**: You can now use an existing ChatGPT subscription to power the Codex agent instead of providing an OpenAI API key. Just go to [Settings](https://dragonlabs.com/settings) and navigate to the ChatGPT Account section. If you already have an OpenAI API key connected, you'll need to disconnect that first if you want to connect your ChatGPT subscription.
+- **Connect your ChatGPT subscription to use with Codex**: You can now use an existing ChatGPT subscription to power the Codex agent instead of providing an OpenAI API key. Just go to [Settings](https://terragonlabs.com/settings) and navigate to the ChatGPT Account section. If you already have an OpenAI API key connected, you'll need to disconnect that first if you want to connect your ChatGPT subscription.
 - **Early access program**: You can now opt into an early access program to try out new features as they're being developed and before they're released to everyone. Now in early access: an improved UI where your task list is always accessible from the sidebar when you're on the Home page or viewing tasks.
 
 ![New features](/cdn/new-EcZ2.png)
@@ -304,7 +304,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 - Fixed a bug where Claude would hang if a `/compact` command was queued
 - Fixed a bug where Codex would hang if it ran a command that never terminated
-- Fixed a bug where Codex didn't respect custom system prompts, available in [Settings](https://dragonlabs.com/settings)
+- Fixed a bug where Codex didn't respect custom system prompts, available in [Settings](https://terragonlabs.com/settings)
 - Resolved issue where you couldn't select Codex as an agent if you had a Claude Pro subscription
 - Git conflict resolution now works in Codex rather than prompting you to login
 
@@ -314,7 +314,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 
 - **GPT-5 Model Support**: You can now select GPT-5 when using the Codex agent.
 - **PDF Support**: Upload and preview PDF files when creating tasks, either via drag and drop or by clicking the paperclip icon in the prompt box.
-- **Support for SSE MCP servers**: You can now use SSE-based MCP servers, in addition to the previously supported command-based and HTTP-based MCP servers. Add and update MCP configurations from [Environments](https://dragonlabs.com/environment)
+- **Support for SSE MCP servers**: You can now use SSE-based MCP servers, in addition to the previously supported command-based and HTTP-based MCP servers. Add and update MCP configurations from [Environments](https://terragonlabs.com/environment)
 - **New Tools in Sandboxes**: Sandboxes now have `ripgrep` pre-installed.
 
 **UX Improvements**
@@ -342,7 +342,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 **UX Improvements**
 
 - **Improved Subagent Support**: When you use Claude Code subagents, we now show the name of the subagent and the agent's color for improved confirmation the subagent is working as expected
-- **Diff Context in GitHub mentions**: Mentioning @dragon-labs in GitHub PR comments now includes context of the diff in the message back to Dragon
+- **Diff Context in GitHub mentions**: Mentioning @terragon-labs in GitHub PR comments now includes context of the diff in the message back to Dragon
 - **Clarified Task Sharing Permissions**: The "Anyone with the link" permission was updated to "Logged in users with the link" to accurately reflect the actual behavior
 - **Additional Context in Push Notifications**: Push notifications now include the task name for improved context
 - **Improved Setup Script Timeout Handling**: We extended the setup script timeout to 5 minutes and now show the output of the script and which commands ran if it times out
@@ -419,7 +419,7 @@ description: Stay up to date with the latest changes and improvements to Dragon.
 - **Task Sharing**: Share your tasks with your collaborators:
   - Viewers see a read-only version with task owner information.
   - Tasks default to being visible to all repository members
-  - You can change sharing permissions via the share modal on a task or in [Settings](https://dragonlabs.com/settings)
+  - You can change sharing permissions via the share modal on a task or in [Settings](https://terragonlabs.com/settings)
 - **Claude rate limit handling**: We now automatically queue and retry tasks if you hit your rate limit
 - **New `toothless list` CLI command**: View all tasks for the current repository
 
@@ -500,5 +500,5 @@ Alpha Release
 
 - Run multiple coding agents simultaneously in isolated sandboxes
 - Agents open PRs for you with their work
-- Mention `@dragon-labs` in GitHub comments to spawn new tasks
+- Mention `@terragon-labs` in GitHub comments to spawn new tasks
 - Use the `toothless` cli to continue working with the agent locally

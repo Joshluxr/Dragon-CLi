@@ -73,10 +73,10 @@ export const OnboardingCompletionReminderEmail = ({
               <Text className="text-base text-gray-700 mb-0">
                 Need additional help? Email{" "}
                 <Link
-                  href="mailto:support@dragonlabs.com"
+                  href="mailto:support@terragonlabs.com"
                   className="text-green-600 underline"
                 >
-                  support@dragonlabs.com
+                  support@terragonlabs.com
                 </Link>{" "}
                 or join our{" "}
                 <Link
