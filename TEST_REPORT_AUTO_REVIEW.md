@@ -1,8 +1,8 @@
 # Test Report: Auto-Review Implementation
 
 **Date:** 2026-01-30
-**Work Context:** `/root/repo/terragon-oss`
-**Test Suite:** Full terragon-oss project test suite
+**Work Context:** `/root/repo/dragon-oss`
+**Test Suite:** Full dragon-oss project test suite
 
 ---
 
@@ -20,10 +20,10 @@ All existing tests pass successfully. No test failures detected for the auto-rev
 
 | Package             | Test Command | Result  | Tests                 | Duration |
 | ------------------- | ------------ | ------- | --------------------- | -------- |
-| `@terragon/shared`  | `pnpm test`  | ✅ PASS | 447/447               | 39.29s   |
-| `@terragon/www`     | `pnpm test`  | ✅ PASS | 786/795 (9 skipped)   | 159.63s  |
-| `@terragon/daemon`  | `pnpm test`  | ❌ FAIL | 149/152 (3 failed)    | 14.58s   |
-| `@terragon/sandbox` | `pnpm test`  | ✅ PASS | 147/251 (104 skipped) | 71.11s   |
+| `@dragon/shared`  | `pnpm test`  | ✅ PASS | 447/447               | 39.29s   |
+| `@dragon/www`     | `pnpm test`  | ✅ PASS | 786/795 (9 skipped)   | 159.63s  |
+| `@dragon/daemon`  | `pnpm test`  | ❌ FAIL | 149/152 (3 failed)    | 14.58s   |
+| `@dragon/sandbox` | `pnpm test`  | ✅ PASS | 147/251 (104 skipped) | 71.11s   |
 
 ### Global Test Summary
 
@@ -444,5 +444,5 @@ Defined types:
 ---
 
 **Report Generated:** 2026-01-30 16:52:00
-**Tested By:** Terragon QA
+**Tested By:** Dragon QA
 **Status:** ✅ APPROVED FOR DEPLOYMENT

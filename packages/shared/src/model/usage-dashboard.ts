@@ -19,7 +19,7 @@ import {
   getCurrentDateString,
   calculateTrend,
 } from "./usage-tracker";
-import type { AIAgent } from "@terragon/agent/types";
+import type { AIAgent } from "@dragon/agent/types";
 
 export interface UpdateDailyStatsArgs {
   db: DB;

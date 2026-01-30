@@ -48,7 +48,7 @@ export default function Login({ returnUrl }: { returnUrl: string }) {
           <div className="flex flex-col items-center text-center space-y-2">
             <Wordmark showLogo showText size="lg" />
             <h1 className="text-2xl font-semibold tracking-tight mt-6">
-              Welcome to Terragon
+              Welcome to Dragon
             </h1>
             <p className="text-sm text-muted-foreground">
               Log in or create an account to continue
@@ -68,14 +68,14 @@ export default function Login({ returnUrl }: { returnUrl: string }) {
               ) : (
                 <>
                   <Image
-                    src="https://cdn.terragonlabs.com/github-mark-Z5SF.svg"
+                    src="https://cdn.dragonlabs.com/github-mark-Z5SF.svg"
                     alt="GitHub"
                     width={20}
                     height={20}
                     className="hidden dark:block absolute left-4"
                   />
                   <Image
-                    src="https://cdn.terragonlabs.com/github-mark-white-Ue4J.svg"
+                    src="https://cdn.dragonlabs.com/github-mark-white-Ue4J.svg"
                     alt="GitHub"
                     width={20}
                     height={20}
@@ -121,7 +121,7 @@ export default function Login({ returnUrl }: { returnUrl: string }) {
           <div className="text-center mb-8">
             <h2 className="text-2xl font-semibold mb-2">Loved by developers</h2>
             <p className="text-muted-foreground">
-              Join thousands of developers building with Terragon
+              Join thousands of developers building with Dragon
             </p>
           </div>
 

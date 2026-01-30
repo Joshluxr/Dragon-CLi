@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 import { parseArgs } from "node:util";
-import { TerragonDaemon } from "./daemon.js";
+import { DragonDaemon } from "./daemon.js";
 import { DaemonRuntime, writeToUnixSocket } from "./runtime.js";
 import { defaultUnixSocketPath, DAEMON_VERSION } from "./shared.js";
 
 /**
- * Terragon Daemon Service
+ * Dragon Daemon Service
  *
  * A daemon service that listens to a unix socket for configuration and sends messages.
  */
@@ -63,7 +63,7 @@ function parseCliArgs(): {
 
   if (values.help) {
     console.log(`
-Usage: terragon-daemon [options]
+Usage: dragon-daemon [options]
 Version: v${DAEMON_VERSION}
 
 Options:
@@ -76,7 +76,7 @@ Options:
   --mcp-config-path <path>         MCP config path
   -h, --help                       Show this help message
 
-The daemon will create a unix socket at /tmp/terragon-daemon.sock and listen for JSON messages with:
+The daemon will create a unix socket at /tmp/dragon-daemon.sock and listen for JSON messages with:
 {
   "token": "string",
   "prompt": "string", 
@@ -85,16 +85,16 @@ The daemon will create a unix socket at /tmp/terragon-daemon.sock and listen for
 }
 
 Examples:
-  terragon-daemon
-  terragon-daemon -u https://api.example.com
-  terragon-daemon --output-format json
-  terragon-daemon --skip-reporting-daemon-events
-  terragon-daemon --output-format json --mcp-config-path /tmp/mcp-server.json
+  dragon-daemon
+  dragon-daemon -u https://api.example.com
+  dragon-daemon --output-format json
+  dragon-daemon --skip-reporting-daemon-events
+  dragon-daemon --output-format json --mcp-config-path /tmp/mcp-server.json
   
   # Send a message to the daemon:
 
-  cat msg.json | terragon-daemon --write
-  echo '{"type":"ping"}' | terragon-daemon --write
+  cat msg.json | dragon-daemon --write
+  echo '{"type":"ping"}' | dragon-daemon --write
 `);
     process.exit(0);
   }
@@ -144,7 +144,7 @@ async function readStdinOrTimeout(timeoutMs: number): Promise<string> {
 try {
   const cliArgs = parseCliArgs();
   if (cliArgs.version) {
-    console.log(`Terragon Daemon v${DAEMON_VERSION}`);
+    console.log(`Dragon Daemon v${DAEMON_VERSION}`);
     process.exit(0);
   }
   if (cliArgs.write) {
@@ -175,7 +175,7 @@ try {
       unixSocketPath: defaultUnixSocketPath,
       skipReportingDaemonEvents: cliArgs.skipReportingDaemonEvents,
     });
-    const daemon = new TerragonDaemon({
+    const daemon = new DragonDaemon({
       runtime,
       mcpConfigPath: cliArgs.mcpConfigPath,
     });

@@ -3,9 +3,9 @@ import type {
   AIAgent,
   AIAgentSlashCommand,
   AIModel,
-} from "@terragon/agent/types";
+} from "@dragon/agent/types";
 import type { Attachment } from "@/lib/attachment-types";
-import { getAgentSlashCommands, modelToAgent } from "@terragon/agent/utils";
+import { getAgentSlashCommands, modelToAgent } from "@dragon/agent/utils";
 import { MentionListContent } from "./mention-list";
 import { SlashCommandListContent } from "./slash-command-list";
 import { Typeahead } from "./typeahead/typeahead";

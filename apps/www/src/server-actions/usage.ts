@@ -7,13 +7,13 @@ import {
   getUsageSummary,
   getCostLimits,
   setCostLimits,
-} from "@terragon/shared/model/usage-dashboard";
+} from "@dragon/shared/model/usage-dashboard";
 import { getPostHogServer } from "@/lib/posthog-server";
 import type {
   DailyUsageData,
   UsageSummary,
   CostLimits,
-} from "@terragon/shared";
+} from "@dragon/shared";
 
 export const getUsageDataAction = userOnlyAction(
   async function getUsageDataAction(

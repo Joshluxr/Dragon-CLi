@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getUserCreditBalance } from "@terragon/shared/model/credits";
+import { getUserCreditBalance } from "@dragon/shared/model/credits";
 import { maybeTriggerCreditAutoReload } from "@/server-lib/credit-auto-reload";
 import { logGoogleUsage } from "../log-google-usage";
 import { waitUntil } from "@vercel/functions";

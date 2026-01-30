@@ -3,9 +3,9 @@ import {
   getUserIdsWithThreadsReadyToProcess,
   getUserIdsWithThreadsStuckInQueue,
   updateReattemptQueueAtForUser,
-} from "@terragon/shared/model/threads";
+} from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 import { internalPOST } from "@/server-lib/internal-request";
 import { sandboxCreationRateLimit } from "@/lib/rate-limit";
 import { getPostHogServer } from "@/lib/posthog-server";
@@ -13,7 +13,7 @@ import {
   processBatchWithDelay,
   DEFAULT_BATCH_SIZE,
   DEFAULT_BATCH_DELAY_MS,
-} from "@terragon/utils/batch";
+} from "@dragon/utils/batch";
 
 /**
  * Process users with rate-limited threads.

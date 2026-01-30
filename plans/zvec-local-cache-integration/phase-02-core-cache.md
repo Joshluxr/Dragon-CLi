@@ -141,7 +141,7 @@ class SearchResult:
 ```python
 def _create_schema(self, dimension: int = 768) -> CollectionSchema:
     return CollectionSchema(
-        name="terragon_memories",
+        name="dragon_memories",
         fields=[
             VectorSchema(
                 name="embedding",

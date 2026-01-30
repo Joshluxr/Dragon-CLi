@@ -3,15 +3,15 @@ import { unwrapResult } from "@/lib/server-actions";
 import {
   createTestThread,
   createTestUser,
-} from "@terragon/shared/model/test-helpers";
+} from "@dragon/shared/model/test-helpers";
 import {
   getThread,
   getThreadChat,
   getThreads,
   updateThreadChat,
-} from "@terragon/shared/model/threads";
+} from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
-import * as schema from "@terragon/shared/db/schema";
+import * as schema from "@dragon/shared/db/schema";
 import {
   newThread as newThreadAction,
   NewThreadArgs,
@@ -44,7 +44,7 @@ import {
   runScheduledThread as runScheduledThreadAction,
   cancelScheduledThread as cancelScheduledThreadAction,
 } from "@/server-actions/scheduled-thread";
-import { gitCommitAndPushBranch } from "@terragon/sandbox/commands";
+import { gitCommitAndPushBranch } from "@dragon/sandbox/commands";
 
 const newThread = async (args: NewThreadArgs) => {
   return unwrapResult(await newThreadAction(args));
@@ -129,7 +129,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();
@@ -138,7 +138,7 @@ describe("end-to-end", () => {
     expect(thread).toBeDefined();
     expect(thread!.name).toBe("test-thread-name");
     expect(thread!.repoBaseBranchName).toBe("main");
-    expect(thread!.githubRepoFullName).toBe("terragon/test-repo");
+    expect(thread!.githubRepoFullName).toBe("dragon/test-repo");
     expect(thread!.gitDiff).toBeNull();
 
     const threadChat = await getThreadChat({
@@ -336,7 +336,7 @@ describe("end-to-end", () => {
     await mockLoggedInUser(session);
 
     const { threadId, threadChatId } = await newThread({
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       message: {
         type: "user",
@@ -414,7 +414,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();
@@ -423,7 +423,7 @@ describe("end-to-end", () => {
     expect(thread).toBeDefined();
     expect(thread!.name).toBe("test-thread-name");
     expect(thread!.repoBaseBranchName).toBe("main");
-    expect(thread!.githubRepoFullName).toBe("terragon/test-repo");
+    expect(thread!.githubRepoFullName).toBe("dragon/test-repo");
     const threadChat = await getThreadChat({
       db,
       userId: user.id,
@@ -567,7 +567,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
 
@@ -705,7 +705,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();
@@ -721,7 +721,7 @@ describe("end-to-end", () => {
     expect(threadChat!.status).toBe("booting");
     expect(thread!.name).toBe("test-thread-name");
     expect(thread!.repoBaseBranchName).toBe("main");
-    expect(thread!.githubRepoFullName).toBe("terragon/test-repo");
+    expect(thread!.githubRepoFullName).toBe("dragon/test-repo");
     expect(sendDaemonMessage).toHaveBeenCalledWith({
       userId: user.id,
       threadId,
@@ -812,7 +812,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();
@@ -821,7 +821,7 @@ describe("end-to-end", () => {
     expect(thread).toBeDefined();
     expect(thread!.name).toBe("test-thread-name");
     expect(thread!.repoBaseBranchName).toBe("main");
-    expect(thread!.githubRepoFullName).toBe("terragon/test-repo");
+    expect(thread!.githubRepoFullName).toBe("dragon/test-repo");
 
     const threadChat = await getThreadChat({
       db,
@@ -975,7 +975,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();
@@ -1321,7 +1321,7 @@ describe("end-to-end", () => {
 
     // Create thread with plan mode
     const { threadId, threadChatId } = await newThread({
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       message: {
         type: "user",
@@ -1521,7 +1521,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Scheduled task message" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       scheduleAt: oneHourFromNow,
     });
@@ -1611,7 +1611,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Scheduled but will run now" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       scheduleAt: futureTime,
     });
@@ -1677,7 +1677,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Scheduled but will cancel schedule" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       scheduleAt: futureTime,
     });
@@ -1781,7 +1781,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Scheduled but will follow up" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
       scheduleAt: futureTime,
     });
@@ -1969,7 +1969,7 @@ describe("end-to-end", () => {
         model: "sonnet",
         parts: [{ type: "text", text: "Hello, world!" }],
       },
-      githubRepoFullName: "terragon/test-repo",
+      githubRepoFullName: "dragon/test-repo",
       branchName: "main",
     });
     await waitUntilResolved();

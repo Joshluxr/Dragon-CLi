@@ -1,9 +1,9 @@
 import { atom, useAtomValue } from "jotai";
 import { getUserCredentialsAction } from "@/server-actions/user-credentials";
-import { AIAgent } from "@terragon/agent/types";
-import { UserCredentials } from "@terragon/shared";
+import { AIAgent } from "@dragon/agent/types";
+import { UserCredentials } from "@dragon/shared";
 import { useUserCreditBalanceQuery } from "@/queries/user-credit-balance-queries";
-import { isAgentSupportedForCredits } from "@terragon/agent/utils";
+import { isAgentSupportedForCredits } from "@dragon/agent/utils";
 
 export const userCredentialsAtom = atom<UserCredentials | null>(null);
 

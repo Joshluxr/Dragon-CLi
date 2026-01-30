@@ -1,7 +1,7 @@
 import { AdminStripeCoupons } from "@/components/admin/stripe-coupons";
 import { getAdminUserOrThrow } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import * as schema from "@terragon/shared/db/schema";
+import * as schema from "@dragon/shared/db/schema";
 import { count, desc, eq } from "drizzle-orm";
 
 export default async function AdminStripeCouponsPage() {

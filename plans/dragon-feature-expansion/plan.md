@@ -1,4 +1,4 @@
-# Terragon Feature Expansion Plan
+# Dragon Feature Expansion Plan
 
 **Created**: 2026-01-30
 **Status**: In Progress
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This plan implements 10 major features inspired by top Claude Code extensions and autonomous coding agents to enhance Terragon's capabilities. Features are ordered by priority based on impact and implementation effort.
+This plan implements 10 major features inspired by top Claude Code extensions and autonomous coding agents to enhance Dragon's capabilities. Features are ordered by priority based on impact and implementation effort.
 
 ---
 

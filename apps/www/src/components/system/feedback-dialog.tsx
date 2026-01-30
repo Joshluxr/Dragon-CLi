@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { submitFeedback } from "@/server-actions/feedback";
-import { FeedbackType } from "@terragon/shared";
+import { FeedbackType } from "@dragon/shared";
 import { toast } from "sonner";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
 

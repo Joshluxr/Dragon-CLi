@@ -1,5 +1,5 @@
 import { memo, useState, useMemo } from "react";
-import { UIGitDiffPart } from "@terragon/shared/db/ui-messages";
+import { UIGitDiffPart } from "@dragon/shared/db/ui-messages";
 import {
   ChevronDown,
   ChevronRight,
@@ -8,7 +8,7 @@ import {
   ExternalLink,
   FileDiff,
 } from "lucide-react";
-import { parseGitDiffStats } from "@terragon/shared/utils/git-diff";
+import { parseGitDiffStats } from "@dragon/shared/utils/git-diff";
 import { useThread } from "./thread-context";
 import "@git-diff-view/react/styles/diff-view-pure.css";
 import { useTheme } from "next-themes";

@@ -1,5 +1,5 @@
-import type { AIAgent } from "@terragon/agent/types";
-import type { DBMessage, UIMessage, UIUserMessage } from "@terragon/shared";
+import type { AIAgent } from "@dragon/agent/types";
+import type { DBMessage, UIMessage, UIUserMessage } from "@dragon/shared";
 import type {
   UIAgentMessage,
   UIToolPart,
@@ -7,7 +7,7 @@ import type {
   UIPart,
   UIGitDiffPart,
   ThreadStatus,
-} from "@terragon/shared";
+} from "@dragon/shared";
 
 /**
  * Converts a collection of DBMessages to UIMessages.

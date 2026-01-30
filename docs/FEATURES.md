@@ -1,6 +1,6 @@
-# Terragon Features Documentation
+# Dragon Features Documentation
 
-This document describes all major features implemented in Terragon, including the 10-phase feature expansion.
+This document describes all major features implemented in Dragon, including the 10-phase feature expansion.
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This document describes all major features implemented in Terragon, including th
 
 ### Multi-Agent Support
 
-Terragon supports multiple AI coding agents:
+Dragon supports multiple AI coding agents:
 
 - **Claude Code** (Anthropic)
 - **OpenAI Codex**

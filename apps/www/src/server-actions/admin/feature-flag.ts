@@ -2,14 +2,14 @@
 
 import { db } from "@/lib/db";
 import { adminOnly } from "@/lib/auth-server";
-import { User } from "@terragon/shared";
+import { User } from "@dragon/shared";
 import {
   deleteFeatureFlag,
   setUserFeatureFlagOverride,
   removeUserFeatureFlagOverride,
   upsertFeatureFlag,
   getFeatureFlags,
-} from "@terragon/shared/model/feature-flags";
+} from "@dragon/shared/model/feature-flags";
 
 export const deleteFeatureFlagAction = adminOnly(
   async function deleteFeatureFlagAction(adminUser: User, flagId: string) {

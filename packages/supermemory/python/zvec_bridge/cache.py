@@ -68,7 +68,7 @@ class ZvecCache:
             raise RuntimeError("Zvec not available")
 
         return CollectionSchema(
-            name="terragon_memories",
+            name="dragon_memories",
             fields=[
                 VectorSchema(
                     name="embedding",

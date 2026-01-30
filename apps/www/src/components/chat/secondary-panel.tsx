@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { ThreadInfoFull } from "@terragon/shared";
+import { ThreadInfoFull } from "@dragon/shared";
 import { useResizablePanel } from "@/hooks/use-resizable-panel";
 import { GitDiffView } from "./git-diff-view";
 import { usePlatform } from "@/hooks/use-platform";

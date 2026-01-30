@@ -3,18 +3,18 @@ import {
   getUserIdOrNull,
   getUserIdOrNullFromDaemonToken,
 } from "@/lib/auth-server";
-import { getThread } from "@terragon/shared/model/threads";
+import { getThread } from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 import {
   getDecryptedEnvironmentVariables,
   getOrCreateEnvironment,
-} from "@terragon/shared/model/environments";
-import { getGitHubUserAccessTokenOrThrow } from "@terragon/shared/model/user";
-import { getEnv } from "@terragon/sandbox/env";
+} from "@dragon/shared/model/environments";
+import { getGitHubUserAccessTokenOrThrow } from "@dragon/shared/model/user";
+import { getEnv } from "@dragon/sandbox/env";
 import { getAndVerifyCredentials } from "@/agent/credentials";
 import { isSandboxTerminalSupported } from "@/lib/sandbox-terminal";
-import { getPrimaryThreadChat } from "@terragon/shared/utils/thread-utils";
+import { getPrimaryThreadChat } from "@dragon/shared/utils/thread-utils";
 
 export async function POST(request: Request) {
   const userId =

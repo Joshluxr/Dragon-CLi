@@ -5,9 +5,9 @@ import {
   multiAgentModePersistedAtom,
   selectedModelsPersistedAtom,
 } from "@/atoms/user-flags";
-import { AIAgent, AIModel, SelectedAIModels } from "@terragon/agent/types";
+import { AIAgent, AIModel, SelectedAIModels } from "@dragon/agent/types";
 import { useCallback, useMemo, useState } from "react";
-import { agentToModels, modelToAgent } from "@terragon/agent/utils";
+import { agentToModels, modelToAgent } from "@dragon/agent/utils";
 import { useFeatureFlag } from "./use-feature-flag";
 
 export type SetSelectedModel = ({

@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 import { userAtom } from "@/atoms/user";
 import { SlackAccountSettings } from "../slack";
 import { SlackAuthToasts } from "../slack-auth-toasts";
-import { SlackAccountWithMetadata } from "@terragon/shared/db/types";
+import { SlackAccountWithMetadata } from "@dragon/shared/db/types";
 import { SettingsSection } from "../settings-row";
 import Link from "next/link";
 
@@ -27,10 +27,10 @@ export function IntegrationsSettings({
         label="Slack"
         description={
           <>
-            Connect your Slack workspace to interact with Terragon through
+            Connect your Slack workspace to interact with Dragon through
             Slack.{" "}
             <Link
-              href="https://docs.terragonlabs.com/docs/integrations/slack-integration"
+              href="https://docs.dragonlabs.com/docs/integrations/slack-integration"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"

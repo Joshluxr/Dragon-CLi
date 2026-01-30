@@ -2,19 +2,19 @@ import {
   DaemonMessage,
   defaultPipePath,
   FeatureFlags,
-} from "@terragon/daemon/shared";
+} from "@dragon/daemon/shared";
 import { McpConfig } from "./mcp-config";
 import { getDaemonFile, getMcpServerFile } from "./constants";
 import { CreateSandboxOptions, ISandboxSession } from "./types";
 import { createHash } from "crypto";
 import { buildMergedMcpConfig } from "./utils/mcp-merge";
 import { getEnv } from "./env";
-import { AIAgentCredentials } from "@terragon/agent/types";
+import { AIAgentCredentials } from "@dragon/agent/types";
 
-export const DAEMON_FILE_PATH = "/tmp/terragon-daemon.mjs";
-export const MCP_SERVER_FILE_PATH = "/tmp/terry-mcp-server.mjs";
+export const DAEMON_FILE_PATH = "/tmp/dragon-daemon.mjs";
+export const MCP_SERVER_FILE_PATH = "/tmp/toothless-mcp-server.mjs";
 export const MCP_SERVER_JSON_FILE_PATH = "/tmp/mcp-server.json";
-export const DAEMON_LOG_FILE_PATH = "/tmp/terragon-daemon.log";
+export const DAEMON_LOG_FILE_PATH = "/tmp/dragon-daemon.log";
 
 async function startDaemon({
   session,
@@ -56,7 +56,7 @@ async function startDaemon({
           // 1 minute max timeout for bash commands
           BASH_MAX_TIMEOUT_MS: (60 * 1000).toString(),
           // Pass feature flags as JSON in environment variable
-          TERRAGON_FEATURE_FLAGS: JSON.stringify(featureFlags),
+          DRAGON_FEATURE_FLAGS: JSON.stringify(featureFlags),
         },
       }),
       onOutput: (data) => {
@@ -89,7 +89,7 @@ export async function installDaemon({
   await session.writeTextFile(DAEMON_FILE_PATH, daemonFile);
   await session.writeTextFile(MCP_SERVER_FILE_PATH, mcpServerFile);
 
-  // Merge user MCP config with built-in terry server (shared logic with Codex)
+  // Merge user MCP config with built-in toothless server (shared logic with Codex)
   const mcpConfig = buildMergedMcpConfig({
     userMcpConfig,
     includeTerry: true,
@@ -243,7 +243,7 @@ export async function sendMessage({
   message: DaemonMessage;
 }) {
   const jsonMessage = JSON.stringify(message);
-  const filePath = `/tmp/terragon-msg-${Date.now()}.json`;
+  const filePath = `/tmp/dragon-msg-${Date.now()}.json`;
   await session.writeTextFile(filePath, jsonMessage);
   await session.runCommand(`chmod 666 ${filePath}`);
   await session.runCommand(

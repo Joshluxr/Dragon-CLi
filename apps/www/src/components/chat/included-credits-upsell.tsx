@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 import {
   getAgentProviderDisplayName,
   isConnectedCredentialsSupported,
-} from "@terragon/agent/utils";
+} from "@dragon/agent/utils";
 
 export function IncludedCreditsUpsell({ agent }: { agent: AIAgent }) {
   const providerName = getAgentProviderDisplayName(agent);
@@ -18,8 +18,8 @@ export function IncludedCreditsUpsell({ agent }: { agent: AIAgent }) {
         <div className="flex flex-col gap-2">
           <p className="text-xs text-muted-foreground">
             {isCredentialsSupported
-              ? `Top up credits or connect your ${providerName} account to keep running Terragon tasks.`
-              : `Top up credits to keep running Terragon tasks.`}
+              ? `Top up credits or connect your ${providerName} account to keep running Dragon tasks.`
+              : `Top up credits to keep running Dragon tasks.`}
           </p>
           <div className="flex items-center gap-2">
             <Button asChild size="sm" className="self-start font-sans">

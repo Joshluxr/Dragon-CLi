@@ -8,7 +8,7 @@ This plan addresses refactoring opportunities identified in the codebase review.
 
 ### HIGH-1: Extract Batch Processing Utility
 
-**Location**: `@terragon/utils/batch.ts` (new file)
+**Location**: `@dragon/utils/batch.ts` (new file)
 **Used by**: `apps/www/src/app/api/internal/cron/queued-tasks/route.ts`
 
 ```typescript
@@ -47,7 +47,7 @@ function buildRateLimitStatusConditions(
 
 ### MEDIUM-1: Extract getErrorMessage Utility
 
-**Location**: `@terragon/utils/error.ts` (extend existing)
+**Location**: `@dragon/utils/error.ts` (extend existing)
 
 ```typescript
 // Add to existing error.ts

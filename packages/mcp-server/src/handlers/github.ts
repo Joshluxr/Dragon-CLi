@@ -131,7 +131,7 @@ export async function handleCreatePullRequest(
     draft,
     createdAt: now,
     updatedAt: now,
-    user: "terragon-bot",
+    user: "dragon-bot",
   });
 
   // In production:
@@ -439,7 +439,7 @@ export async function handleCreateIssue(
     assignees,
     createdAt: now,
     updatedAt: now,
-    user: "terragon-bot",
+    user: "dragon-bot",
   });
 
   return {

@@ -2,15 +2,15 @@
 
 import { userOnlyAction } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { updateEnvironmentAutoReview } from "@terragon/shared/model/pr-review";
-import { getOrCreateEnvironment } from "@terragon/shared/model/environments";
+import { updateEnvironmentAutoReview } from "@dragon/shared/model/pr-review";
+import { getOrCreateEnvironment } from "@dragon/shared/model/environments";
 import { getPostHogServer } from "@/lib/posthog-server";
 import type {
   AutoReviewConfig,
   TDDGuardConfig,
   BrowserConfig,
-} from "@terragon/shared";
-import { environment } from "@terragon/shared/db/schema";
+} from "@dragon/shared";
+import { environment } from "@dragon/shared/db/schema";
 import { and, eq } from "drizzle-orm";
 
 export const updateEnvironmentAutoReviewAction = userOnlyAction(

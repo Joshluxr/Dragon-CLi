@@ -1,7 +1,7 @@
 {
-  "name": "@terragon/mcp-server",
+  "name": "@dragon/mcp-server",
   "version": "1.0.0",
-  "description": "Enhanced MCP server for Terragon with sandbox, database, storage, agent, and GitHub tools",
+  "description": "Enhanced MCP server for Dragon with sandbox, database, storage, agent, and GitHub tools",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
     "@modelcontextprotocol/sdk": "^1.0.6"
   },
   "devDependencies": {
-    "@terragon/tsconfig": "workspace:*",
+    "@dragon/tsconfig": "workspace:*",
     "@types/node": "^22.10.5",
     "esbuild": "^0.24.2",
     "typescript": "^5.8.3",

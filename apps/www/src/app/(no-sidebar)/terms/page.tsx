@@ -2,15 +2,15 @@ import Footer from "@/components/landing/sections/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Terragon Labs",
+  title: "Terms of Service - Dragon Labs",
   description:
-    "Terms of Use for Terragon Labs Inc., an AI-powered coding assistant platform that allows you to run coding agents in parallel inside remote sandboxes.",
+    "Terms of Use for Dragon Labs Inc., an AI-powered coding assistant platform that allows you to run coding agents in parallel inside remote sandboxes.",
   robots: {
     index: true,
     follow: true,
   },
   alternates: {
-    canonical: "https://www.terragonlabs.com/terms",
+    canonical: "https://www.dragonlabs.com/terms",
   },
 };
 
@@ -21,7 +21,7 @@ export default function TermsPage() {
         <article className="prose prose-slate max-w-none">
           <header className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
-              Terragon Labs Inc. Terms of Use
+              Dragon Labs Inc. Terms of Use
             </h1>
             <div className="text-muted-foreground">
               <p>Last revised on: September 25, 2025</p>
@@ -31,9 +31,9 @@ export default function TermsPage() {
           <div className="space-y-8 text-foreground leading-relaxed">
             <section>
               <p className="text-lg mb-6">
-                Welcome to Terragon Labs Inc. ("Terragon Labs," "Company," "we,"
+                Welcome to Dragon Labs Inc. ("Dragon Labs," "Company," "we,"
                 "us," or "our"). These Terms of Use ("Terms") govern your access
-                to and use of our website at terragonlabs.com, its
+                to and use of our website at dragonlabs.com, its
                 documentation, integrations, and related services (collectively,
                 the "Services").
               </p>
@@ -243,7 +243,7 @@ export default function TermsPage() {
                 You and Company waive any right to participate in class actions
                 or class arbitration. You may opt out of arbitration within 30
                 days of accepting these Terms by emailing
-                support@terragonlabs.com.
+                support@dragonlabs.com.
               </p>
             </section>
 
@@ -264,7 +264,7 @@ export default function TermsPage() {
                   <span className="block">131 Continental Dr, Suite 305</span>
                   <span className="block">Newark, DE 19713, USA</span>
                   <span className="block">Telephone: (415) 707-2952</span>
-                  <span className="block">Email: support@terragonlabs.com</span>
+                  <span className="block">Email: support@dragonlabs.com</span>
                 </p>
               </div>
             </section>
@@ -301,11 +301,11 @@ export default function TermsPage() {
               <div className="bg-muted/30 p-6 rounded-lg border">
                 <h3 className="font-semibold mb-3">Legal Department</h3>
                 <div className="font-mono text-sm space-y-1">
-                  <p>Terragon Labs Inc.</p>
+                  <p>Dragon Labs Inc.</p>
                   <p>131 Continental Dr Suite 305</p>
                   <p>Newark, DE 19713, USA</p>
                   <p>Telephone: (415) 707-2952</p>
-                  <p>Email: support@terragonlabs.com</p>
+                  <p>Email: support@dragonlabs.com</p>
                 </div>
               </div>
             </section>

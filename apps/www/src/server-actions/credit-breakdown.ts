@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import {
   getUserCreditBalance,
   getUserCredits,
-} from "@terragon/shared/model/credits";
+} from "@dragon/shared/model/credits";
 
 export type UserCreditBreakdown = {
   totalCreditsCents: number;

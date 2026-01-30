@@ -29,9 +29,9 @@ import type {
   PlanStatus,
   PhaseStatus,
   StepStatus,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { approvePlanAction } from "@/server-actions/plan-approval";
-import { calculateTotalSteps, calculateCompletedSteps } from "@terragon/shared";
+import { calculateTotalSteps, calculateCompletedSteps } from "@dragon/shared";
 
 interface PlanViewerProps {
   planId: string;

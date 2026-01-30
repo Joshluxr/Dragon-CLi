@@ -47,19 +47,19 @@ export async function generateMetadata(props: {
 
   const slug = params.slug?.join("/") || "";
   const url = slug
-    ? `https://docs.terragonlabs.com/docs/${slug}`
-    : "https://docs.terragonlabs.com/docs";
+    ? `https://docs.dragonlabs.com/docs/${slug}`
+    : "https://docs.dragonlabs.com/docs";
 
   return {
     title: page.data.title,
     description:
       page.data.description ||
-      `Learn about ${page.data.title} in Terragon documentation`,
+      `Learn about ${page.data.title} in Dragon documentation`,
     openGraph: {
       title: page.data.title,
       description:
         page.data.description ||
-        `Learn about ${page.data.title} in Terragon documentation`,
+        `Learn about ${page.data.title} in Dragon documentation`,
       url,
       type: "article",
     },
@@ -68,7 +68,7 @@ export async function generateMetadata(props: {
       title: page.data.title,
       description:
         page.data.description ||
-        `Learn about ${page.data.title} in Terragon documentation`,
+        `Learn about ${page.data.title} in Dragon documentation`,
     },
     alternates: {
       canonical: url,

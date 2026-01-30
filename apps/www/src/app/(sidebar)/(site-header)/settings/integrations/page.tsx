@@ -1,11 +1,11 @@
 import { IntegrationsSettings } from "@/components/settings/tab/integrations";
 import { getUserIdOrRedirect } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { getSlackAccounts } from "@terragon/shared/model/slack";
+import { getSlackAccounts } from "@dragon/shared/model/slack";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Integrations Settings | Terragon",
+  title: "Integrations Settings | Dragon",
 };
 
 export default async function IntegrationsSettingsPage() {

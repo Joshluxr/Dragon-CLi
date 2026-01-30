@@ -15,7 +15,7 @@ Comprehensive testing and documentation for the Supermemory integration.
 ## Context Links
 
 - [Phase 4: Skills & Commands](./phase-04-skills-commands.md)
-- [Terragon Testing Patterns](../../packages/shared/src/model/thread.test.ts)
+- [Dragon Testing Patterns](../../packages/shared/src/model/thread.test.ts)
 
 ## Key Insights
 
@@ -382,7 +382,7 @@ describe("SupermemoryClient", () => {
 ### Step 5: Documentation (`docs/README.md`)
 
 ````markdown
-# @terragon/supermemory
+# @dragon/supermemory
 
 Supermemory integration for persistent memory across Claude Code sessions.
 
@@ -395,7 +395,7 @@ Supermemory integration for persistent memory across Claude Code sessions.
 
 ## Installation
 
-The plugin is included in the Terragon monorepo.
+The plugin is included in the Dragon monorepo.
 
 ## Configuration
 
@@ -444,7 +444,7 @@ Use the `super-search` skill to find past work:
 ## API
 
 ```typescript
-import { SupermemoryClient } from "@terragon/supermemory";
+import { SupermemoryClient } from "@dragon/supermemory";
 
 const client = new SupermemoryClient();
 

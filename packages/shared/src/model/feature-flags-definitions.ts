@@ -128,7 +128,7 @@ export const featureFlagsDefinitions = {
   shutdownMode: {
     defaultValue: false,
     description:
-      "Enable shutdown mode - shows shutdown banner and blocks new subscriptions. Used for Terragon shutdown on February 14th, 2026.",
+      "Enable shutdown mode - shows shutdown banner and blocks new subscriptions. Used for Dragon shutdown on February 14th, 2026.",
   },
 } as const satisfies Record<string, FeatureFlagDefinition>;
 

@@ -1,5 +1,5 @@
 {
-  "name": "@terragon/supermemory",
+  "name": "@dragon/supermemory",
   "version": "1.0.0",
   "description": "Supermemory integration for persistent memory across Claude sessions",
   "type": "module",
@@ -22,7 +22,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@terragon/tsconfig": "workspace:*",
+    "@dragon/tsconfig": "workspace:*",
     "@types/node": "^22.15.29",
     "@types/uuid": "^10.0.0",
     "esbuild": "^0.25.0",

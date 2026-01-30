@@ -6,7 +6,7 @@
     "quick-start",
     "common-workflows",
 
-    "---Using Terragon---",
+    "---Using Dragon---",
     "tasks",
     "automations",
     "integrations/github-integration",
@@ -23,6 +23,6 @@
     "---Help & Resources---",
     "...resources",
     "security-permissions",
-    "[Terragon App](https://www.terragonlabs.com)"
+    "[Dragon App](https://www.dragonlabs.com)"
   ]
 }

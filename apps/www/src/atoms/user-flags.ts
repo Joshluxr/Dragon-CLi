@@ -8,8 +8,8 @@ import {
   updateReleaseNotesLastSeen,
   getUserFlagsAction,
 } from "@/server-actions/user-flags";
-import type { UserFlags } from "@terragon/shared";
-import type { AIModel, SelectedAIModels } from "@terragon/agent/types";
+import type { UserFlags } from "@dragon/shared";
+import type { AIModel, SelectedAIModels } from "@dragon/agent/types";
 import { atom, Getter, Setter } from "jotai";
 import { RELEASE_NOTES_VERSION, FEATURE_UPSELL_VERSION } from "@/lib/constants";
 import { userCredentialsAtom } from "./user-credentials";

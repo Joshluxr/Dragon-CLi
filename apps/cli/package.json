@@ -1,9 +1,9 @@
 {
-  "name": "@terragon-labs/cli",
+  "name": "@dragon-labs/cli",
   "version": "0.1.21",
   "type": "module",
   "bin": {
-    "terry": "./dist/index.js"
+    "toothless": "./dist/index.js"
   },
   "scripts": {
     "dev": "tsup --watch",
@@ -33,8 +33,8 @@
     "update-notifier": "^7.3.1"
   },
   "devDependencies": {
-    "@terragon/agent": "workspace:*",
-    "@terragon/cli-api-contract": "workspace:*",
+    "@dragon/agent": "workspace:*",
+    "@dragon/cli-api-contract": "workspace:*",
     "@types/node": "^22.6.1",
     "@types/react": "^19.1.8",
     "@types/update-notifier": "^6.0.8",
@@ -53,21 +53,21 @@
     "README.md"
   ],
   "keywords": [
-    "terragon",
+    "dragon",
     "cli",
-    "terry",
+    "toothless",
     "ai",
     "coding-assistant"
   ],
-  "author": "Terragon Labs",
+  "author": "Dragon Labs",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/terragon-labs/terragon.git",
+    "url": "https://github.com/dragon-labs/dragon.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://www.terragonlabs.com",
+  "homepage": "https://www.dragonlabs.com",
   "bugs": {
-    "url": "https://github.com/terragon-labs/terragon/issues"
+    "url": "https://github.com/dragon-labs/dragon/issues"
   }
 }

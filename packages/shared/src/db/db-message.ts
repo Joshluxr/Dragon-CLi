@@ -1,4 +1,4 @@
-import type { AIModel } from "@terragon/agent/types";
+import type { AIModel } from "@dragon/agent/types";
 import type { GitDiffStats } from "./types";
 
 export type DBMessage =

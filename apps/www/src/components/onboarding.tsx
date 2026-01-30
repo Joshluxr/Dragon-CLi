@@ -87,7 +87,7 @@ export function Onboarding({ forceIsDone }: { forceIsDone?: boolean }) {
         refetchUserFlags(),
       ]);
       router.push("/dashboard");
-      toast.success("Welcome to Terragon!");
+      toast.success("Welcome to Dragon!");
     } catch (error) {
       console.error(error);
     }
@@ -182,7 +182,7 @@ function GithubStep({
           Connect your GitHub repositories
         </DialogTitle>
         <DialogDescription className="text-center text-muted-foreground mt-3">
-          Granting access allows the Terragon coding agent to write code and
+          Granting access allows the Dragon coding agent to write code and
           open pull requests on your behalf.
         </DialogDescription>
       </DialogHeader>

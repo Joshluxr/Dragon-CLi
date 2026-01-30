@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { publicAppUrl } from "@terragon/env/next-public";
+import { publicAppUrl } from "@dragon/env/next-public";
 import {
   apiKeyClient,
   magicLinkClient,

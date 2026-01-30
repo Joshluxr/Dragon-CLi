@@ -1,11 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { FeedbackType } from "@terragon/shared";
+import { FeedbackType } from "@dragon/shared";
 import { getUserOrNull, userOnlyAction } from "@/lib/auth-server";
 import { getPostHogServer } from "@/lib/posthog-server";
 import { sendFeedbackToSlack } from "@/utils/slack";
-import { createFeedback } from "@terragon/shared/model/feedback";
+import { createFeedback } from "@dragon/shared/model/feedback";
 import { UserFacingError } from "@/lib/server-actions";
 
 export const submitFeedback = userOnlyAction(

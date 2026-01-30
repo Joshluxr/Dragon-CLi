@@ -138,11 +138,11 @@ export function validateMcpConfig(
   }
 
   // Check for reserved server names
-  if (result.data.mcpServers.terry) {
+  if (result.data.mcpServers.toothless) {
     return {
       success: false,
       error:
-        "Cannot override the built-in 'terry' server. Please use a different server name.",
+        "Cannot override the built-in 'toothless' server. Please use a different server name.",
     };
   }
 

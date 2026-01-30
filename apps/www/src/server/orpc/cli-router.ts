@@ -1,20 +1,20 @@
 import { implement } from "@orpc/server";
-import { cliAPIContract } from "@terragon/cli-api-contract";
+import { cliAPIContract } from "@dragon/cli-api-contract";
 import { db } from "@/lib/db";
 import {
   getThread,
   getThreadMinimal,
   getThreads,
-} from "@terragon/shared/model/threads";
-import { getPrimaryThreadChat } from "@terragon/shared/utils/thread-utils";
+} from "@dragon/shared/model/threads";
+import { getPrimaryThreadChat } from "@dragon/shared/utils/thread-utils";
 import { newThreadInternal } from "@/server-lib/new-thread-internal";
-import { DBUserMessage } from "@terragon/shared";
-import type { AIAgent } from "@terragon/agent/types";
-import { parseModelOrNull } from "@terragon/agent/utils";
-import { isAppInstalledOnRepo } from "@terragon/shared/github-app";
+import { DBUserMessage } from "@dragon/shared";
+import type { AIAgent } from "@dragon/agent/types";
+import { parseModelOrNull } from "@dragon/agent/utils";
+import { isAppInstalledOnRepo } from "@dragon/shared/github-app";
 import { getClaudeSessionJSONLOrNull } from "@/server-lib/claude-session";
 import { checkCliTaskCreationRateLimit } from "@/lib/rate-limit";
-import { ensureAgent } from "@terragon/agent/utils";
+import { ensureAgent } from "@dragon/agent/utils";
 import { getUserIdOrNullFromDaemonToken } from "@/lib/auth-server";
 import { combineThreadStatuses } from "@/agent/thread-status";
 
@@ -155,7 +155,7 @@ const createThread = os.threads.create.handler(
       const isInstalled = await isAppInstalledOnRepo(owner, repo);
       if (!isInstalled) {
         throw errors.INTERNAL_ERROR({
-          message: `GitHub App is not installed on repository ${githubRepoFullName}. Please install the Terragon GitHub App on this repository first.`,
+          message: `GitHub App is not installed on repository ${githubRepoFullName}. Please install the Dragon GitHub App on this repository first.`,
         });
       }
     } catch (error) {

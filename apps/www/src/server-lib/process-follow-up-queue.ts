@@ -3,8 +3,8 @@ import { updateThreadChatWithTransition } from "@/agent/update-status";
 import { getSlashCommandOrNull } from "@/agent/slash-command-handler";
 import { startAgentMessage } from "@/agent/msg/startAgentMessage";
 import { getLastUserMessageModel } from "@/lib/db-message-helpers";
-import { getDefaultModelForAgent } from "@terragon/agent/utils";
-import { getThreadChat } from "@terragon/shared/model/threads";
+import { getDefaultModelForAgent } from "@dragon/agent/utils";
+import { getThreadChat } from "@dragon/shared/model/threads";
 
 export async function maybeProcessFollowUpQueue({
   userId,

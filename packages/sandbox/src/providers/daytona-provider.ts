@@ -8,9 +8,9 @@ import {
 import { nanoid } from "nanoid/non-secure";
 import { bashQuote, safeEnvKey } from "../utils";
 import path from "path";
-import { getTemplateIdForSize } from "@terragon/sandbox-image";
-import { retryAsync } from "@terragon/utils/retry";
-import { formatError } from "@terragon/utils/error";
+import { getTemplateIdForSize } from "@dragon/sandbox-image";
+import { retryAsync } from "@dragon/utils/retry";
+import { formatError } from "@dragon/utils/error";
 
 const HOME_DIR = "root";
 const DEFAULT_DIR = `/${HOME_DIR}`;

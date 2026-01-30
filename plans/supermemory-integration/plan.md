@@ -2,7 +2,7 @@
 
 ## Overview
 
-Integrate the [claude-supermemory](https://github.com/supermemoryai/claude-supermemory) plugin to enable persistent memory across sessions for Terragon. This will allow the system to remember context about users' work, preferences, and project patterns.
+Integrate the [claude-supermemory](https://github.com/supermemoryai/claude-supermemory) plugin to enable persistent memory across sessions for Dragon. This will allow the system to remember context about users' work, preferences, and project patterns.
 
 ## Current Status
 
@@ -109,7 +109,7 @@ Location: `~/.supermemory-claude/settings.json`
 }
 ```
 
-### 3. Existing Terragon Integration
+### 3. Existing Dragon Integration
 
 The plugin will integrate with:
 

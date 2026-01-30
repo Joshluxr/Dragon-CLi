@@ -14,7 +14,7 @@ import {
   ThreadChatInfoFull,
   ThreadErrorMessage,
   ThreadInfoFull,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { useRealtimeThread } from "@/hooks/useRealtime";
 import { toUIMessages } from "./toUIMessages";
 import {
@@ -58,11 +58,11 @@ import { TerminalPanel } from "./terminal-panel";
 import { useCredentialInfoForAgent } from "@/atoms/user-credentials";
 import { IncludedCreditsUpsell } from "./included-credits-upsell";
 import { USER_CREDIT_BALANCE_QUERY_KEY } from "@/queries/user-credit-balance-queries";
-import { ensureAgent } from "@terragon/agent/utils";
+import { ensureAgent } from "@dragon/agent/utils";
 import { SecondaryPanel } from "./secondary-panel";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
 import { unwrapError } from "@/lib/server-actions";
-import { getPrimaryThreadChat } from "@terragon/shared/utils/thread-utils";
+import { getPrimaryThreadChat } from "@dragon/shared/utils/thread-utils";
 import { usePlatform } from "@/hooks/use-platform";
 
 function ChatUI({

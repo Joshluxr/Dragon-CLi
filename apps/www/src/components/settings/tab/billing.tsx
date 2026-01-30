@@ -20,12 +20,12 @@ import {
   SUBSCRIPTION_PLAN_CONFIG,
   type SubscriptionPlanConfig,
 } from "@/lib/subscription-plan-config";
-import { SubscriptionStatus } from "@terragon/shared/db/schema";
-import { SignupTrialInfo, SubscriptionInfo } from "@terragon/shared/db/types";
+import { SubscriptionStatus } from "@dragon/shared/db/schema";
+import { SignupTrialInfo, SubscriptionInfo } from "@dragon/shared/db/types";
 import { useUserCreditBalanceQuery } from "@/queries/user-credit-balance-queries";
 import { CreditsSection } from "../credits";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 
 const CORE_PLAN = SUBSCRIPTION_PLAN_CONFIG.core;
 const PRO_PLAN = SUBSCRIPTION_PLAN_CONFIG.pro;
@@ -97,12 +97,12 @@ function ShutdownNotice() {
     <Card className="mx-auto w-full max-w-2xl border-destructive/50">
       <CardHeader>
         <CardTitle className="text-base text-destructive">
-          Terragon is Shutting Down
+          Dragon is Shutting Down
         </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          New subscriptions are no longer available. Terragon will shut down on
+          New subscriptions are no longer available. Dragon will shut down on
           February 9th, 2026.{" "}
           <a
             href={`${publicDocsUrl()}/docs/resources/shutdown`}
@@ -311,7 +311,7 @@ function SubscriptionPlanStatus({
   if (signupTrialInfo?.daysRemaining === 0) {
     return (
       <span className="text-muted-foreground">
-        Trial Expired — Please select a plan to continue using Terragon.
+        Trial Expired — Please select a plan to continue using Dragon.
       </span>
     );
   }
@@ -499,7 +499,7 @@ export function BillingSettings({
       <div className="space-y-4">
         <SettingsSection
           label="Subscription"
-          description="Your subscription lets you run tasks on the Terragon platform."
+          description="Your subscription lets you run tasks on the Dragon platform."
         >
           <div className="flex flex-col gap-4">
             <SettingsWithCTA

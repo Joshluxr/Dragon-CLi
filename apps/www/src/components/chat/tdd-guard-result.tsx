@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { CheckCircle, XCircle, ChevronDown, ChevronRight } from "lucide-react";
-import type { TDDGuardResults, GuardResult } from "@terragon/shared";
+import type { TDDGuardResults, GuardResult } from "@dragon/shared";
 
 interface TDDGuardResultProps {
   result: TDDGuardResults;

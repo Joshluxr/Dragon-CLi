@@ -6,7 +6,7 @@ describe("buildMergedMcpConfig", () => {
   const userCfg: McpConfig = {
     mcpServers: {
       alpha: { command: "npx", args: ["-y", "alpha"] },
-      terry: { command: "node", args: ["/some/other/path.mjs"] },
+      toothless: { command: "node", args: ["/some/other/path.mjs"] },
       httpy: {
         type: "http",
         url: "https://api.example.com",
@@ -15,23 +15,23 @@ describe("buildMergedMcpConfig", () => {
     },
   };
 
-  it("filters user-provided terry and injects built-in when includeTerry=true", () => {
+  it("filters user-provided toothless and injects built-in when includeTerry=true", () => {
     const merged = buildMergedMcpConfig({
       userMcpConfig: userCfg,
       includeTerry: true,
       terryCommand: "node",
-      terryArgs: ["/tmp/terry-mcp-server.mjs"],
+      terryArgs: ["/tmp/toothless-mcp-server.mjs"],
     });
 
-    // Keeps non-terry entries
+    // Keeps non-toothless entries
     expect(Object.keys(merged.mcpServers)).toEqual(
-      expect.arrayContaining(["alpha", "httpy", "terry"]),
+      expect.arrayContaining(["alpha", "httpy", "toothless"]),
     );
 
-    // User terry is not carried through; replaced with built-in
-    expect(merged.mcpServers.terry).toEqual({
+    // User toothless is not carried through; replaced with built-in
+    expect(merged.mcpServers.toothless).toEqual({
       command: "node",
-      args: ["/tmp/terry-mcp-server.mjs"],
+      args: ["/tmp/toothless-mcp-server.mjs"],
     });
 
     // Other entries preserved verbatim
@@ -46,15 +46,15 @@ describe("buildMergedMcpConfig", () => {
     });
   });
 
-  it("omits terry entirely when includeTerry=false", () => {
+  it("omits toothless entirely when includeTerry=false", () => {
     const merged = buildMergedMcpConfig({
       userMcpConfig: userCfg,
       includeTerry: false,
       terryCommand: "node",
-      terryArgs: ["/tmp/terry-mcp-server.mjs"],
+      terryArgs: ["/tmp/toothless-mcp-server.mjs"],
     });
 
-    expect(merged.mcpServers.terry).toBeUndefined();
+    expect(merged.mcpServers.toothless).toBeUndefined();
     expect(merged.mcpServers.alpha).toBeDefined();
     expect(merged.mcpServers.httpy).toBeDefined();
   });
@@ -64,10 +64,10 @@ describe("buildMergedMcpConfig", () => {
       userMcpConfig: undefined,
       includeTerry: true,
       terryCommand: "node",
-      terryArgs: ["/tmp/terry-mcp-server.mjs"],
+      terryArgs: ["/tmp/toothless-mcp-server.mjs"],
     });
     expect(merged.mcpServers).toEqual({
-      terry: { command: "node", args: ["/tmp/terry-mcp-server.mjs"] },
+      toothless: { command: "node", args: ["/tmp/toothless-mcp-server.mjs"] },
     });
   });
 });

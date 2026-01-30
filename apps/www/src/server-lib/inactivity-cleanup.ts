@@ -11,17 +11,17 @@ import {
   DEFAULT_INACTIVITY_THRESHOLD_MS,
 } from "@/agent/sandbox-resource";
 import { db } from "@/lib/db";
-import { thread } from "@terragon/shared/db/schema";
+import { thread } from "@dragon/shared/db/schema";
 import { eq, and, isNotNull } from "drizzle-orm";
-import { hibernateSandbox, getSandboxOrNull } from "@terragon/sandbox";
+import { hibernateSandbox, getSandboxOrNull } from "@dragon/sandbox";
 import {
   getGitDiffMaybeCutoff,
   gitDiffStats,
-} from "@terragon/sandbox/commands";
-import { publishBroadcastUserMessage } from "@terragon/shared/broadcast-server";
-import { getThread, updateThread } from "@terragon/shared/model/threads";
-import { getErrorMessage } from "@terragon/utils/error";
-import type { SandboxProvider } from "@terragon/types/sandbox";
+} from "@dragon/sandbox/commands";
+import { publishBroadcastUserMessage } from "@dragon/shared/broadcast-server";
+import { getThread, updateThread } from "@dragon/shared/model/threads";
+import { getErrorMessage } from "@dragon/utils/error";
+import type { SandboxProvider } from "@dragon/types/sandbox";
 
 export interface InactivityCleanupConfig {
   /** Interval between cleanup checks in ms (default: 60000 = 1 minute) */

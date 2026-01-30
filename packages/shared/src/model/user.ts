@@ -3,7 +3,7 @@ import { DB } from "../db";
 import * as schema from "../db/schema";
 import { publishBroadcastUserMessage } from "../broadcast-server";
 import { UserInfoServerSide, UserSettings } from "../db/types";
-import { decryptTokenWithBackwardsCompatibility } from "@terragon/utils/encryption";
+import { decryptTokenWithBackwardsCompatibility } from "@dragon/utils/encryption";
 
 export async function getGitHubUserAccessTokenOrThrow({
   db,

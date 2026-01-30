@@ -1,9 +1,9 @@
 import React from "react";
-import { AccessTier, Automation } from "@terragon/shared";
+import { AccessTier, Automation } from "@dragon/shared";
 import {
   getCronDescription,
   validateCronExpression,
-} from "@terragon/shared/automations/cron";
+} from "@dragon/shared/automations/cron";
 import { cn } from "@/lib/utils";
 import { SUBSCRIPTION_MESSAGES } from "@/lib/subscription-msgs";
 import { usePathname, useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ import {
   GitHubMentionTriggerConfig,
   AutomationTriggerType,
   isRepoBranchRelevant,
-} from "@terragon/shared/automations";
+} from "@dragon/shared/automations";
 import { Button } from "@/components/ui/button";
 import {
   useDeleteAutomationMutation,

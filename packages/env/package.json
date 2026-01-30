@@ -1,7 +1,7 @@
 {
-  "name": "@terragon/env",
+  "name": "@dragon/env",
   "version": "1.0.0",
-  "description": "Package to manage environment variables across the terragon monorepo",
+  "description": "Package to manage environment variables across the dragon monorepo",
   "type": "module",
   "exports": {
     "./apps-www": "./src/apps-www.ts",
@@ -21,7 +21,7 @@
     "envsafe": "^2.0.3"
   },
   "devDependencies": {
-    "@terragon/tsconfig": "workspace:*",
+    "@dragon/tsconfig": "workspace:*",
     "@types/node": "^22.15.29",
     "typescript": "^5.8.3"
   }

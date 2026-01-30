@@ -1,7 +1,7 @@
-import { AIModel } from "@terragon/agent/types";
-import { getDefaultModelForAgent } from "@terragon/agent/utils";
-import { UserCredentials } from "@terragon/shared";
-import { UserFlags } from "@terragon/shared";
+import { AIModel } from "@dragon/agent/types";
+import { getDefaultModelForAgent } from "@dragon/agent/utils";
+import { UserCredentials } from "@dragon/shared";
+import { UserFlags } from "@dragon/shared";
 
 export function getDefaultModel({
   userCredentials,

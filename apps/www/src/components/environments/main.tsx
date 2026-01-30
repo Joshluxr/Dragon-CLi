@@ -2,7 +2,7 @@
 
 import { useRealtimeUser } from "@/hooks/useRealtime";
 import Link from "next/link";
-import { Environment } from "@terragon/shared";
+import { Environment } from "@dragon/shared";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { EnvironmentVariablesEditor } from "@/components/environments/environment-variables-editor";
@@ -11,13 +11,13 @@ import { updateEnvironmentVariables } from "@/server-actions/environment-variabl
 import { updateMcpConfig } from "@/server-actions/mcp-config";
 import { toast } from "sonner";
 import { usePageBreadcrumbs } from "@/hooks/usePageBreadcrumbs";
-import { McpConfig } from "@terragon/sandbox/mcp-config";
+import { McpConfig } from "@dragon/sandbox/mcp-config";
 import { Button } from "@/components/ui/button";
 import { FileCog } from "lucide-react";
 import { CreateEnvironmentButton } from "@/components/environments/create-environment-button";
 import { DeleteEnvironmentButton } from "@/components/environments/delete-environment-button";
 import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import { usePageHeader } from "@/contexts/page-header";
 import { Portal } from "@radix-ui/react-portal";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
@@ -54,7 +54,7 @@ export function Environments({
             About Sandbox Environments
           </h3>
           <p className="text-sm text-muted-foreground">
-            Terragon runs in an isolated Linux environment with full development
+            Dragon runs in an isolated Linux environment with full development
             capabilities. Each sandbox includes Node.js, Python, Git, and common
             development tools.
             <br />
@@ -246,7 +246,7 @@ export function EnvironmentUI({
           <div className="flex flex-col gap-2">
             <span className="text-xs text-muted-foreground">
               Configure custom Model Context Protocol ("MCP") servers that will
-              be available to Terragon. Learn more about which formats are
+              be available to Dragon. Learn more about which formats are
               supported with each agent{" "}
               <Link
                 href={`${publicDocsUrl()}/docs/configuration/mcp-setup`}
@@ -290,7 +290,7 @@ export function EnvironmentUI({
               starts. You can either configure an environment-specific script in
               the settings or add a{" "}
               <code className="bg-muted px-1 py-0.5 rounded text-xs">
-                terragon-setup.sh
+                dragon-setup.sh
               </code>{" "}
               file to your repository. Environment scripts take precedence over
               repository scripts.{" "}

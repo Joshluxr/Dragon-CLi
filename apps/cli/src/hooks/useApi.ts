@@ -15,7 +15,7 @@ async function fetchThreads(
   if (isDefinedError(error)) {
     switch (error.code) {
       case "UNAUTHORIZED":
-        throw new Error("Authentication failed. Try running 'terry auth'.");
+        throw new Error("Authentication failed. Try running 'toothless auth'.");
       case "NOT_FOUND":
         throw new Error("No tasks found");
       case "INTERNAL_ERROR":
@@ -45,7 +45,7 @@ async function fetchThreadDetail(
   if (isDefinedError(error)) {
     switch (error.code) {
       case "UNAUTHORIZED":
-        throw new Error("Authentication failed. Try running 'terry auth'.");
+        throw new Error("Authentication failed. Try running 'toothless auth'.");
       case "NOT_FOUND":
         throw new Error("Task not found");
       case "INTERNAL_ERROR":

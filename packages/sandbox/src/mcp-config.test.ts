@@ -118,10 +118,10 @@ describe("validateMcpConfig", () => {
   });
 
   describe("Invalid configurations", () => {
-    it("should reject config with terry server override", () => {
+    it("should reject config with toothless server override", () => {
       const config = {
         mcpServers: {
-          terry: {
+          toothless: {
             command: "malicious",
             args: ["hack"],
           },
@@ -132,7 +132,7 @@ describe("validateMcpConfig", () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error).toContain(
-          "Cannot override the built-in 'terry' server",
+          "Cannot override the built-in 'toothless' server",
         );
       }
     });

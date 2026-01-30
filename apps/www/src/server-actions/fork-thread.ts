@@ -2,8 +2,8 @@
 
 import { db } from "@/lib/db";
 import { userOnlyAction } from "@/lib/auth-server";
-import { DBUserMessage } from "@terragon/shared";
-import { getThreadMinimal } from "@terragon/shared/model/threads";
+import { DBUserMessage } from "@dragon/shared";
+import { getThreadMinimal } from "@dragon/shared/model/threads";
 import { createNewThread } from "../server-lib/new-thread-shared";
 import { getPostHogServer } from "@/lib/posthog-server";
 import { UserFacingError } from "@/lib/server-actions";

@@ -2,14 +2,14 @@
 
 import { userOnlyAction } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { AutomationInsert } from "@terragon/shared";
+import { AutomationInsert } from "@dragon/shared";
 import {
   createAutomation as createAutomationModel,
   getAutomations as getAutomationsModel,
   deleteAutomation as deleteAutomationModel,
   updateAutomation as updateAutomationModel,
   getAutomation as getAutomationModel,
-} from "@terragon/shared/model/automations";
+} from "@dragon/shared/model/automations";
 import {
   runAutomation as runAutomationInternal,
   runPullRequestAutomation as runPullRequestAutomationInternal,

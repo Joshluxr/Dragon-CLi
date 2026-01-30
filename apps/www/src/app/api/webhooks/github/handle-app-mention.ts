@@ -11,14 +11,14 @@ import {
 import {
   getUserIdByGitHubAccountId,
   getUserSettings,
-} from "@terragon/shared/model/user";
+} from "@dragon/shared/model/user";
 import { db } from "@/lib/db";
-import { getThreadForGithubPRAndUser } from "@terragon/shared/model/github";
+import { getThreadForGithubPRAndUser } from "@dragon/shared/model/github";
 import { queueFollowUpInternal } from "@/server-lib/follow-up";
-import { getGitHubMentionAutomationsForRepo } from "@terragon/shared/model/automations";
-import { GitHubMentionTriggerConfig } from "@terragon/shared/automations";
-import { Automation } from "@terragon/shared/db/types";
-import { DBUserMessage } from "@terragon/shared/db/db-message";
+import { getGitHubMentionAutomationsForRepo } from "@dragon/shared/model/automations";
+import { GitHubMentionTriggerConfig } from "@dragon/shared/automations";
+import { Automation } from "@dragon/shared/db/types";
+import { DBUserMessage } from "@dragon/shared/db/db-message";
 import {
   addEyesReactionToComment,
   getAccessInfoForGitHubAccount,
@@ -27,11 +27,11 @@ import {
 } from "./utils";
 import { getAccessInfoForUser } from "@/lib/subscription";
 import { maybeBatchThreads } from "@/lib/batch-threads";
-import { getFeatureFlagForUser } from "@terragon/shared/model/feature-flags";
-import { getPrimaryThreadChat } from "@terragon/shared/utils/thread-utils";
-import { AIAgent, AIModel } from "@terragon/agent/types";
-import { getThreadChat } from "@terragon/shared/model/threads";
-import { modelToAgent } from "@terragon/agent/utils";
+import { getFeatureFlagForUser } from "@dragon/shared/model/feature-flags";
+import { getPrimaryThreadChat } from "@dragon/shared/utils/thread-utils";
+import { AIAgent, AIModel } from "@dragon/agent/types";
+import { getThreadChat } from "@dragon/shared/model/threads";
+import { modelToAgent } from "@dragon/agent/utils";
 
 // Handle app mention by adding to existing thread or creating a new one
 export async function handleAppMention({
@@ -106,7 +106,7 @@ export async function handleAppMention({
     return;
   }
 
-  // Find all Terragon users who should get tasks created
+  // Find all Dragon users who should get tasks created
   const usersToTriggerTasks = await getUsersToTriggerTasks({
     repoFullName,
     issueOrPrType,

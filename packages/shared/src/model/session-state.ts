@@ -8,7 +8,7 @@
  * - Resume from any checkpoint
  */
 
-import type { AIAgent } from "@terragon/agent/types";
+import type { AIAgent } from "@dragon/agent/types";
 
 /**
  * Checkpoint types

@@ -149,7 +149,7 @@ export async function handleUploadFile(
           success: true,
           bucket,
           key,
-          url: `https://${bucket}.r2.terragon.dev/${key}`,
+          url: `https://${bucket}.r2.dragon.dev/${key}`,
           size,
           contentType: detectedType,
           message: `File uploaded successfully: ${key}`,
@@ -359,7 +359,7 @@ export async function handleGetSignedUrl(args: {
   const token = Buffer.from(`${bucket}:${key}:${expiresAt.getTime()}`).toString(
     "base64",
   );
-  const signedUrl = `https://${bucket}.r2.terragon.dev/${key}?token=${token}&expires=${expiresAt.getTime()}`;
+  const signedUrl = `https://${bucket}.r2.dragon.dev/${key}?token=${token}&expires=${expiresAt.getTime()}`;
 
   return {
     content: [
@@ -426,7 +426,7 @@ export async function handleCopyFile(args: {
           success: true,
           source: { bucket: sourceBucket, key: sourceKey },
           destination: { bucket: destBucket, key: destKey },
-          url: `https://${destBucket}.r2.terragon.dev/${destKey}`,
+          url: `https://${destBucket}.r2.dragon.dev/${destKey}`,
           message: "File copied successfully.",
         }),
       },

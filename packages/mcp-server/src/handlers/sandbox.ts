@@ -90,9 +90,9 @@ export async function handleCreateSandbox(
           timeout,
           message: `Sandbox created successfully. Provider: ${provider}, Template: ${template}`,
           connectionInfo: {
-            sshHost: `${sandboxId}.sandbox.terragon.dev`,
+            sshHost: `${sandboxId}.sandbox.dragon.dev`,
             sshPort: 22,
-            webUrl: `https://${sandboxId}.sandbox.terragon.dev`,
+            webUrl: `https://${sandboxId}.sandbox.dragon.dev`,
           },
         }),
       },

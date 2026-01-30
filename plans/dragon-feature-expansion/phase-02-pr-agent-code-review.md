@@ -22,8 +22,8 @@ Automatically analyze and review pull requests when opened or updated, providing
 
 ```
 1. PR opened/updated on GitHub
-2. GitHub webhook fires → Terragon receives event
-3. Terragon spawns review agent
+2. GitHub webhook fires → Dragon receives event
+3. Dragon spawns review agent
 4. Agent analyzes diff, files changed, and context
 5. Agent posts structured review comment
 6. Optional: Agent can suggest code improvements as review suggestions

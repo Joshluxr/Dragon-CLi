@@ -1,4 +1,4 @@
-import * as schema from "@terragon/shared/db/schema";
+import * as schema from "@dragon/shared/db/schema";
 import { betterAuth } from "better-auth";
 import {
   bearer,
@@ -10,18 +10,18 @@ import {
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { stripe as createStripePlugin } from "@better-auth/stripe";
 import { db } from "./db";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 import { Resend } from "resend";
-import { encryptToken } from "@terragon/utils/encryption";
+import { encryptToken } from "@dragon/utils/encryption";
 import { getPostHogServer } from "./posthog-server";
 import { nonLocalhostPublicAppUrl } from "./server-utils";
-import { publicAppUrl } from "@terragon/env/next-public";
+import { publicAppUrl } from "@dragon/env/next-public";
 import { handleStripeCreditTopUpEvent } from "@/server-lib/stripe-credit-top-ups";
 import { maybeGrantSignupBonus } from "@/server-lib/credits";
 import { handlePromotionCodeCheckoutSessionCompleted } from "./stripe-promotion-codes";
 import Stripe from "stripe";
 import { LoopsClient } from "loops";
-import { getUnusedPromotionCodeForUser } from "@terragon/shared/model/subscription";
+import { getUnusedPromotionCodeForUser } from "@dragon/shared/model/subscription";
 import {
   STRIPE_PLAN_CONFIGS,
   getStripeWebhookSecret,
@@ -285,21 +285,21 @@ export const auth = betterAuth({
         const url =
           process.env.NEXT_PUBLIC_VERCEL_ENV === "preview"
             ? rawUrl.replace(
-                "https://www.terragonlabs.com",
+                "https://www.dragonlabs.com",
                 `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
               )
             : rawUrl;
         const resend = new Resend(env.RESEND_API_KEY ?? "DUMMY_KEY");
         const result = await resend.emails.send({
-          from: "Terry <onboarding@mail.terragonlabs.com>",
+          from: "Toothless <onboarding@mail.dragonlabs.com>",
           to: email,
-          subject: "Sign in to Terragon",
+          subject: "Sign in to Dragon",
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2>Sign in to Terragon</h2>
+              <h2>Sign in to Dragon</h2>
               <p>Hello,</p>
-              <p>Click the link below to sign in to your Terragon account:</p>
-              <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #000; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 0;">Sign in to Terragon</a>
+              <p>Click the link below to sign in to your Dragon account:</p>
+              <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #000; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 0;">Sign in to Dragon</a>
               <p style="color: #666; font-size: 14px;">This link will expire in 15 minutes.</p>
               <p style="color: #666; font-size: 14px;">If you didn't request this email, you can safely ignore it.</p>
             </div>
@@ -315,8 +315,8 @@ export const auth = betterAuth({
     ...stripePlugins,
   ],
   trustedOrigins: [
-    "www.terragonlabs.com",
-    "terragonlabs.com",
+    "www.dragonlabs.com",
+    "dragonlabs.com",
     process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL &&
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
     process.env.NODE_ENV === "development" && publicAppUrl(),

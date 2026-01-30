@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from "@ladle/react";
 import { GenericPromptBox } from "./generic-promptbox";
-import { DBUserMessage } from "@terragon/shared";
+import { DBUserMessage } from "@dragon/shared";
 import { useState } from "react";
 import { action } from "@ladle/react";
 
@@ -50,7 +50,7 @@ const messageWithImage: DBUserMessage = {
       type: "image",
       mime_type: "image/png",
       image_url:
-        "https://cdn.terragonlabs.com/CleanShot%202025-06-06%20at%2014.34.40@2x-sZjx.png",
+        "https://cdn.dragonlabs.com/CleanShot%202025-06-06%20at%2014.34.40@2x-sZjx.png",
     },
   ],
   timestamp: new Date().toISOString(),
@@ -70,7 +70,7 @@ export const Basic: Story = () => {
     <div className="p-4 space-y-4">
       <GenericPromptBox
         message={message}
-        repoFullName="terragon-labs/terragon"
+        repoFullName="dragon-labs/dragon"
         branchName="main"
         onSubmit={handleSubmit}
         hideSubmitButton={false}
@@ -108,7 +108,7 @@ export const WithImage: Story = () => {
       </div>
       <GenericPromptBox
         message={message}
-        repoFullName="terragon-labs/terragon"
+        repoFullName="dragon-labs/dragon"
         branchName="main"
         onSubmit={handleSubmit}
         hideSubmitButton={false}

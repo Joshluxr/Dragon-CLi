@@ -1,6 +1,6 @@
-import { AIModel } from "@terragon/agent/types";
+import { AIModel } from "@dragon/agent/types";
 import { McpConfig } from "../mcp-config";
-import { agentToModels, getModelDisplayName } from "@terragon/agent/utils";
+import { agentToModels, getModelDisplayName } from "@dragon/agent/utils";
 
 export function getModelId(modelName: AIModel): string {
   switch (modelName) {
@@ -82,18 +82,18 @@ export function buildOpencodeConfig({
     autoupdate: false,
     mcp,
     provider: {
-      terry: {
+      toothless: {
         npm: "@ai-sdk/openai-compatible",
-        name: "Terragon",
+        name: "Dragon",
         options: {
           baseURL: `${publicUrl}/api/proxy/openrouter/v1`,
           headers: { "X-Daemon-Token": "{env:DAEMON_TOKEN}" },
         },
         models: openRouterModels,
       },
-      "terry-google": {
+      "toothless-google": {
         npm: "@ai-sdk/google",
-        name: "Terragon Google",
+        name: "Dragon Google",
         options: {
           baseURL: `${publicUrl}/api/proxy/google/v1`,
           apiKey: "unused",
@@ -112,9 +112,9 @@ export function buildOpencodeConfig({
           },
         },
       },
-      "terry-ant": {
+      "toothless-ant": {
         npm: "@ai-sdk/anthropic",
-        name: "Terragon Anthropic",
+        name: "Dragon Anthropic",
         options: {
           baseURL: `${publicUrl}/api/proxy/anthropic/v1`,
           apiKey: "unused",
@@ -127,9 +127,9 @@ export function buildOpencodeConfig({
           },
         },
       },
-      "terry-oai": {
+      "toothless-oai": {
         npm: "@ai-sdk/openai",
-        name: "Terragon OpenAI",
+        name: "Dragon OpenAI",
         options: {
           baseURL: `${publicUrl}/api/proxy/openai/v1`,
           apiKey: "unused",

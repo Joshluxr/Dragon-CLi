@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, ReactNode, useCallback } from "react";
-import { ThreadInfo } from "@terragon/shared";
+import { ThreadInfo } from "@dragon/shared";
 import { SheetOrMenu, SheetOrMenuItem } from "./ui/sheet-or-menu";
 import {
   useArchiveMutation,

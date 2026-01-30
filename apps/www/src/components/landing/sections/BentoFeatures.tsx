@@ -123,7 +123,7 @@ export default function BentoFeatures() {
             icon={<Cloud className="size-4" />}
             label="Runs in the Cloud"
             heading="Work from anywhere"
-            description="Terragon works from your phone and lets you work wherever you are"
+            description="Dragon works from your phone and lets you work wherever you are"
             visual={<WorkAnywhere />}
           />
           <FeatureBox
@@ -143,7 +143,7 @@ export default function BentoFeatures() {
           />
           <FeatureBox
             icon={<Terminal className="size-4" />}
-            label="terry cli"
+            label="toothless cli"
             heading="Take control locally"
             description="Pull tasks to your local environment when they need your attention. Kick off tasks directly from the CLI."
             visual={<TerryPullTerminal />}

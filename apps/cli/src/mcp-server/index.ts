@@ -9,16 +9,16 @@ import { existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-// Get the path to the terry CLI executable
+// Get the path to the toothless CLI executable
 function getTerryPath(): string {
-  // Check if terry is available in PATH
+  // Check if toothless is available in PATH
   try {
-    const result = spawnSync("which", ["terry"], {
+    const result = spawnSync("which", ["toothless"], {
       encoding: "utf-8",
       stdio: "pipe",
     });
     if (result.status === 0) {
-      return "terry";
+      return "toothless";
     }
   } catch {
     // Ignore error and fall through
@@ -31,10 +31,10 @@ function getTerryPath(): string {
   if (existsSync(cliPath)) {
     return cliPath;
   }
-  throw new Error("Terry CLI not found");
+  throw new Error("Toothless CLI not found");
 }
 
-// Execute terry command and return output safely
+// Execute toothless command and return output safely
 async function executeTerryCommand(
   command: string,
   args: string[] = [],
@@ -57,8 +57,8 @@ async function executeTerryCommand(
   let executable: string;
   let execArgs: string[];
 
-  if (terryPath === "terry") {
-    executable = "terry";
+  if (terryPath === "toothless") {
+    executable = "toothless";
     execArgs = commandArgs;
   } else {
     executable = "node";
@@ -69,7 +69,7 @@ async function executeTerryCommand(
 
   if (result.error) {
     throw new Error(
-      `Failed to execute terry ${command}: ${result.error.message}`,
+      `Failed to execute toothless ${command}: ${result.error.message}`,
     );
   }
 
@@ -79,7 +79,7 @@ async function executeTerryCommand(
     const stdout = result.stdout?.toString().trim() || "";
     const errorMessage =
       stderr || stdout || `Command failed with exit code ${result.status}`;
-    throw new Error(`terry ${command} failed: ${errorMessage}`);
+    throw new Error(`toothless ${command} failed: ${errorMessage}`);
   }
 
   return result.stdout?.toString().trim() || "";
@@ -90,7 +90,7 @@ export async function startMCPServer(): Promise<void> {
   // MCP Server
   const server = new Server(
     {
-      name: "terry-mcp-server",
+      name: "toothless-mcp-server",
       version: "0.1.0",
     },
     {
@@ -106,7 +106,7 @@ export async function startMCPServer(): Promise<void> {
       tools: [
         {
           name: "terry_list",
-          description: "List all tasks in Terragon (calls 'terry list')",
+          description: "List all tasks in Dragon (calls 'toothless list')",
           inputSchema: {
             type: "object",
             properties: {},
@@ -114,7 +114,7 @@ export async function startMCPServer(): Promise<void> {
         },
         {
           name: "terry_create",
-          description: "Create a new task in Terragon (calls 'terry create')",
+          description: "Create a new task in Dragon (calls 'toothless create')",
           inputSchema: {
             type: "object",
             properties: {
@@ -144,7 +144,7 @@ export async function startMCPServer(): Promise<void> {
         {
           name: "terry_pull",
           description:
-            "Pull/fetch session data for a task (calls 'terry pull')",
+            "Pull/fetch session data for a task (calls 'toothless pull')",
           inputSchema: {
             type: "object",
             properties: {

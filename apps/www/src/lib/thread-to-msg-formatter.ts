@@ -1,4 +1,4 @@
-import { DBMessage, DBUserMessage } from "@terragon/shared";
+import { DBMessage, DBUserMessage } from "@dragon/shared";
 import {
   convertToPlainText,
   convertToPrompt,

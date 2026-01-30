@@ -14,13 +14,13 @@ export function buildMergedMcpConfig({
   const mergedServers: Record<string, McpServer> = {
     ...Object.fromEntries(
       Object.entries(userMcpConfig?.mcpServers ?? {}).filter(
-        ([name]) => name !== "terry",
+        ([name]) => name !== "toothless",
       ),
     ),
   } as Record<string, McpServer>;
 
   if (includeTerry) {
-    mergedServers["terry"] = {
+    mergedServers["toothless"] = {
       command: terryCommand,
       args: terryArgs,
     } as McpServer;

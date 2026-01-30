@@ -1,11 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { UserSettings } from "@terragon/shared";
+import { UserSettings } from "@dragon/shared";
 import {
   getUserSettings,
   updateUserSettings,
-} from "@terragon/shared/model/user";
+} from "@dragon/shared/model/user";
 import { userOnlyAction } from "@/lib/auth-server";
 import { getPostHogServer } from "@/lib/posthog-server";
 

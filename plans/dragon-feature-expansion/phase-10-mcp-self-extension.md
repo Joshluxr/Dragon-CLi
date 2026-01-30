@@ -687,8 +687,8 @@ import {
   createCustomTool,
   executeCustomTool,
   getAvailableTools,
-} from "@terragon/shared/services/custom-tools";
-import { ToolDefinition } from "@terragon/shared/model/custom-tools";
+} from "@dragon/shared/services/custom-tools";
+import { ToolDefinition } from "@dragon/shared/model/custom-tools";
 
 // Tool for creating new tools
 export const createToolDefinition = {

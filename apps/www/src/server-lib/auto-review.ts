@@ -11,14 +11,14 @@ import {
   createPRReview,
   updatePRReviewStatus,
   getPRReviewByThread,
-} from "@terragon/shared/model/pr-review";
+} from "@dragon/shared/model/pr-review";
 import {
   type AutoReviewConfig,
   defaultAutoReviewConfig,
   extractReviewSummary,
-} from "@terragon/shared/model/auto-review";
+} from "@dragon/shared/model/auto-review";
 import { parseRepoFullName, getOctokitForApp } from "@/lib/github";
-import { DBUserMessage } from "@terragon/shared";
+import { DBUserMessage } from "@dragon/shared";
 import type { PullRequestEvent } from "@/app/api/webhooks/github/handlers";
 
 export interface CreateAutoReviewTaskArgs {

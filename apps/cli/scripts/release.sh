@@ -62,14 +62,14 @@ git pull origin "$CURRENT_BRANCH"
 
 # Create annotated tag
 echo -e "${YELLOW}Creating tag $TAG_NAME...${NC}"
-git tag -a "$TAG_NAME" -m "Release Terry CLI v${VERSION}
+git tag -a "$TAG_NAME" -m "Release Toothless CLI v${VERSION}
 
 Auto-update functionality:
 - Automatic background updates
 - Silent installation of new versions
 - No manual intervention required
 
-Install: npm install -g @terragon-labs/cli"
+Install: npm install -g @dragon-labs/cli"
 
 echo -e "${GREEN}Tag created successfully!${NC}"
 

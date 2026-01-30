@@ -24,7 +24,7 @@ import {
   BillingInfo,
   Automation,
   SlackAccountWithMetadata,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { toast } from "sonner";
 import { UserSearch } from "./user-search";
 import { UserRoleSelector } from "./user-role-selector";
@@ -46,10 +46,10 @@ import { AdminAutomationsTable } from "./automations-list";
 import {
   getAllAgentTypes,
   isConnectedCredentialsSupported,
-} from "@terragon/agent/utils";
+} from "@dragon/agent/utils";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
 
 const userKeys: (keyof User)[] = [

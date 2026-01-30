@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import Handlebars from "handlebars";
-import type { SandboxProvider } from "@terragon/types/sandbox";
+import type { SandboxProvider } from "@dragon/types/sandbox";
 
 // Register the 'eq' helper
 Handlebars.registerHelper("eq", function (a, b) {

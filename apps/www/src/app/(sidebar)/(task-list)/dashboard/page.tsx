@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Terragon",
+  title: "Dashboard | Dragon",
 };
 
 export const maxDuration = 800;

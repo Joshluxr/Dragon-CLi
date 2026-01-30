@@ -5,8 +5,8 @@ import { getUserIdOrNull } from "@/lib/auth-server";
 import { isStripeConfigured } from "@/server-lib/stripe";
 import { getBillingInfo } from "@/lib/subscription";
 import { db } from "@/lib/db";
-import { getFeatureFlagsGlobal } from "@terragon/shared/model/feature-flags";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { getFeatureFlagsGlobal } from "@dragon/shared/model/feature-flags";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import Link from "next/link";
 
 /**
@@ -24,7 +24,7 @@ export async function BannerContainer() {
   if (flags.shutdownMode) {
     return (
       <BannerBar id="shutdown-banner">
-        Terragon is shutting down on February 9th, 2026.{" "}
+        Dragon is shutting down on February 9th, 2026.{" "}
         <Link
           href={`${publicDocsUrl()}/docs/resources/shutdown`}
           className="underline"
@@ -45,8 +45,8 @@ export async function BannerContainer() {
         !billingInfo.signupTrial?.isActive
       ) {
         const bannerText = billingInfo.unusedPromotionCode
-          ? "Upgrade to continue using Terragon. Enjoy 2 months free applied at checkout."
-          : "Upgrade to continue using Terragon.";
+          ? "Upgrade to continue using Dragon. Enjoy 2 months free applied at checkout."
+          : "Upgrade to continue using Dragon.";
         // Render through the client priority gate so impersonation always wins.
         return (
           <BannerPriorityGate>

@@ -145,13 +145,13 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub Issue #42",
       subtitle: "Fix login redirect bug",
-      action: "@terragon-labs please fix this",
+      action: "@dragon-labs please fix this",
     },
     {
       icon: <SlackIcon className="size-5" />,
       title: "#engineering",
       subtitle: "Sarah Johnson 2:34 PM",
-      action: "@terragon update hero section",
+      action: "@dragon update hero section",
     },
     {
       icon: <LinearIcon className="size-5" />,
@@ -169,13 +169,13 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #128",
       subtitle: "Add authentication",
-      action: "@terragon-labs review this",
+      action: "@dragon-labs review this",
     },
     {
       icon: <SlackIcon className="size-5" />,
       title: "#product",
       subtitle: "Alex Chen 11:23 AM",
-      action: "@terragon implement feature",
+      action: "@dragon implement feature",
     },
     {
       icon: <LinearIcon className="size-5" />,
@@ -187,13 +187,13 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub Issue #89",
       subtitle: "Update dependencies",
-      action: "@terragon-labs upgrade pkgs",
+      action: "@dragon-labs upgrade pkgs",
     },
     {
       icon: <SlackIcon className="size-5" />,
       title: "#backend",
       subtitle: "Jamie Lee 9:15 AM",
-      action: "@terragon fix API timeout",
+      action: "@dragon fix API timeout",
     },
     {
       icon: <JiraIcon className="size-5" />,
@@ -205,25 +205,25 @@ export function IntegrationsVisual() {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #156",
       subtitle: "Refactor auth flow",
-      action: "@terragon-labs optimize this",
+      action: "@dragon-labs optimize this",
     },
     {
       icon: <SlackIcon className="size-5" />,
       title: "#design",
       subtitle: "Morgan Davis 4:45 PM",
-      action: "@terragon update button styles",
+      action: "@dragon update button styles",
     },
     {
       icon: <GithubIcon className="size-5" />,
       title: "GitHub PR #201",
       subtitle: "Add dark mode toggle",
-      action: "@terragon-labs implement this",
+      action: "@dragon-labs implement this",
     },
     {
       icon: <SlackIcon className="size-5" />,
       title: "#frontend",
       subtitle: "Taylor Reed 10:30 AM",
-      action: "@terragon optimize loading",
+      action: "@dragon optimize loading",
     },
   ];
 

@@ -2,7 +2,7 @@
 
 import { userOnlyAction } from "@/lib/auth-server";
 import { UserFacingError } from "@/lib/server-actions";
-import { publicAppUrl } from "@terragon/env/next-public";
+import { publicAppUrl } from "@dragon/env/next-public";
 import { CREDIT_TOP_UP_REASON } from "@/server-lib/stripe-credit-top-ups";
 import { ensureStripeCustomer } from "@/server-lib/stripe-helpers";
 import { getStripeCreditPackPriceId } from "@/server-lib/stripe";
@@ -30,7 +30,7 @@ export const createCreditTopUpCheckoutSession = userOnlyAction(
         enabled: true,
         invoice_data: {
           metadata: {
-            terragon_user_id: userId,
+            dragon_user_id: userId,
             reason: CREDIT_TOP_UP_REASON,
           },
         },
@@ -38,12 +38,12 @@ export const createCreditTopUpCheckoutSession = userOnlyAction(
       payment_intent_data: {
         setup_future_usage: "off_session",
         metadata: {
-          terragon_user_id: userId,
+          dragon_user_id: userId,
           reason: CREDIT_TOP_UP_REASON,
         },
       },
       metadata: {
-        terragon_user_id: userId,
+        dragon_user_id: userId,
         reason: CREDIT_TOP_UP_REASON,
       },
       success_url: `${publicAppUrl()}/settings/agent?topup=success`,

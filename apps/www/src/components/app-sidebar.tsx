@@ -39,7 +39,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { userAtom } from "@/atoms/user";
 import { lastSeenReleaseNotesVersionAtom } from "@/atoms/user-flags";
 import { RELEASE_NOTES_VERSION } from "@/lib/constants";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import {
   DropdownMenu,
   DropdownMenuItem,

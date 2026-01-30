@@ -76,7 +76,7 @@ export function ShutdownControls({
             Shutdown Controls
           </CardTitle>
           <CardDescription>
-            Manage the Terragon shutdown process. These actions are
+            Manage the Dragon shutdown process. These actions are
             irreversible.
           </CardDescription>
         </CardHeader>
@@ -85,7 +85,7 @@ export function ShutdownControls({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Warning</AlertTitle>
             <AlertDescription>
-              Terragon is shutting down on February 14th, 2026. Use these
+              Dragon is shutting down on February 14th, 2026. Use these
               controls to manage the shutdown process.
             </AlertDescription>
           </Alert>

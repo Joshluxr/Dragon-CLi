@@ -30,8 +30,8 @@ import type {
   AutonomousConfig,
   AutonomousExecutionStatus,
   CompletionSignal,
-} from "@terragon/shared/model/autonomous";
-import { defaultAutonomousConfig } from "@terragon/shared/model/autonomous";
+} from "@dragon/shared/model/autonomous";
+import { defaultAutonomousConfig } from "@dragon/shared/model/autonomous";
 
 interface AutonomousExecution {
   id: string;

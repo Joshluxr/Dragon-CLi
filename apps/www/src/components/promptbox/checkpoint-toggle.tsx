@@ -84,12 +84,12 @@ export function CheckpointToggle({
               <br />
               Are you sure you want to disable{" "}
               <a
-                href="https://docs.terragonlabs.com/docs/configuration/git-checkpointing"
+                href="https://docs.dragonlabs.com/docs/configuration/git-checkpointing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-foreground"
               >
-                Terragon's automatic git checkpointing
+                Dragon's automatic git checkpointing
               </a>
               ?<br />
               <br />

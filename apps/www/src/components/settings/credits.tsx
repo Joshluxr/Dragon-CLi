@@ -11,7 +11,7 @@ import {
 } from "@/server-actions/credits";
 import type { UserCreditBreakdown } from "@/server-actions/credit-breakdown";
 import { userCreditBreakdownQueryOptions } from "@/queries/user-credit-breakdown-queries";
-import { UserBalanceSummary } from "@terragon/shared/model/credits";
+import { UserBalanceSummary } from "@dragon/shared/model/credits";
 import { userSettingsAtom, useUpdateUserSettingsMutation } from "@/atoms/user";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";

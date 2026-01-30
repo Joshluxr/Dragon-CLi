@@ -11,10 +11,10 @@ export default defineConfig({
   clean: true,
   shims: true,
   bundle: true,
-  noExternal: ["@terragon/cli-api-contract"],
+  noExternal: ["@dragon/cli-api-contract"],
   define: {
-    "process.env.TERRAGON_WEB_URL": JSON.stringify(
-      process.env.TERRAGON_WEB_URL || "https://www.terragonlabs.com",
+    "process.env.DRAGON_WEB_URL": JSON.stringify(
+      process.env.DRAGON_WEB_URL || "https://www.dragonlabs.com",
     ),
     "process.env.TERRY_NO_AUTO_UPDATE": JSON.stringify(
       process.env.TERRY_NO_AUTO_UPDATE || "0",

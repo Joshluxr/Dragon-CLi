@@ -823,19 +823,19 @@ export function normalizedModelForDaemon(model: AIModel): string {
   // Switch to using the google proxy
   // For now, just switch gemini-3-pro to the google proxy
   if (model === "opencode/gemini-3-pro") {
-    return "terry-google/gemini-3-pro";
+    return "toothless-google/gemini-3-pro";
   }
   if (model.startsWith("opencode/")) {
-    return model.replace("opencode/", "terry/");
+    return model.replace("opencode/", "toothless/");
   }
   if (model.startsWith("opencode-google/")) {
-    return model.replace("opencode-google/", "terry-google/");
+    return model.replace("opencode-google/", "toothless-google/");
   }
   if (model.startsWith("opencode-oai")) {
-    return model.replace("opencode-oai/", "terry-oai/");
+    return model.replace("opencode-oai/", "toothless-oai/");
   }
   if (model.startsWith("opencode-ant")) {
-    return model.replace("opencode-ant/", "terry-ant/");
+    return model.replace("opencode-ant/", "toothless-ant/");
   }
   if (model === "gemini-3-pro") {
     return "gemini-3-pro-preview";

@@ -2,7 +2,7 @@
 
 import { adminOnly } from "@/lib/auth-server";
 import { updateGitHubPR, getOctokitForApp } from "@/lib/github";
-import { User } from "@terragon/shared";
+import { User } from "@dragon/shared";
 
 export const refreshGitHubPR = adminOnly(async function refreshGitHubPR(
   adminUser: User,

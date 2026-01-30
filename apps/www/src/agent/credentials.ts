@@ -1,11 +1,11 @@
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
-import { AIAgent, AIAgentCredentials, AIModel } from "@terragon/agent/types";
-import { getAgentProviderCredentialsDecrypted } from "@terragon/shared/model/agent-provider-credentials";
+import { env } from "@dragon/env/apps-www";
+import { AIAgent, AIAgentCredentials, AIModel } from "@dragon/agent/types";
+import { getAgentProviderCredentialsDecrypted } from "@dragon/shared/model/agent-provider-credentials";
 import { getCodexCredentialsJSONOrNull } from "@/agent/msg/codexCredentials";
 import { getClaudeCredentialsJSONOrNull } from "@/agent/msg/claudeCredentials";
 import { ThreadError } from "./error";
-import { ClaudeApiOverrideMetadata } from "@terragon/shared/db/types";
+import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
 
 export async function getAndVerifyCredentials({
   agent,

@@ -2,10 +2,10 @@
 
 import { adminOnly } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { User } from "@terragon/shared";
+import { User } from "@dragon/shared";
 import { getStripeClient } from "@/server-lib/stripe";
 import { and, eq, inArray, isNotNull } from "drizzle-orm";
-import * as schema from "@terragon/shared/db/schema";
+import * as schema from "@dragon/shared/db/schema";
 
 export type CancelAllResult = {
   success: number;

@@ -1,10 +1,10 @@
-# Terragon Daemon
+# Dragon Daemon
 
 A daemon service that listens to a unix socket to orchestrate Agent running locally on the sandbox.
 
 ## Overview
 
-The Terragon Daemon creates a unix socket at `/tmp/terragon-daemon.sock` and listens for JSON messages containing configuration for Agent interactions. At a high-level, the daemon controls how to spawn a Agent process with the provided prompt and configuration and forwards the output to a specified API endpoint.
+The Dragon Daemon creates a unix socket at `/tmp/dragon-daemon.sock` and listens for JSON messages containing configuration for Agent interactions. At a high-level, the daemon controls how to spawn a Agent process with the provided prompt and configuration and forwards the output to a specified API endpoint.
 
 ## Usage
 

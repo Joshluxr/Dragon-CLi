@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { DBUserMessage } from "@terragon/shared";
+import { DBUserMessage } from "@dragon/shared";
 import { waitUntil } from "@vercel/functions";
 import { startAgentMessage } from "@/agent/msg/startAgentMessage";
 import { getPostHogServer } from "@/lib/posthog-server";
@@ -13,10 +13,10 @@ import {
   getThreadChat,
   getThreadMinimal,
   updateThreadChat,
-} from "@terragon/shared/model/threads";
+} from "@dragon/shared/model/threads";
 import { maybeProcessFollowUpQueue } from "./process-follow-up-queue";
 import { isAgentWorking } from "@/agent/thread-status";
-import { getDefaultModelForAgent, modelToAgent } from "@terragon/agent/utils";
+import { getDefaultModelForAgent, modelToAgent } from "@dragon/agent/utils";
 import { uploadUserMessageImages } from "@/lib/r2-file-upload-server";
 import { getAccessInfoForUser } from "@/lib/subscription";
 import { SUBSCRIPTION_MESSAGES } from "@/lib/subscription-msgs";

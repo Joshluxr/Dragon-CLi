@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {
   AutomationTrigger,
   AutomationAction,
-} from "@terragon/shared/automations";
+} from "@dragon/shared/automations";
 import { useAccessInfo } from "@/queries/subscription";
 import { useCreateAutomationMutation } from "@/queries/automation-mutations";
 import { SUBSCRIPTION_MESSAGES } from "@/lib/subscription-msgs";

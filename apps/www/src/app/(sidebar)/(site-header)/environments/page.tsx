@@ -1,12 +1,12 @@
 import { Environments } from "@/components/environments/main";
 import { getUserIdOrRedirect } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { getEnvironments } from "@terragon/shared/model/environments";
+import { getEnvironments } from "@dragon/shared/model/environments";
 import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Environments | Terragon",
+  title: "Environments | Dragon",
 };
 
 export default async function EnvironmentsPage() {

@@ -3,7 +3,7 @@ import {
   getFeatureFlags,
   getFeatureFlagsForUser,
   getUserFeatureFlagOverrides,
-} from "@terragon/shared/model/feature-flags";
+} from "@dragon/shared/model/feature-flags";
 import { getAdminUserOrThrow } from "@/lib/auth-server";
 import { db } from "@/lib/db";
 

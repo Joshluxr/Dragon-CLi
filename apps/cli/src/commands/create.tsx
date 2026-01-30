@@ -4,7 +4,7 @@ import Spinner from "ink-spinner";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../utils/apiClient.js";
 import { useGitInfo } from "../hooks/useGitInfo.js";
-import type { AIModelExternal } from "@terragon/agent/types";
+import type { AIModelExternal } from "@dragon/agent/types";
 
 interface CreateCommandProps {
   message: string;
@@ -95,7 +95,7 @@ export function CreateCommand({
           <Text>Branch: {createMutation.data.branchName}</Text>
         )}
         <Text dimColor>
-          Visit https://www.terragonlabs.com/task/{createMutation.data.threadId}{" "}
+          Visit https://www.dragonlabs.com/task/{createMutation.data.threadId}{" "}
           to view your task
         </Text>
       </Box>

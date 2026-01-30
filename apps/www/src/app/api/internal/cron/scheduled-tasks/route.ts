@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
-import { getScheduledThreadChatsDueToRun } from "@terragon/shared/model/threads";
+import { env } from "@dragon/env/apps-www";
+import { getScheduledThreadChatsDueToRun } from "@dragon/shared/model/threads";
 import { internalPOST } from "@/server-lib/internal-request";
 
 const BATCH_SIZE = 5;

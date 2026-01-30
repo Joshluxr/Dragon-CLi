@@ -1,4 +1,4 @@
-import type { SandboxProvider, SandboxSize } from "@terragon/types/sandbox";
+import type { SandboxProvider, SandboxSize } from "@dragon/types/sandbox";
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs";
@@ -15,7 +15,7 @@ const templatesJsonPath = path.join(__dirname, "../templates.json");
 const dockerfileHbsPath = path.join(__dirname, "../Dockerfile.hbs");
 const e2bTomlPath = path.join(__dirname, "../e2b.toml");
 const isProd = process.env.NODE_ENV === "production";
-const namePrefix = isProd ? "terry" : "terry-dev";
+const namePrefix = isProd ? "toothless" : "toothless-dev";
 
 function getDockerfilePath(provider: SandboxProvider): string {
   return path.join(__dirname, `../Dockerfile.${provider}`);

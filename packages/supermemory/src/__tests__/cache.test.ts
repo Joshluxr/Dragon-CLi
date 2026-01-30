@@ -16,7 +16,7 @@ describe("Platform Detection", () => {
   describe("getCacheDir", () => {
     it("returns path in home directory", () => {
       const cacheDir = getCacheDir();
-      expect(cacheDir).toContain(".terragon/zvec-cache");
+      expect(cacheDir).toContain(".dragon/zvec-cache");
       expect(cacheDir).toContain(os.homedir());
     });
   });

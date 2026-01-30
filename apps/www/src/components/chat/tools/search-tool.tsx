@@ -1,5 +1,5 @@
 import React from "react";
-import { AllToolParts } from "@terragon/shared";
+import { AllToolParts } from "@dragon/shared";
 import {
   GenericToolPart,
   GenericToolPartContentOneLine,

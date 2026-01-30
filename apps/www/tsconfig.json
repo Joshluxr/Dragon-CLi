@@ -1,5 +1,5 @@
 {
-  "extends": "@terragon/tsconfig/base.json",
+  "extends": "@dragon/tsconfig/base.json",
   "compilerOptions": {
     "noEmit": true,
     "resolveJsonModule": true,

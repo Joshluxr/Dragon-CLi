@@ -2,9 +2,9 @@ import type { NextRequest } from "next/server";
 import {
   getStalledThreads,
   stopStalledThreads,
-} from "@terragon/shared/model/threads";
+} from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 import { maybeHibernateSandboxById } from "@/agent/sandbox";
 
 async function sleep(ms: number = 1000) {

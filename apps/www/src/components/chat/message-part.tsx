@@ -7,7 +7,7 @@ import {
   UITextFilePart,
   UIRichTextPart,
   DBMessage,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { TextPart } from "./text-part";
 import { ImagePart } from "./image-part";
 import { PdfPart } from "./pdf-part";
@@ -15,7 +15,7 @@ import { TextFilePart } from "./text-file-part";
 import { ToolPart } from "./tool-part";
 import { RichTextPart } from "./rich-text-part";
 import { ThinkingPart } from "./thinking-part";
-import { assertNever } from "@terragon/shared/utils";
+import { assertNever } from "@dragon/shared/utils";
 import { useThread } from "./thread-context";
 
 interface MessagePartProps {

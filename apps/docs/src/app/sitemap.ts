@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { source } from "@/lib/source";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://docs.terragonlabs.com";
+  const baseUrl = "https://docs.dragonlabs.com";
 
   // Get all documentation pages
   const pages = source.getPages();

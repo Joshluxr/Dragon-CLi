@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Script to build and install the Terry CLI as terry for development
+# Script to build and install the Toothless CLI as toothless for development
 
 set -e
 
-echo "🚀 Building and installing Terry CLI as terry..."
+echo "🚀 Building and installing Toothless CLI as toothless..."
 
 # Get the script directory (apps/cli/scripts)
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -25,11 +25,11 @@ echo "🔗 Creating global link..."
 # Just run npm link - it will use the bin name from package.json
 npm link
 
-echo "✅ Terry CLI installed as terry!"
+echo "✅ Toothless CLI installed as toothless!"
 echo ""
-echo "You can now use the 'terry' command from anywhere:"
-echo "  terry auth - Authenticate with Terragon"
-echo "  terry pull <threadId> - Pull thread data"
+echo "You can now use the 'toothless' command from anywhere:"
+echo "  toothless auth - Authenticate with Dragon"
+echo "  toothless pull <threadId> - Pull thread data"
 echo ""
 echo "To uninstall later, run:"
-echo "  npm unlink -g @terragon-labs/cli"
+echo "  npm unlink -g @dragon-labs/cli"

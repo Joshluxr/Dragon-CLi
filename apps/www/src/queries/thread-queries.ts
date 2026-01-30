@@ -1,7 +1,7 @@
 import { getThreadAction } from "@/server-actions/get-thread";
 import { getThreadsAction } from "@/server-actions/get-threads";
 import { getServerActionQueryOptions } from "./server-action-helpers";
-import { ThreadInfo } from "@terragon/shared/db/types";
+import { ThreadInfo } from "@dragon/shared/db/types";
 import {
   QueryKey,
   UseInfiniteQueryOptions,

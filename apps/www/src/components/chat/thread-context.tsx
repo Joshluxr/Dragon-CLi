@@ -1,4 +1,4 @@
-import { ThreadInfoFull, ThreadChatInfoFull } from "@terragon/shared";
+import { ThreadInfoFull, ThreadChatInfoFull } from "@dragon/shared";
 import React from "react";
 
 type PromptBoxRef = {

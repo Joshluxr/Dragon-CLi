@@ -1,11 +1,11 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import type { DBUserMessage } from "@terragon/shared";
-import type { AIAgent, AIModel, SelectedAIModels } from "@terragon/agent/types";
+import type { DBUserMessage } from "@dragon/shared";
+import type { AIAgent, AIModel, SelectedAIModels } from "@dragon/agent/types";
 import { useLocalStorage } from "usehooks-ts";
 import { useSelectedModel } from "@/hooks/use-selected-model";
 import { useTouchDevice } from "@/hooks/useTouchDevice";
 import { JSONContent, useEditor } from "@tiptap/react";
-import { getAgentSlashCommands, modelToAgent } from "@terragon/agent/utils";
+import { getAgentSlashCommands, modelToAgent } from "@dragon/agent/utils";
 import {
   uploadImageToR2,
   uploadPdfToR2,

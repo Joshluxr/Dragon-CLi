@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 
 export function isStripeConfigured(): boolean {
   if (!env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET) {

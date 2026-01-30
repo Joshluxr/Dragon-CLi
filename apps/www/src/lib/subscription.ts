@@ -3,14 +3,14 @@ import type {
   AccessInfo,
   AccessTier,
   BillingInfo,
-} from "@terragon/shared/db/types";
+} from "@dragon/shared/db/types";
 import { getUserIdOrNull } from "./auth-server";
 import {
   getSubscriptionInfoForUser,
   getSignupTrialInfoForUser,
   getUnusedPromotionCodeForUser,
-} from "@terragon/shared/model/subscription";
-import { getFeatureFlagsGlobal } from "@terragon/shared/model/feature-flags";
+} from "@dragon/shared/model/subscription";
+import { getFeatureFlagsGlobal } from "@dragon/shared/model/feature-flags";
 import { isStripeConfigured } from "@/server-lib/stripe";
 
 function resolvePaidTier(plan: string): AccessTier {

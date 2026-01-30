@@ -14,8 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Shield, ChevronDown, ChevronRight } from "lucide-react";
-import type { TDDGuardConfig } from "@terragon/shared";
-import { defaultTDDGuardConfig } from "@terragon/shared";
+import type { TDDGuardConfig } from "@dragon/shared";
+import { defaultTDDGuardConfig } from "@dragon/shared";
 import { updateEnvironmentTDDGuardAction } from "@/server-actions/environment";
 
 interface TDDGuardSettingsProps {

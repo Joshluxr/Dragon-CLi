@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
-import { trackUsageEventBatched } from "@terragon/shared/model/usage-events";
+import { trackUsageEventBatched } from "@dragon/shared/model/usage-events";
 import {
   calculateUsageCostUsd,
   getAnthropicMessagesSkuForModel,
-} from "@terragon/shared/model/usage-pricing";
+} from "@dragon/shared/model/usage-pricing";
 
 type UsagePayload = {
   input_tokens?: number | null;

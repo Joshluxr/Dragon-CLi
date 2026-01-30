@@ -6,7 +6,7 @@ import {
   getIsIssueAuthor,
   parseRepoFullName,
 } from "@/lib/github";
-import { getGithubPR } from "@terragon/shared/model/github";
+import { getGithubPR } from "@dragon/shared/model/github";
 import { handleAppMention } from "./handle-app-mention";
 import {
   isAppMentioned,
@@ -17,16 +17,16 @@ import { EmitterWebhookEvent } from "@octokit/webhooks";
 import {
   getPullRequestAutomationsForRepo,
   getIssueAutomationsForRepo,
-} from "@terragon/shared/model/automations";
+} from "@dragon/shared/model/automations";
 import {
   PullRequestTriggerConfig,
   IssueTriggerConfig,
-} from "@terragon/shared/automations";
+} from "@dragon/shared/automations";
 import {
   runPullRequestAutomation,
   runIssueAutomation,
 } from "@/server-lib/automations";
-import { Automation } from "@terragon/shared/db/types";
+import { Automation } from "@dragon/shared/db/types";
 // publicAppUrl is used within utils via postBillingLinkComment
 export type PullRequestEvent = EmitterWebhookEvent<"pull_request">["payload"];
 export type IssueEvent = EmitterWebhookEvent<"issues">["payload"];

@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { saveCodexAuthJson } from "@/server-actions/codex-auth";
 import { saveKimiConfigToml } from "@/server-actions/kimi-auth";
 import { exchangeCode } from "@/server-actions/claude-oauth";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 
 export const credentialsQueryKeys = {
   list: () => ["credentials", "list"] as const,

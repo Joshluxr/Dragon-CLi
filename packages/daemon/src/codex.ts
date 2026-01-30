@@ -362,7 +362,7 @@ export function codexCommand({
     }
   }
   if (useCredits) {
-    commandParts.push("-c", 'model_provider="terry"');
+    commandParts.push("-c", 'model_provider="toothless"');
   }
   if (sessionId) {
     commandParts.push("resume", sessionId);

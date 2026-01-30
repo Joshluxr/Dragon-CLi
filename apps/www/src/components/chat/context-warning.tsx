@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-react";
 import {
   MAX_CONTEXT_TOKENS,
   CONTEXT_WARNING_PERCENTAGE,
-} from "@terragon/shared";
+} from "@dragon/shared";
 
 interface ContextWarningProps {
   contextLength: number | null;

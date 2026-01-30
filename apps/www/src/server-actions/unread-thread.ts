@@ -1,9 +1,9 @@
 "use server";
 
-import { markThreadChatAsUnread } from "@terragon/shared/model/thread-read-status";
+import { markThreadChatAsUnread } from "@dragon/shared/model/thread-read-status";
 import { db } from "@/lib/db";
 import { userOnlyAction } from "@/lib/auth-server";
-import { getThread } from "@terragon/shared/model/threads";
+import { getThread } from "@dragon/shared/model/threads";
 import { getPostHogServer } from "@/lib/posthog-server";
 
 export const unreadThread = userOnlyAction(

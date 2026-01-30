@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import posthog from "posthog-js";
 
 interface DocsButtonProps {

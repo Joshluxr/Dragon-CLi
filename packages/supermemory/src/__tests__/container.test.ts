@@ -28,13 +28,13 @@ describe("container", () => {
         return String(p).endsWith("package.json");
       });
       vi.mocked(fs.readFileSync).mockReturnValue(
-        JSON.stringify({ name: "@terragon/awesome-package" }),
+        JSON.stringify({ name: "@dragon/awesome-package" }),
       );
 
       const result = getProjectInfo("/some/path/my-project");
 
-      expect(result.projectName).toBe("@terragon/awesome-package");
-      expect(result.containerTag).toBe("project:-terragon-awesome-package");
+      expect(result.projectName).toBe("@dragon/awesome-package");
+      expect(result.containerTag).toBe("project:-dragon-awesome-package");
     });
 
     it("should sanitize container tags", () => {

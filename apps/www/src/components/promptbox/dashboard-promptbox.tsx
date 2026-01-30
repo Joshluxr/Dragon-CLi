@@ -10,7 +10,7 @@ import {
 } from "./use-promptbox";
 import { SimplePromptBox } from "./simple-promptbox";
 import { useRepositoryCache } from "./typeahead/repository-cache";
-import { ThreadStatus } from "@terragon/shared";
+import { ThreadStatus } from "@dragon/shared";
 import {
   useSelectedRepo,
   useSelectedBranch,
@@ -23,7 +23,7 @@ import {
   usePromptBoxToolBeltOptions,
 } from "./prompt-box-tool-belt";
 import { useAccessInfo } from "@/queries/subscription";
-import { modelToAgent } from "@terragon/agent/utils";
+import { modelToAgent } from "@dragon/agent/utils";
 
 export type DashboardPromptBoxHandleSubmit = (
   args: UsePromptBoxHandleSubmitArgs & {

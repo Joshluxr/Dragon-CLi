@@ -3,7 +3,7 @@ import { installDaemon } from "./daemon";
 import type { ISandboxSession } from "./types";
 
 // Mock the bundled imports
-vi.mock("@terragon/bundled", () => ({
+vi.mock("@dragon/bundled", () => ({
   daemonAsStr: "mock-daemon-content",
   mcpServerAsStr: "mock-mcp-server-content",
 }));
@@ -57,15 +57,15 @@ describe("daemon installation", () => {
 
       expect(mcpConfig).toEqual({
         mcpServers: {
-          terry: {
+          toothless: {
             command: "node",
-            args: ["/tmp/terry-mcp-server.mjs"],
+            args: ["/tmp/toothless-mcp-server.mjs"],
           },
         },
       });
     });
 
-    it("should merge user MCP config with built-in terry server", async () => {
+    it("should merge user MCP config with built-in toothless server", async () => {
       const userMcpConfig = {
         mcpServers: {
           "custom-server": {
@@ -96,9 +96,9 @@ describe("daemon installation", () => {
 
       expect(mcpConfig).toEqual({
         mcpServers: {
-          terry: {
+          toothless: {
             command: "node",
-            args: ["/tmp/terry-mcp-server.mjs"],
+            args: ["/tmp/toothless-mcp-server.mjs"],
           },
           "custom-server": {
             command: "python",
@@ -115,10 +115,10 @@ describe("daemon installation", () => {
       });
     });
 
-    it("should not allow overriding the built-in terry server", async () => {
+    it("should not allow overriding the built-in toothless server", async () => {
       const userMcpConfig = {
         mcpServers: {
-          terry: {
+          toothless: {
             command: "malicious-command",
             args: ["--hack"],
           },
@@ -141,10 +141,10 @@ describe("daemon installation", () => {
 
       const mcpConfig = JSON.parse(writtenFiles["/tmp/mcp-server.json"]!);
 
-      // Terry server should remain unchanged
-      expect(mcpConfig.mcpServers.terry).toEqual({
+      // Toothless server should remain unchanged
+      expect(mcpConfig.mcpServers.toothless).toEqual({
         command: "node",
-        args: ["/tmp/terry-mcp-server.mjs"],
+        args: ["/tmp/toothless-mcp-server.mjs"],
       });
 
       // Other servers should be included
@@ -173,9 +173,9 @@ describe("daemon installation", () => {
 
       expect(mcpConfig).toEqual({
         mcpServers: {
-          terry: {
+          toothless: {
             command: "node",
-            args: ["/tmp/terry-mcp-server.mjs"],
+            args: ["/tmp/toothless-mcp-server.mjs"],
           },
         },
       });
@@ -221,9 +221,9 @@ describe("daemon installation", () => {
         BASH_MAX_TIMEOUT_MS: "60000",
         API_KEY: "secret-key",
         DATABASE_URL: "postgres://localhost",
-        TERRAGON: "true",
+        DRAGON: "true",
         GH_TOKEN: "test-token",
-        TERRAGON_FEATURE_FLAGS: "{}",
+        DRAGON_FEATURE_FLAGS: "{}",
       });
     });
 
@@ -274,7 +274,7 @@ describe("daemon installation", () => {
         featureFlags: {},
       });
 
-      expect(executedCommands).toContain("chmod +x /tmp/terragon-daemon.mjs");
+      expect(executedCommands).toContain("chmod +x /tmp/dragon-daemon.mjs");
     });
 
     it("should write all required files", async () => {
@@ -287,10 +287,10 @@ describe("daemon installation", () => {
         featureFlags: {},
       });
 
-      expect(writtenFiles["/tmp/terragon-daemon.mjs"]).toBe(
+      expect(writtenFiles["/tmp/dragon-daemon.mjs"]).toBe(
         "mock-daemon-content",
       );
-      expect(writtenFiles["/tmp/terry-mcp-server.mjs"]).toBe(
+      expect(writtenFiles["/tmp/toothless-mcp-server.mjs"]).toBe(
         "mock-mcp-server-content",
       );
       expect(writtenFiles["/tmp/mcp-server.json"]).toBeDefined();

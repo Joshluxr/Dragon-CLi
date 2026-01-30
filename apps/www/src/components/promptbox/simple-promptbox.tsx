@@ -2,7 +2,7 @@
 
 import React, { useCallback, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { AIAgent, AIModel, SelectedAIModels } from "@terragon/agent/types";
+import type { AIAgent, AIModel, SelectedAIModels } from "@dragon/agent/types";
 import type { SetSelectedModel } from "@/hooks/use-selected-model";
 
 // Tiptap imports
@@ -11,7 +11,7 @@ import { EditorContent, Editor } from "@tiptap/react";
 import {
   isImageUploadSupported,
   isPlanModeSupported,
-} from "@terragon/agent/utils";
+} from "@dragon/agent/utils";
 import { AttachedFiles } from "@/components/promptbox/attached-files";
 import { DragDropWrapper } from "@/components/promptbox/drag-drop-wrapper";
 import { ModelSelector } from "../model-selector";

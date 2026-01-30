@@ -1342,7 +1342,7 @@ insert_large_dataset(collection, my_data_source, batch_size=5000)
 
 ---
 
-## 13. Integration Scenarios for Terragon-OSS
+## 13. Integration Scenarios for Dragon-OSS
 
 ### 13.1 Recommended Scenarios
 
@@ -1432,4 +1432,4 @@ insert_large_dataset(collection, my_data_source, batch_size=5000)
 
 **Report Generated**: 2026-01-30
 **Status**: Complete
-**Recommendation**: Zvec is ideal for Terragon-OSS if embedded vector search with metadata filtering is required without separate infrastructure.
+**Recommendation**: Zvec is ideal for Dragon-OSS if embedded vector search with metadata filtering is required without separate infrastructure.

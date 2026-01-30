@@ -17,7 +17,7 @@ import {
   type PRReviewTrigger,
   type PRReviewFocusArea,
   defaultAutoReviewConfig,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { updateEnvironmentAutoReviewAction } from "@/server-actions/environment";
 
 interface AutoReviewSettingsProps {

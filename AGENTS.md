@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Terragon** - An AI-powered coding assistant platform that allows users to run coding agents in parallel inside remote sandboxes. This allows users to do multiple tasks concurrently and asynchronously. The remote sandboxes are full development environments that allow the coding agents to make edits, run tests, verify changes and put up commit and PRs.
+**Dragon** - An AI-powered coding assistant platform that allows users to run coding agents in parallel inside remote sandboxes. This allows users to do multiple tasks concurrently and asynchronously. The remote sandboxes are full development environments that allow the coding agents to make edits, run tests, verify changes and put up commit and PRs.
 
 ## Repository Structure
 
@@ -205,7 +205,7 @@ pnpm -C apps/cli uninstall:dev
 - **Environment**: `.env.example` files in apps/www, apps/broadcast, packages
 - **Development**: Docker Compose with PostgreSQL 16, Redis 7
 - **Deployment**: Vercel (frontend), PartyKit (WebSocket), sandbox providers
-- **TypeScript**: Shared config via `@terragon/tsconfig`
+- **TypeScript**: Shared config via `@dragon/tsconfig`
 
 ### Key Environment Variables
 
@@ -223,27 +223,27 @@ pnpm -C apps/cli uninstall:dev
 - **`apps/www`**: Main Next.js frontend application
 - **`apps/broadcast`**: PartyKit WebSocket service for real-time features
 - **`apps/docs`**: Fumadocs-based documentation site
-- **`apps/cli`**: Terry CLI tool for pulling threads (uses Ink for terminal UI)
+- **`apps/cli`**: Toothless CLI tool for pulling threads (uses Ink for terminal UI)
 - **`apps/desktop`**: Electron desktop app wrapper around the web UI
 - **`apps/vscode-extension`**: VS Code sidebar extension (React + Tailwind webview with TanStack Router - never use regular HTML links, always use TanStack Router's `useNavigate` hook or `Link` component as regular links don't work in VS Code webview iframes)
 - **`apps/isanthropicdown`**: Status microsite (Vite + Cloudflare Workers)
 
 ### Shared Packages
 
-- **`@terragon/shared`**: Database models, schemas, and core utilities
-- **`@terragon/daemon`**: Sandbox agent runtime and communication
-- **`@terragon/bundled`**: Bundled scripts for deployment (includes daemon, mcp-server)
-- **`@terragon/env`**: Environment configuration management
-- **`@terragon/r2`**: Cloudflare R2 storage integration
-- **`@terragon/dev-env`**: Docker development environment
-- **`@terragon/tsconfig`**: Shared TypeScript configuration
-- **`@terragon/mcp-server`**: Model Context Protocol server for follow-up task suggestions
-- **`@terragon/debug-scripts`**: Debugging utilities for E2B sandboxes (SSH, connect, create, resume)
-- **`@terragon/cli-api-contract`**: ORPC-based CLI API contract definitions
-- **`@terragon/transactional`**: React Email-based transactional email templates
-- **`@terragon/sandbox`**: Sandbox abstraction across multiple providers (E2B, Docker, Daytona)
-- **`@terragon/sandbox-image`**: Sandbox image specific code to create template images for sandbox providers
-- **`@terragon/one-time-token-signin`**: Better Auth plugin for magic-link/one-time token sign-in
+- **`@dragon/shared`**: Database models, schemas, and core utilities
+- **`@dragon/daemon`**: Sandbox agent runtime and communication
+- **`@dragon/bundled`**: Bundled scripts for deployment (includes daemon, mcp-server)
+- **`@dragon/env`**: Environment configuration management
+- **`@dragon/r2`**: Cloudflare R2 storage integration
+- **`@dragon/dev-env`**: Docker development environment
+- **`@dragon/tsconfig`**: Shared TypeScript configuration
+- **`@dragon/mcp-server`**: Model Context Protocol server for follow-up task suggestions
+- **`@dragon/debug-scripts`**: Debugging utilities for E2B sandboxes (SSH, connect, create, resume)
+- **`@dragon/cli-api-contract`**: ORPC-based CLI API contract definitions
+- **`@dragon/transactional`**: React Email-based transactional email templates
+- **`@dragon/sandbox`**: Sandbox abstraction across multiple providers (E2B, Docker, Daytona)
+- **`@dragon/sandbox-image`**: Sandbox image specific code to create template images for sandbox providers
+- **`@dragon/one-time-token-signin`**: Better Auth plugin for magic-link/one-time token sign-in
 
 ## Important Notes
 
@@ -267,7 +267,7 @@ pnpm -C apps/cli uninstall:dev
 - **Database schema out of sync**: Run `pnpm -C packages/shared drizzle-kit-push-dev`
 - **Sandbox connection issues**: Verify E2B API keys are set correctly
 - **Ngrok tunnel issues**: Check `NGROK_AUTH_TOKEN` and `NGROK_DOMAIN` in `.env.development.local`
-- **CLI not found**: Run `pnpm install-cli:dev` to install the Terry CLI locally
+- **CLI not found**: Run `pnpm install-cli:dev` to install the Toothless CLI locally
 
 ### Debug Scripts
 

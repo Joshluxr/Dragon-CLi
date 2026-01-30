@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
-import { UIMessage, ThreadStatus } from "@terragon/shared";
-import { AIAgent } from "@terragon/agent/types";
-import { BootingSubstatus } from "@terragon/sandbox/types";
+import { UIMessage, ThreadStatus } from "@dragon/shared";
+import { AIAgent } from "@dragon/agent/types";
+import { BootingSubstatus } from "@dragon/sandbox/types";
 import { ChatMessageWithToolbar } from "./chat-message";
 import { LeafLoading } from "./leaf-loading";
 import Link from "next/link";
@@ -63,7 +63,7 @@ function getBootingSubstatusMessage(substatus: BootingSubstatus): string {
     case "installing-agent":
       return "Installing agent";
     case "running-setup-script":
-      return "Running terragon-setup.sh";
+      return "Running dragon-setup.sh";
     case "booting-done":
       return "Waiting for assistant to start";
     default:
@@ -84,7 +84,7 @@ function getAgentRateLimitMessage({
       Agent rate limit reached. {retryAtStr}{" "}
       {agent === "claudeCode" && (
         <Link
-          href="https://docs.terragonlabs.com/docs/agent-providers/claude-code#automatic-rate-limit-handling"
+          href="https://docs.dragonlabs.com/docs/agent-providers/claude-code#automatic-rate-limit-handling"
           target="_blank"
           rel="noopener noreferrer"
           className="underline hover:no-underline text-sm"

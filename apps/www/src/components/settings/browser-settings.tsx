@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import type { BrowserConfig } from "@terragon/shared";
-import { defaultBrowserConfig } from "@terragon/shared";
+import type { BrowserConfig } from "@dragon/shared";
+import { defaultBrowserConfig } from "@dragon/shared";
 import { updateEnvironmentBrowserAction } from "@/server-actions/environment";
 
 interface BrowserSettingsProps {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Terragon MCP Server
+ * Dragon MCP Server
  *
  * Enhanced MCP server providing AI agents with access to:
  * - Sandbox management (E2B/Daytona)
@@ -9,7 +9,7 @@
  * - Cloud storage (R2/S3)
  * - GitHub operations (PRs, issues, repos)
  *
- * Based on patterns from InsForge, adapted for Terragon.
+ * Based on patterns from InsForge, adapted for Dragon.
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -27,7 +27,7 @@ import { routeToolCall } from "./handlers/index.js";
 // Create the MCP server
 const server = new Server(
   {
-    name: "terragon-mcp-server",
+    name: "dragon-mcp-server",
     version: "1.0.0",
   },
   {
@@ -40,7 +40,7 @@ const server = new Server(
 
 // Original tools from the existing implementation
 const followupTaskDescription = `
-Suggest a follow-up task to the user. The user will have the option to spin up another copy of Terry to run and process this task.
+Suggest a follow-up task to the user. The user will have the option to spin up another copy of Toothless to run and process this task.
 Give all of the context required to do this task effectively. Use this tool anytime you think there are tasks the user should do but
 don't make sense to do in the current thread. Examples of these include:
 
@@ -189,37 +189,37 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
   return {
     resources: [
       {
-        uri: "terragon://docs/getting-started",
+        uri: "dragon://docs/getting-started",
         name: "Getting Started Guide",
         mimeType: "text/markdown",
-        description: "Introduction to Terragon MCP server and its capabilities",
+        description: "Introduction to Dragon MCP server and its capabilities",
       },
       {
-        uri: "terragon://docs/sandbox-guide",
+        uri: "dragon://docs/sandbox-guide",
         name: "Sandbox Usage Guide",
         mimeType: "text/markdown",
         description: "How to create and manage development sandboxes",
       },
       {
-        uri: "terragon://docs/database-guide",
+        uri: "dragon://docs/database-guide",
         name: "Database Operations Guide",
         mimeType: "text/markdown",
         description: "How to query and manage the database",
       },
       {
-        uri: "terragon://docs/agent-guide",
+        uri: "dragon://docs/agent-guide",
         name: "Agent Delegation Guide",
         mimeType: "text/markdown",
         description: "How to spawn and manage specialized AI agents",
       },
       {
-        uri: "terragon://docs/storage-guide",
+        uri: "dragon://docs/storage-guide",
         name: "Storage Operations Guide",
         mimeType: "text/markdown",
         description: "How to manage files in cloud storage",
       },
       {
-        uri: "terragon://docs/github-guide",
+        uri: "dragon://docs/github-guide",
         name: "GitHub Integration Guide",
         mimeType: "text/markdown",
         description: "How to interact with GitHub repositories",
@@ -235,9 +235,9 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   const { uri } = request.params;
 
   const docs: Record<string, string> = {
-    "terragon://docs/getting-started": `# Terragon MCP Server - Getting Started
+    "dragon://docs/getting-started": `# Dragon MCP Server - Getting Started
 
-Welcome to the Terragon MCP Server! This server provides AI agents with powerful capabilities to manage development environments, databases, storage, and more.
+Welcome to the Dragon MCP Server! This server provides AI agents with powerful capabilities to manage development environments, databases, storage, and more.
 
 ## Available Tool Categories
 
@@ -274,7 +274,7 @@ Interact with GitHub repositories:
 - \`CreateIssue\` - Create a new issue
 - \`ListIssues\` - List repository issues
 `,
-    "terragon://docs/sandbox-guide": `# Sandbox Usage Guide
+    "dragon://docs/sandbox-guide": `# Sandbox Usage Guide
 
 Sandboxes are isolated development environments for running code safely.
 
@@ -295,7 +295,7 @@ CreateSandbox({
 2. Use appropriate timeout values for long-running commands
 3. Consider saving snapshots for reproducible environments
 `,
-    "terragon://docs/database-guide": `# Database Operations Guide
+    "dragon://docs/database-guide": `# Database Operations Guide
 
 Query and inspect the PostgreSQL database.
 
@@ -315,7 +315,7 @@ QueryDatabase({
 - Use parameterized queries to prevent SQL injection
 - Results are automatically limited to prevent memory issues
 `,
-    "terragon://docs/agent-guide": `# Agent Delegation Guide
+    "dragon://docs/agent-guide": `# Agent Delegation Guide
 
 Spawn specialized AI agents for complex tasks.
 
@@ -327,7 +327,7 @@ Spawn specialized AI agents for complex tasks.
 - **debugger**: Debugs issues, analyzes logs
 - **planner**: Creates implementation plans
 `,
-    "terragon://docs/storage-guide": `# Storage Operations Guide
+    "dragon://docs/storage-guide": `# Storage Operations Guide
 
 Manage files in cloud storage (R2/S3 compatible).
 
@@ -342,7 +342,7 @@ UploadFile({
 })
 \`\`\`
 `,
-    "terragon://docs/github-guide": `# GitHub Integration Guide
+    "dragon://docs/github-guide": `# GitHub Integration Guide
 
 Interact with GitHub repositories, PRs, and issues.
 
@@ -390,7 +390,7 @@ CreatePullRequest({
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Terragon MCP server running on stdio");
+  console.error("Dragon MCP server running on stdio");
   console.error(`Loaded ${combinedTools.length} tools`);
 }
 

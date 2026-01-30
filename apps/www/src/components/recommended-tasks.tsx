@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import type { AIModel } from "@terragon/agent/types";
+import type { AIModel } from "@dragon/agent/types";
 import { tasksForModel } from "./recommended-tasks.utils";
 import { usePostHog } from "posthog-js/react";
 

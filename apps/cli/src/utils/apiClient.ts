@@ -5,10 +5,10 @@ import {
   InferContractRouterOutputs,
 } from "@orpc/contract";
 import { getApiKey } from "./config";
-import { cliAPIContract } from "@terragon/cli-api-contract";
+import { cliAPIContract } from "@dragon/cli-api-contract";
 
 const link = new RPCLink({
-  url: `${process.env.TERRAGON_WEB_URL}/api/cli`,
+  url: `${process.env.DRAGON_WEB_URL}/api/cli`,
   headers: async () => ({
     "X-Daemon-Token": (await getApiKey()) ?? "",
   }),

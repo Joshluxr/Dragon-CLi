@@ -1,4 +1,4 @@
-import { SelectedAIModels } from "@terragon/agent/types";
+import { SelectedAIModels } from "@dragon/agent/types";
 import { AutomationTrigger, AutomationTriggerType } from "../automations";
 import * as schema from "../db/schema";
 

@@ -1,12 +1,7 @@
-# Terragon
+# Dragon
 
-> **Snapshot notice (January 16, 2026):** This repository is an open-source snapshot of Terragon at the time of shutdown. It is provided **as-is**, with no guarantees of maintenance, support, or completeness.
+**Dragon** is an AI-powered coding assistant platform that enables users to run multiple coding agents in parallel within isolated cloud sandboxes. Delegate work to coding agents, track progress in real-time, and seamlessly integrate with your existing Git workflow.
 
-![Terragon](https://cdn.terragonlabs.com/dashboard-beRp.png)
-
-**Terragon** is an AI-powered coding assistant platform that enables users to run multiple coding agents in parallel within isolated cloud sandboxes. Delegate work to coding agents, track progress in real-time, and seamlessly integrate with your existing Git workflow.
-
-For trademark use, see [`TRADEMARKS.md`](TRADEMARKS.md).
 
 ## Table of Contents
 
@@ -31,7 +26,7 @@ For trademark use, see [`TRADEMARKS.md`](TRADEMARKS.md).
 
 - **Seamless Git Workflow**: Tasks are automatically assigned unique branches. Agent work is checkpointed and pushed to GitHub with AI-generated commits and Pull Requests. The git workflow can be disabled as needed.
 
-- **Terry CLI & MCP Server**: The `terry` CLI tool enables local task takeover and continuation. Includes an MCP server for managing and creating tasks from MCP-compatible clients (Cursor, Claude Code).
+- **Toothless CLI & MCP Server**: The `toothless` CLI tool enables local task takeover and continuation. Includes an MCP server for managing and creating tasks from MCP-compatible clients (Cursor, Claude Code).
 
 - **BYO Subscription & API Keys**: Use your existing Claude or ChatGPT subscriptions to power coding agents, or configure with your own API keys.
 
@@ -39,7 +34,7 @@ For trademark use, see [`TRADEMARKS.md`](TRADEMARKS.md).
 
 - **Real-time Management**: Task status and agent progress stream to your browser via WebSocket. Browser notifications keep you informed when tasks complete.
 
-- **Integrations**: @-mention Terragon in Slack or GitHub to kick off tasks directly where context exists.
+- **Integrations**: @-mention Dragon in Slack or GitHub to kick off tasks directly where context exists.
 
 ### Advanced Features
 
@@ -62,13 +57,13 @@ For detailed documentation of all features, see **[docs/FEATURES.md](docs/FEATUR
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           Terragon Platform                          │
+│                           Dragon Platform                          │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
 │  │   apps/www   │  │apps/broadcast│  │   apps/cli   │               │
 │  │  (Next.js)   │  │  (PartyKit)  │  │    (Ink)     │               │
-│  │   Frontend   │  │  WebSocket   │  │  Terry CLI   │               │
+│  │   Frontend   │  │  WebSocket   │  │  Toothless CLI   │               │
 │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘               │
 │         │                 │                 │                        │
 │         └────────────┬────┴─────────────────┘                        │
@@ -169,11 +164,11 @@ This starts all services:
 ## Project Structure
 
 ```
-terragon/
+dragon/
 ├── apps/
 │   ├── www/              # Main Next.js 15 web application
 │   ├── broadcast/        # PartyKit WebSocket service
-│   ├── cli/              # Terry CLI tool (Ink-based)
+│   ├── cli/              # Toothless CLI tool (Ink-based)
 │   └── docs/             # Fumadocs documentation site
 │
 ├── packages/
@@ -254,7 +249,7 @@ pnpm -C packages/shared drizzle-kit-push-dev    # Push schema changes
 pnpm -C packages/shared drizzle-kit-studio-dev  # Open Drizzle Studio
 
 # CLI
-pnpm install-cli:dev     # Install Terry CLI locally
+pnpm install-cli:dev     # Install Toothless CLI locally
 pnpm -C apps/cli install:dev
 ```
 

@@ -45,7 +45,7 @@ async function switchToBranch(
     if (statusOutput.trim()) {
       return {
         success: false,
-        error: `Cannot switch branches: you have uncommitted changes. Please commit or stash your changes before running 'terry pull'.`,
+        error: `Cannot switch branches: you have uncommitted changes. Please commit or stash your changes before running 'toothless pull'.`,
       };
     }
 

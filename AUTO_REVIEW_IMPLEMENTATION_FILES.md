@@ -4,7 +4,7 @@
 
 ### Database Schema
 
-- **Path:** `/root/repo/terragon-oss/packages/shared/src/db/schema.ts`
+- **Path:** `/root/repo/dragon-oss/packages/shared/src/db/schema.ts`
 - **Changes:** Added `prReview` table with columns and indexes
 - **Status:** ✅ Verified in test database
 
@@ -12,7 +12,7 @@
 
 #### 1. Auto-Review Types & Extraction
 
-- **Path:** `/root/repo/terragon-oss/packages/shared/src/model/auto-review.ts`
+- **Path:** `/root/repo/dragon-oss/packages/shared/src/model/auto-review.ts`
 - **Exports:**
   - `PRReviewTrigger` type
   - `PRReviewFocusArea` type
@@ -26,7 +26,7 @@
 
 #### 2. PR Review Database Operations
 
-- **Path:** `/root/repo/terragon-oss/packages/shared/src/model/pr-review.ts`
+- **Path:** `/root/repo/dragon-oss/packages/shared/src/model/pr-review.ts`
 - **Exports:**
   - `createPRReview()` - Create review record
   - `updatePRReviewStatus()` - Update review with summary
@@ -43,7 +43,7 @@
 
 #### 1. Auto-Review Handler
 
-- **Path:** `/root/repo/terragon-oss/apps/www/src/server-lib/auto-review.ts`
+- **Path:** `/root/repo/dragon-oss/apps/www/src/server-lib/auto-review.ts`
 - **Functions:**
   - `buildReviewPrompt()` - Constructs prompt with config
   - `createAutoReviewTask()` - Creates thread and review record
@@ -59,7 +59,7 @@
 
 #### 1. Auto-Review Settings Component
 
-- **Path:** `/root/repo/terragon-oss/apps/www/src/components/settings/auto-review-settings.tsx`
+- **Path:** `/root/repo/dragon-oss/apps/www/src/components/settings/auto-review-settings.tsx`
 - **Component:** `AutoReviewSettings`
 - **Features:**
   - Toggle auto-review enable/disable
@@ -78,7 +78,7 @@
 
 #### 1. Webhook Route Handler
 
-- **Path:** `/root/repo/terragon-oss/apps/www/src/app/api/webhooks/github/route.ts`
+- **Path:** `/root/repo/dragon-oss/apps/www/src/app/api/webhooks/github/route.ts`
 - **Integration Points:**
   - Line 48: Imports `handlePRForAutoReview`
   - Line 81: Calls handler after standard PR event processing
@@ -86,15 +86,15 @@
 
 ### Supporting Files Referenced
 
-- **Server Action:** `/root/repo/terragon-oss/apps/www/src/server-actions/environment.ts`
+- **Server Action:** `/root/repo/dragon-oss/apps/www/src/server-actions/environment.ts`
 
   - Contains `updateEnvironmentAutoReviewAction`
 
-- **Thread Creation:** `/root/repo/terragon-oss/apps/www/src/server-lib/new-thread-shared.ts`
+- **Thread Creation:** `/root/repo/dragon-oss/apps/www/src/server-lib/new-thread-shared.ts`
 
   - Used by `createAutoReviewTask` to create review thread
 
-- **GitHub Utilities:** `/root/repo/terragon-oss/apps/www/src/lib/github.ts`
+- **GitHub Utilities:** `/root/repo/dragon-oss/apps/www/src/lib/github.ts`
   - Provides `parseRepoFullName` and `getOctokitForApp`
 
 ---

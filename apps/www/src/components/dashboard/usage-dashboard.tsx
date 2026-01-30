@@ -12,8 +12,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { DailyUsageData, UsageSummary } from "@terragon/shared";
-import { formatNumber, aggregateByAgent } from "@terragon/shared";
+import type { DailyUsageData, UsageSummary } from "@dragon/shared";
+import { formatNumber, aggregateByAgent } from "@dragon/shared";
 
 interface UsageDashboardProps {
   data: DailyUsageData[];

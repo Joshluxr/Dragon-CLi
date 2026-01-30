@@ -5,10 +5,10 @@ import { db } from "@/lib/db";
 import {
   getEnvironment,
   updateEnvironment,
-} from "@terragon/shared/model/environments";
-import { encryptValue } from "@terragon/utils/encryption";
-import { env } from "@terragon/env/apps-www";
-import { McpConfig, validateMcpConfig } from "@terragon/sandbox/mcp-config";
+} from "@dragon/shared/model/environments";
+import { encryptValue } from "@dragon/utils/encryption";
+import { env } from "@dragon/env/apps-www";
+import { McpConfig, validateMcpConfig } from "@dragon/sandbox/mcp-config";
 import { getPostHogServer } from "@/lib/posthog-server";
 import { UserFacingError } from "@/lib/server-actions";
 
@@ -57,7 +57,7 @@ export const updateMcpConfig = userOnlyAction(
 
     // Track MCP config save
     const mcpServerNames = mcpConfig?.mcpServers
-      ? Object.keys(mcpConfig.mcpServers).filter((name) => name !== "terry")
+      ? Object.keys(mcpConfig.mcpServers).filter((name) => name !== "toothless")
       : [];
 
     getPostHogServer().capture({

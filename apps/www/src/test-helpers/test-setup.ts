@@ -3,7 +3,7 @@ import { createMockNextRequest } from "./mock-next";
 import { POST as processThreadQueuePOST } from "@/app/api/internal/process-thread-queue/[userId]/route";
 import { POST as processScheduledTaskPOST } from "@/app/api/internal/process-scheduled-task/[userId]/[threadId]/[threadChatId]/route";
 import { GET as cronScheduledTasksGET } from "@/app/api/internal/cron/scheduled-tasks/route";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 
 vi.mock("next/headers", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
@@ -71,7 +71,7 @@ vi.mock("@/server-lib/internal-request", () => ({
           {},
           {
             "Content-Type": "application/json",
-            "X-Terragon-Secret": env.INTERNAL_SHARED_SECRET,
+            "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET,
           },
         ),
         { params: Promise.resolve({ userId }) },
@@ -83,7 +83,7 @@ vi.mock("@/server-lib/internal-request", () => ({
           {},
           {
             "Content-Type": "application/json",
-            "X-Terragon-Secret": env.INTERNAL_SHARED_SECRET,
+            "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET,
           },
         ),
       );
@@ -95,7 +95,7 @@ vi.mock("@/server-lib/internal-request", () => ({
           {},
           {
             "Content-Type": "application/json",
-            "X-Terragon-Secret": env.INTERNAL_SHARED_SECRET,
+            "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET,
           },
         ),
         {
@@ -116,11 +116,11 @@ vi.mock("@/server-lib/generate-thread-name", () => ({
 vi.mock("@/server-lib/generate-session-summary", () => ({
   generateSessionSummary: vi.fn().mockResolvedValue("test-summary"),
 }));
-vi.mock("@terragon/shared/github-app", () => ({
+vi.mock("@dragon/shared/github-app", () => ({
   getInstallationToken: vi.fn().mockResolvedValue("mock-github-token"),
   getSandboxGithubToken: vi.fn().mockResolvedValue("mock-github-token"),
 }));
-vi.mock("@terragon/sandbox", async (importOriginal) => {
+vi.mock("@dragon/sandbox", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
@@ -134,7 +134,7 @@ vi.mock("@terragon/sandbox", async (importOriginal) => {
     }),
   };
 });
-vi.mock("@terragon/sandbox/commands", async (importOriginal) => {
+vi.mock("@dragon/sandbox/commands", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   const mockGitDiff = `
 diff --git a/test.txt b/test.txt
@@ -155,11 +155,11 @@ index 1234567..89abcdef 100644
     }),
     gitPullUpstream: vi.fn().mockResolvedValue(undefined),
     gitCommitAndPushBranch: vi.fn().mockResolvedValue({
-      branchName: "terragon/test-branch",
+      branchName: "dragon/test-branch",
     }),
   };
 });
-vi.mock("@terragon/shared/github-app", () => ({
+vi.mock("@dragon/shared/github-app", () => ({
   getInstallationToken: vi.fn().mockResolvedValue("mock-github-token"),
   getSandboxGithubToken: vi.fn().mockResolvedValue("mock-github-token"),
 }));

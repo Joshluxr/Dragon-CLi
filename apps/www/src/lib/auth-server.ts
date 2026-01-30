@@ -7,12 +7,12 @@ import {
   UserSettings,
   UserFlags,
   UserCredentials,
-} from "@terragon/shared";
-import { getUserSettings } from "@terragon/shared/model/user";
-import { getUserFlags } from "@terragon/shared/model/user-flags";
+} from "@dragon/shared";
+import { getUserSettings } from "@dragon/shared/model/user";
+import { getUserFlags } from "@dragon/shared/model/user-flags";
 import { cache } from "react";
-import { env } from "@terragon/env/apps-www";
-import { getFeatureFlagsForUser } from "@terragon/shared/model/feature-flags";
+import { env } from "@dragon/env/apps-www";
+import { getFeatureFlagsForUser } from "@dragon/shared/model/feature-flags";
 import { UserCookies } from "@/lib/cookies";
 import { getUserCookies } from "./cookies-server";
 import { redirect } from "next/navigation";
@@ -255,7 +255,7 @@ function getUserFlagsNormalized(userFlags: UserFlags) {
 
 export async function validInternalRequestOrThrow() {
   const requestHeaders = await headers();
-  const secret = requestHeaders.get("X-Terragon-Secret");
+  const secret = requestHeaders.get("X-Dragon-Secret");
   if (secret !== env.INTERNAL_SHARED_SECRET) {
     console.error("Unauthorized internal request");
     throw new Error("Unauthorized");

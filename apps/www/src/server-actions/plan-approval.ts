@@ -7,10 +7,10 @@ import {
   updateExecutionPlanStatus,
   modifyExecutionPlan,
   transitionToActMode,
-} from "@terragon/shared/model/plan-management";
+} from "@dragon/shared/model/plan-management";
 import { getPostHogServer } from "@/lib/posthog-server";
-import type { PlanApprovalRequest } from "@terragon/shared";
-import { thread, threadChat } from "@terragon/shared/db/schema";
+import type { PlanApprovalRequest } from "@dragon/shared";
+import { thread, threadChat } from "@dragon/shared/db/schema";
 import { eq } from "drizzle-orm";
 
 export const approvePlanAction = userOnlyAction(

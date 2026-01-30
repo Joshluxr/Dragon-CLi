@@ -28,7 +28,7 @@ Implement the core Supermemory client wrapper and utility modules that power all
 
 ### Functional
 
-- Wrap Supermemory SDK with Terragon-specific logic
+- Wrap Supermemory SDK with Dragon-specific logic
 - Implement settings management (load/save)
 - Implement container/project identification
 - Implement context formatting for Claude injection

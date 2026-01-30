@@ -21,23 +21,23 @@ export const WaitlistWelcomeEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Welcome to the Terragon Alpha!</Preview>
+      <Preview>Welcome to the Dragon Alpha!</Preview>
       <Tailwind>
         <Body className="bg-white font-sans">
           <Container className="mx-auto p-5 max-w-[600px]">
             <Section className="mt-6">
               <Heading className="text-2xl font-bold text-gray-900 mb-1">
-                Welcome to Terragon Alpha! 🎉
+                Welcome to Dragon Alpha! 🎉
               </Heading>
 
               <Text className="text-base text-gray-700 mb-3">👋 Hi there,</Text>
 
               <Text className="text-base text-gray-700 mb-3">
-                Thanks for signing up for the terragonlabs.com alpha program!
+                Thanks for signing up for the dragonlabs.com alpha program!
               </Text>
 
               <Text className="text-base text-gray-700 mb-4">
-                <strong>Use the button below to access Terragon.</strong>
+                <strong>Use the button below to access Dragon.</strong>
               </Text>
 
               <Section className="text-center mb-6">
@@ -64,7 +64,7 @@ export const WaitlistWelcomeEmail = ({
                 </Text>
 
                 <Link
-                  href="https://cdn.terragonlabs.com/censoredlogin.webm"
+                  href="https://cdn.dragonlabs.com/censoredlogin.webm"
                   className="text-base text-green-600 underline mb-3 block"
                 >
                   View setup video
@@ -79,7 +79,7 @@ export const WaitlistWelcomeEmail = ({
                 <ul className="list-disc pl-6 mb-4">
                   <li className="text-base text-gray-700 mb-1">
                     <Link
-                      href="https://docs.terragonlabs.com/docs/"
+                      href="https://docs.dragonlabs.com/docs/"
                       className="text-green-600 underline"
                     >
                       Documentation & release notes
@@ -109,7 +109,7 @@ export const WaitlistWelcomeEmail = ({
                 <ul className="list-disc pl-6 mb-3">
                   <li className="text-base text-gray-700 mb-1">
                     <strong>In-product feedback:</strong> click the "Send
-                    Feedback" button in the Terragon sidebar to share in-product
+                    Feedback" button in the Dragon sidebar to share in-product
                     feedback via a quick modal
                   </li>
                   <li className="text-base text-gray-700 mb-1">
@@ -120,10 +120,10 @@ export const WaitlistWelcomeEmail = ({
                   <li className="text-base text-gray-700 mb-1">
                     <strong>Direct support email:</strong> email{" "}
                     <Link
-                      href="mailto:support@terragonlabs.com"
+                      href="mailto:support@dragonlabs.com"
                       className="text-green-600 underline"
                     >
-                      support@terragonlabs.com
+                      support@dragonlabs.com
                     </Link>
                   </li>
                 </ul>
@@ -132,14 +132,14 @@ export const WaitlistWelcomeEmail = ({
               <Hr className="border-gray-300 my-6" />
 
               <Text className="text-base text-gray-700 mb-3">
-                Thanks so much for being part of the early Terragon journey!
+                Thanks so much for being part of the early Dragon journey!
                 Excited to grow this product with you.
               </Text>
 
               <Text className="text-base text-gray-700 mb-0">
                 Best,
                 <br />
-                Terragon team
+                Dragon team
               </Text>
             </Section>
           </Container>

@@ -1,8 +1,8 @@
 import type { StoryDefault, Story } from "@ladle/react";
 import { ThreadPromptBox } from "./thread-promptbox";
 import { useState } from "react";
-import { DBUserMessage } from "@terragon/shared";
-import { AGENT_VERSION } from "@terragon/agent/versions";
+import { DBUserMessage } from "@dragon/shared";
+import { AGENT_VERSION } from "@dragon/agent/versions";
 
 export default {
   title: "PromptBox/Thread",

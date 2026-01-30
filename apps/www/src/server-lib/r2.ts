@@ -1,5 +1,5 @@
-import { env } from "@terragon/env/apps-www";
-import { R2Client } from "@terragon/r2";
+import { env } from "@dragon/env/apps-www";
+import { R2Client } from "@dragon/r2";
 
 export const r2Public = new R2Client({
   accessKeyId: env.R2_ACCESS_KEY_ID,

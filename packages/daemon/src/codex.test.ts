@@ -231,9 +231,9 @@ describe("parseCodexLine", () => {
       '{"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","aggregated_output":"AGENTS.md\\napps\\nCLAUDE.local.md\\n","exit_code":0,"status":"completed"}}',
       '{"type":"item.completed","item":{"id":"item_2","type":"reasoning","text":"**Viewing README file**"}}',
       '{"type":"item.started","item":{"id":"item_3","type":"command_execution","command":"bash -lc \'cat README.md\'","aggregated_output":"","status":"in_progress"}}',
-      '{"type":"item.completed","item":{"id":"item_3","type":"command_execution","command":"bash -lc \'cat README.md\'","aggregated_output":"# Terragon\\n\\nDelegation platform\\n","exit_code":0,"status":"completed"}}',
+      '{"type":"item.completed","item":{"id":"item_3","type":"command_execution","command":"bash -lc \'cat README.md\'","aggregated_output":"# Dragon\\n\\nDelegation platform\\n","exit_code":0,"status":"completed"}}',
       '{"type":"item.completed","item":{"id":"item_4","type":"reasoning","text":"**Preparing summary**"}}',
-      '{"type":"item.completed","item":{"id":"item_5","type":"agent_message","text":"Terragon is a delegation platform"}}',
+      '{"type":"item.completed","item":{"id":"item_5","type":"agent_message","text":"Dragon is a delegation platform"}}',
       '{"type":"turn.completed","usage":{"input_tokens":20854,"cached_input_tokens":19584,"output_tokens":294}}',
     ];
 
@@ -694,7 +694,7 @@ describe("codexCommand", () => {
     );
   });
 
-  test("should include terry model provider flag when useCredits is true", () => {
+  test("should include toothless model provider flag when useCredits is true", () => {
     const command = codexCommand({
       runtime: mockRuntime,
       prompt: "test prompt",
@@ -705,7 +705,7 @@ describe("codexCommand", () => {
     expect(
       command.replace(/codex-prompt-.*.txt/, "codex-prompt-*.txt"),
     ).toMatchInlineSnapshot(
-      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5 -c model_provider="terry""`,
+      `"cat /tmp/codex-prompt-*.txt | codex exec --dangerously-bypass-approvals-and-sandbox --json --model gpt-5 -c model_provider="toothless""`,
     );
   });
 

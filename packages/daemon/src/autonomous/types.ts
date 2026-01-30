@@ -2,7 +2,7 @@
  * Autonomous Exit Detection Configuration and Types
  *
  * Enables truly autonomous background task execution with intelligent completion detection.
- * NOTE: These types are duplicated in @terragon/shared/model/autonomous.ts for use by
+ * NOTE: These types are duplicated in @dragon/shared/model/autonomous.ts for use by
  * other packages. Changes here should be synchronized.
  */
 

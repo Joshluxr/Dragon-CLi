@@ -1,7 +1,7 @@
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 import * as z from "zod/v4";
-import { DBUserMessage } from "@terragon/shared";
+import { DBUserMessage } from "@dragon/shared";
 import { richTextToPlainText } from "@/components/promptbox/tiptap-to-richtext";
 
 const threadNameSchema = z.object({

@@ -7,8 +7,8 @@ import {
   UISystemMessage,
   UIUserMessage,
   UIGitDiffPart,
-} from "@terragon/shared";
-import { AIAgent } from "@terragon/agent/types";
+} from "@dragon/shared";
+import { AIAgent } from "@dragon/agent/types";
 import { MessagePart } from "./message-part";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";

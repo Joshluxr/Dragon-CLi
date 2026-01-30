@@ -2,9 +2,9 @@ import {
   BroadcastChannelUser,
   BroadcastUserMessage,
   getBroadcastChannelStr,
-} from "@terragon/types/broadcast";
-import { env } from "@terragon/env/pkg-shared";
-import { publicBroadcastUrl } from "@terragon/env/next-public";
+} from "@dragon/types/broadcast";
+import { env } from "@dragon/env/pkg-shared";
+import { publicBroadcastUrl } from "@dragon/env/next-public";
 
 export async function publishBroadcastUserMessage(
   message: BroadcastUserMessage,
@@ -28,7 +28,7 @@ export async function publishBroadcastUserMessage(
       method: "POST",
       body: JSON.stringify(message),
       headers: {
-        "X-Terragon-Secret": env.INTERNAL_SHARED_SECRET!,
+        "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET!,
       },
     },
   );

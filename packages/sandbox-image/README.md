@@ -1,4 +1,4 @@
-# @terragon/sandbox-image
+# @dragon/sandbox-image
 
 This package contains the Dockerfile and code to create template images for sandbox providers.
 

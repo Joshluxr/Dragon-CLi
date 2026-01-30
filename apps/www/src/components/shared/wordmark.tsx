@@ -29,7 +29,7 @@ export function Wordmark({
             size === "sm" ? "text-lg" : size === "md" ? "text-xl" : "text-2xl",
           )}
         >
-          Terragon
+          Dragon
         </span>
       )}
     </Link>

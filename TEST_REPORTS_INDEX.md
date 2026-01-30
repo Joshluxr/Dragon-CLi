@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains comprehensive test reports for the auto-review implementation in terragon-oss.
+This directory contains comprehensive test reports for the auto-review implementation in dragon-oss.
 
 **Date Generated:** 2026-01-30
 **Status:** ✅ All Tests Passing (99.4%)
@@ -91,10 +91,10 @@ Contains:
 
 | Package             | Tests | Status    | Duration |
 | ------------------- | ----- | --------- | -------- |
-| `@terragon/shared`  | 447   | ✅ PASS   | 39.29s   |
-| `@terragon/www`     | 786   | ✅ PASS   | 159.63s  |
-| `@terragon/daemon`  | 149   | ⚠️ FAIL\* | 14.58s   |
-| `@terragon/sandbox` | 147   | ✅ PASS   | 71.11s   |
+| `@dragon/shared`  | 447   | ✅ PASS   | 39.29s   |
+| `@dragon/www`     | 786   | ✅ PASS   | 159.63s  |
+| `@dragon/daemon`  | 149   | ⚠️ FAIL\* | 14.58s   |
+| `@dragon/sandbox` | 147   | ✅ PASS   | 71.11s   |
 
 \*Daemon failures are pre-existing environment issues unrelated to auto-review
 

@@ -4,7 +4,7 @@
  * Types for tracking agent usage, costs, and analytics.
  */
 
-import type { AIAgent } from "@terragon/agent/types";
+import type { AIAgent } from "@dragon/agent/types";
 
 export interface AgentStats {
   tasks: number;

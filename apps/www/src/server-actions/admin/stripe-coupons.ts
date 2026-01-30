@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import {
   user as userTable,
   userStripePromotionCode,
-} from "@terragon/shared/db/schema";
+} from "@dragon/shared/db/schema";
 import { asc, inArray, lt } from "drizzle-orm";
 import {
   stripeCouponsCreate,
@@ -39,7 +39,7 @@ const inputSchema = z.object({
 });
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const CODE_PREFIX = "TERRAGON";
+const CODE_PREFIX = "DRAGON";
 const CODE_LENGTH = 10;
 
 function generateCouponCode() {

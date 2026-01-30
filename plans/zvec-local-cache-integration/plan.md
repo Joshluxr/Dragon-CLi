@@ -53,7 +53,7 @@ This plan integrates Alibaba's Zvec embedded vector database as a **local cachin
 │                      └──────────────┘                           │
 │                             │                                    │
 │                             ▼                                    │
-│                      ~/.terragon/                                │
+│                      ~/.dragon/                                │
 │                        zvec-cache/                               │
 │                          {project}/                              │
 └─────────────────────────────────────────────────────────────────┘
@@ -133,7 +133,7 @@ Conflict Resolution:
 
 ```python
 schema = CollectionSchema(
-    name="terragon_memories",
+    name="dragon_memories",
     fields=[
         # Vector field for semantic search
         VectorSchema(

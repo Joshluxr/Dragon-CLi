@@ -47,7 +47,7 @@ import {
 } from "./handlers";
 import { handlePRForAutoReview } from "@/server-lib/auto-review";
 import { Webhooks } from "@octokit/webhooks";
-import { env } from "@terragon/env/apps-www";
+import { env } from "@dragon/env/apps-www";
 
 export async function POST(request: NextRequest) {
   const webhooks = new Webhooks({

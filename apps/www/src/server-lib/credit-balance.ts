@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { getUserCreditBalance } from "@terragon/shared/model/credits";
+import { getUserCreditBalance } from "@dragon/shared/model/credits";
 
 export const creditsTagFor = (userId: string) => `credits:user:${userId}`;
 

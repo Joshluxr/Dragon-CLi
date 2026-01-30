@@ -158,7 +158,7 @@ export interface CheckpointMetadata {
 ```typescript
 // packages/shared/src/services/checkpoint-service.ts
 
-import { r2Client } from "@terragon/r2";
+import { r2Client } from "@dragon/r2";
 
 const CHECKPOINT_BUCKET = "session-checkpoints";
 

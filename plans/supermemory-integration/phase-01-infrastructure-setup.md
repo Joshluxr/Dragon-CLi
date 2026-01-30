@@ -28,7 +28,7 @@ Set up the package structure, dependencies, and basic infrastructure for the Sup
 
 ### Functional
 
-- Create new `@terragon/supermemory` package
+- Create new `@dragon/supermemory` package
 - Install and configure `supermemory` SDK dependency
 - Set up TypeScript configuration
 - Create build scripts for hook bundling
@@ -79,7 +79,7 @@ mkdir -p packages/supermemory/scripts
 
 ```json
 {
-  "name": "@terragon/supermemory",
+  "name": "@dragon/supermemory",
   "version": "1.0.0",
   "description": "Supermemory integration for persistent memory across Claude sessions",
   "type": "module",
@@ -99,7 +99,7 @@ mkdir -p packages/supermemory/scripts
     "supermemory": "^4.0.0"
   },
   "devDependencies": {
-    "@terragon/tsconfig": "workspace:*",
+    "@dragon/tsconfig": "workspace:*",
     "@types/node": "^22.15.29",
     "esbuild": "^0.25.0",
     "typescript": "^5.8.3",
@@ -112,7 +112,7 @@ mkdir -p packages/supermemory/scripts
 
 ```json
 {
-  "extends": "@terragon/tsconfig/base.json",
+  "extends": "@dragon/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"
@@ -163,7 +163,7 @@ pnpm install
 ## Risk Assessment
 
 - **Low**: Standard package setup following existing patterns
-- **Mitigation**: Follow existing package structure (`@terragon/utils`)
+- **Mitigation**: Follow existing package structure (`@dragon/utils`)
 
 ## Security Considerations
 

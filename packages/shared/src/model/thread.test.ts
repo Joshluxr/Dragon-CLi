@@ -4,7 +4,7 @@ import {
   createTestThread,
   createTestAutomation,
 } from "./test-helpers";
-import { env } from "@terragon/env/pkg-shared";
+import { env } from "@dragon/env/pkg-shared";
 import { createDb } from "../db";
 import { ThreadInsert, ThreadChatInsert, User } from "../db/types";
 import { DBMessage, DBUserMessage } from "../db/db-message";
@@ -57,7 +57,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -78,7 +78,7 @@ describe("thread", () => {
           db,
           userId: user.id,
           threadValues: {
-            githubRepoFullName: "terragon/terragon",
+            githubRepoFullName: "dragon/dragon",
             repoBaseBranchName: "main",
             sandboxProvider: "e2b",
           },
@@ -109,7 +109,7 @@ describe("thread", () => {
           db,
           userId: user.id,
           threadValues: {
-            githubRepoFullName: "terragon/terragon",
+            githubRepoFullName: "dragon/dragon",
             repoBaseBranchName: "main",
             sandboxProvider: "e2b",
           },
@@ -153,7 +153,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -183,7 +183,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -214,7 +214,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -240,7 +240,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -265,7 +265,7 @@ describe("thread", () => {
         db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           sandboxProvider: "e2b",
         },
@@ -1572,7 +1572,7 @@ describe("thread", () => {
         db: db,
         userId: user.id,
         threadValues: {
-          githubRepoFullName: "terragon/terragon",
+          githubRepoFullName: "dragon/dragon",
           repoBaseBranchName: "main",
           name: "Test Thread",
           sandboxProvider: "e2b",
@@ -1900,7 +1900,7 @@ describe("thread", () => {
 
       it("should return correct prStatus when thread has PR", async () => {
         const prNumber = 123;
-        const repoFullName = "terragon/repo1";
+        const repoFullName = "dragon/repo1";
 
         // Create thread with PR number
         const { threadId } = await createTestThread({
@@ -2055,7 +2055,7 @@ describe("thread", () => {
       });
 
       it("should return null when PR exists but thread has no PR number", async () => {
-        const repoFullName = "terragon/repo1";
+        const repoFullName = "dragon/repo1";
         // Create thread without PR number
         const { threadId } = await createTestThread({
           db,
@@ -2156,8 +2156,8 @@ describe("thread", () => {
       });
 
       it("should handle threads from different repos with same PR number", async () => {
-        const repo1 = "terragon/repo1";
-        const repo2 = "terragon/repo2";
+        const repo1 = "dragon/repo1";
+        const repo2 = "dragon/repo2";
         const prNumber = 1;
 
         // Create PRs in different repos with same number but different status
@@ -4022,7 +4022,7 @@ describe("thread", () => {
 
     it("should include PR status when available", async () => {
       const prNumber = 789;
-      const repoFullName = "terragon/repo1";
+      const repoFullName = "dragon/repo1";
 
       // Create thread with PR
       const { threadId } = await createTestThread({
@@ -4054,7 +4054,7 @@ describe("thread", () => {
 
     it("should support pagination", async () => {
       // Create multiple threads with a unique repo name to isolate from other tests
-      const uniqueRepo = `terragon/test-pagination-${Date.now()}`;
+      const uniqueRepo = `dragon/test-pagination-${Date.now()}`;
       const threadIds = [];
       for (let i = 0; i < 5; i++) {
         const { threadId } = await createTestThread({

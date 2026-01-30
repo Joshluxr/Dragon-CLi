@@ -1,7 +1,7 @@
 /**
  * Multi-Agent Orchestration Types
  *
- * NOTE: These types are duplicated in @terragon/shared/model/orchestration.ts for use by
+ * NOTE: These types are duplicated in @dragon/shared/model/orchestration.ts for use by
  * other packages. Changes here should be synchronized.
  */
 

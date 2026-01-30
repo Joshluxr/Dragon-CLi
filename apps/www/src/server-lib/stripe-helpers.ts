@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { getUser, updateUser } from "@terragon/shared/model/user";
+import { getUser, updateUser } from "@dragon/shared/model/user";
 import { stripeCustomersCreate } from "./stripe";
 
 export async function ensureStripeCustomer({
@@ -22,7 +22,7 @@ export async function ensureStripeCustomer({
     email: user.email,
     name: user.name,
     metadata: {
-      terragon_user_id: userId,
+      dragon_user_id: userId,
     },
   });
   await updateUser({ db, userId, updates: { stripeCustomerId: customer.id } });

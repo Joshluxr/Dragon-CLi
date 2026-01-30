@@ -181,7 +181,7 @@ def main():
     parser = argparse.ArgumentParser(description="Zvec Bridge Server")
     parser.add_argument(
         "--base-dir",
-        default="~/.terragon/zvec-cache",
+        default="~/.dragon/zvec-cache",
         help="Base directory for cache storage",
     )
     parser.add_argument(

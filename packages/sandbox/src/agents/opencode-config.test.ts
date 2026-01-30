@@ -1,17 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { buildOpencodeConfig, getModelId } from "./opencode-config";
-import { agentToModels } from "@terragon/agent/utils";
-import { validateProviderModel } from "@terragon/agent/proxy";
+import { agentToModels } from "@dragon/agent/utils";
+import { validateProviderModel } from "@dragon/agent/proxy";
 
 describe("buildOpencodeConfig", () => {
   it("should build a valid opencode config", () => {
     const config = buildOpencodeConfig({
-      publicUrl: "https://www.terragonlabs.com",
+      publicUrl: "https://www.dragonlabs.com",
       userMcpConfig: {
         mcpServers: {
-          terry: {
+          toothless: {
             command: "npx",
-            args: ["-y", "terry", "mcp"],
+            args: ["-y", "toothless", "mcp"],
             env: {
               DAEMON_TOKEN: "test-token",
             },
@@ -24,12 +24,12 @@ describe("buildOpencodeConfig", () => {
         "$schema": "https://opencode.ai/config.json",
         "autoupdate": false,
         "mcp": {
-          "terry": {
+          "toothless": {
             "type": "local",
             "command": [
               "npx",
               "-y",
-              "terry",
+              "toothless",
               "mcp"
             ],
             "enabled": true,
@@ -39,11 +39,11 @@ describe("buildOpencodeConfig", () => {
           }
         },
         "provider": {
-          "terry": {
+          "toothless": {
             "npm": "@ai-sdk/openai-compatible",
-            "name": "Terragon",
+            "name": "Dragon",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/openrouter/v1",
+              "baseURL": "https://www.dragonlabs.com/api/proxy/openrouter/v1",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
               }
@@ -75,11 +75,11 @@ describe("buildOpencodeConfig", () => {
               }
             }
           },
-          "terry-google": {
+          "toothless-google": {
             "npm": "@ai-sdk/google",
-            "name": "Terragon Google",
+            "name": "Dragon Google",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/google/v1",
+              "baseURL": "https://www.dragonlabs.com/api/proxy/google/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
@@ -96,11 +96,11 @@ describe("buildOpencodeConfig", () => {
               }
             }
           },
-          "terry-ant": {
+          "toothless-ant": {
             "npm": "@ai-sdk/anthropic",
-            "name": "Terragon Anthropic",
+            "name": "Dragon Anthropic",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/anthropic/v1",
+              "baseURL": "https://www.dragonlabs.com/api/proxy/anthropic/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"
@@ -113,11 +113,11 @@ describe("buildOpencodeConfig", () => {
               }
             }
           },
-          "terry-oai": {
+          "toothless-oai": {
             "npm": "@ai-sdk/openai",
-            "name": "Terragon OpenAI",
+            "name": "Dragon OpenAI",
             "options": {
-              "baseURL": "https://www.terragonlabs.com/api/proxy/openai/v1",
+              "baseURL": "https://www.dragonlabs.com/api/proxy/openai/v1",
               "apiKey": "unused",
               "headers": {
                 "X-Daemon-Token": "{env:DAEMON_TOKEN}"

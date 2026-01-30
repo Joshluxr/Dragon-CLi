@@ -10,14 +10,14 @@ import {
   completeAutonomousExecution,
   stopAutonomousExecution,
   getRecentAutonomousExecutions,
-} from "@terragon/shared/model/autonomous-db";
-import { validateAutonomousConfig } from "@terragon/shared/model/autonomous";
+} from "@dragon/shared/model/autonomous-db";
+import { validateAutonomousConfig } from "@dragon/shared/model/autonomous";
 import { getPostHogServer } from "@/lib/posthog-server";
 import type {
   AutonomousConfig,
   AutonomousExecutionStatus,
   CompletionSignal,
-} from "@terragon/shared";
+} from "@dragon/shared";
 
 export const startAutonomousExecutionAction = userOnlyAction(
   async function startAutonomousExecutionAction(

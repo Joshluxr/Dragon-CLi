@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateFeedbackStatus } from "@/server-actions/admin/feedback";
-import { FeedbackType } from "@terragon/shared";
+import { FeedbackType } from "@dragon/shared";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";

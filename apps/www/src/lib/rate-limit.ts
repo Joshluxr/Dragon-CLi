@@ -1,7 +1,7 @@
 import { redis } from "./redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import { db } from "@/lib/db";
-import { getUser } from "@terragon/shared/model/user";
+import { getUser } from "@dragon/shared/model/user";
 const PREFIX = "@upstash/ratelimit";
 
 const productionRefillRate = 20;

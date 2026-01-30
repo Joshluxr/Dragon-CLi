@@ -5,7 +5,7 @@
 import { eq, and, desc, asc, or } from "drizzle-orm";
 import type { DB } from "../db";
 import { sessionCheckpoint, agentHandoff, thread } from "../db/schema";
-import type { AIAgent } from "@terragon/agent/types";
+import type { AIAgent } from "@dragon/agent/types";
 import type {
   CheckpointType,
   CheckpointMetadata,

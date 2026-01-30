@@ -2,6 +2,6 @@
   "name": "supermemory",
   "version": "1.0.0",
   "description": "Persistent memory across Claude Code sessions using Supermemory",
-  "author": "Terragon Labs",
-  "repository": "https://github.com/terragon-labs/terragon-oss"
+  "author": "Dragon Labs",
+  "repository": "https://github.com/dragon-labs/dragon-oss"
 }

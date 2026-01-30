@@ -32,7 +32,7 @@
 
 #### 1.1 Create Auto-Review Types Test
 
-**File:** `/root/repo/terragon-oss/packages/shared/src/model/auto-review.test.ts`
+**File:** `/root/repo/dragon-oss/packages/shared/src/model/auto-review.test.ts`
 
 ```typescript
 // Test cases to implement:
@@ -101,7 +101,7 @@ describe("auto-review", () => {
 
 #### 1.2 Create PR Review Model Test
 
-**File:** `/root/repo/terragon-oss/packages/shared/src/model/pr-review.test.ts`
+**File:** `/root/repo/dragon-oss/packages/shared/src/model/pr-review.test.ts`
 
 ```typescript
 // Test cases to implement:
@@ -214,7 +214,7 @@ describe("pr-review model", () => {
 
 #### 1.3 Create Auto-Review Handler Test
 
-**File:** `/root/repo/terragon-oss/apps/www/src/server-lib/auto-review.test.ts`
+**File:** `/root/repo/dragon-oss/apps/www/src/server-lib/auto-review.test.ts`
 
 ```typescript
 // Test cases to implement:
@@ -383,7 +383,7 @@ describe("auto-review handler", () => {
 
 #### 2.1 Create Settings Component Test
 
-**File:** `/root/repo/terragon-oss/apps/www/src/components/settings/auto-review-settings.test.tsx`
+**File:** `/root/repo/dragon-oss/apps/www/src/components/settings/auto-review-settings.test.tsx`
 
 ```typescript
 // Test cases to implement:
@@ -451,7 +451,7 @@ describe("AutoReviewSettings", () => {
 
 #### 3.1 Add Auto-Review E2E Test
 
-**File:** Add to `/root/repo/terragon-oss/apps/www/src/server-lib/e2e.test.ts`
+**File:** Add to `/root/repo/dragon-oss/apps/www/src/server-lib/e2e.test.ts`
 
 ```typescript
 // Test cases to add to e2e.test.ts:

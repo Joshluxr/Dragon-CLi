@@ -9,7 +9,7 @@ import {
   GithubCheckStatus,
   GithubPRStatus,
   ThreadStatus,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { useServerActionMutation } from "@/queries/server-action-helpers";
 
 export function GitHubQuickActions({

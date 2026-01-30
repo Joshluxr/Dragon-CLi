@@ -177,7 +177,7 @@ export async function setupPythonEnvironment(): Promise<SetupResult>;
 ### 7. Cache Directory Structure
 
 ```
-~/.terragon/
+~/.dragon/
 └── zvec-cache/
     ├── config.json           # Global settings
     └── {project-hash}/       # Per-project cache
@@ -228,7 +228,7 @@ export async function setupPythonEnvironment(): Promise<SetupResult>;
 
 ## Success Criteria
 
-1. `pnpm --filter @terragon/supermemory setup:python` creates working environment
+1. `pnpm --filter @dragon/supermemory setup:python` creates working environment
 2. Bridge can start/stop Python subprocess
 3. Bridge can send/receive JSON-RPC messages
 4. Platform detection correctly identifies supported systems

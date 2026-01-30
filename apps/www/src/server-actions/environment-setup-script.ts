@@ -9,7 +9,7 @@ import {
 import {
   getEnvironment,
   updateEnvironment,
-} from "@terragon/shared/model/environments";
+} from "@dragon/shared/model/environments";
 import { UserFacingError } from "@/lib/server-actions";
 
 export const updateEnvironmentSetupScript = userOnlyAction(

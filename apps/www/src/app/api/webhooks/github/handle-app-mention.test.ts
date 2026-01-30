@@ -1,15 +1,15 @@
 import { describe, expect, it, vi, beforeEach, beforeAll } from "vitest";
 import { handleAppMention } from "./handle-app-mention";
-import { User, GitHubPR } from "@terragon/shared";
+import { User, GitHubPR } from "@dragon/shared";
 import {
   createTestGitHubPR,
   createTestThread,
   createTestUser,
   setFeatureFlagOverrideForTest,
-} from "@terragon/shared/model/test-helpers";
-import { updateUserSettings } from "@terragon/shared/model/user";
+} from "@dragon/shared/model/test-helpers";
+import { updateUserSettings } from "@dragon/shared/model/user";
 import { db } from "@/lib/db";
-import * as schema from "@terragon/shared/db/schema";
+import * as schema from "@dragon/shared/db/schema";
 import { newThreadInternal } from "@/server-lib/new-thread-internal";
 import {
   getOctokitForUser,
@@ -21,7 +21,7 @@ import {
 } from "@/lib/github";
 import { queueFollowUpInternal } from "@/server-lib/follow-up";
 import { getDiffContextStr } from "./utils";
-import { createAutomation } from "@terragon/shared/model/automations";
+import { createAutomation } from "@dragon/shared/model/automations";
 import { convertToPlainText } from "@/lib/db-message-helpers";
 import { redis } from "@/lib/redis";
 
@@ -1139,7 +1139,7 @@ Hey @app, I found several issues:
     });
 
     it("should create tasks for both mentioning user and automation user when both apply", async () => {
-      // Mentioning user is a Terragon user but not the automation owner
+      // Mentioning user is a Dragon user but not the automation owner
       await createAutomation({
         db,
         userId: automationUser.id,

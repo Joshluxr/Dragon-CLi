@@ -3,17 +3,17 @@
 import { headers } from "next/headers";
 import { userOnlyAction } from "@/lib/auth-server";
 import { auth } from "@/lib/auth";
-import { publicAppUrl } from "@terragon/env/next-public";
+import { publicAppUrl } from "@dragon/env/next-public";
 import { db } from "@/lib/db";
 import { assertStripeConfigured } from "@/server-lib/stripe";
 import { getBillingInfo as getBillingInfoInternal } from "@/lib/subscription";
-import { AccessTier } from "@terragon/shared";
+import { AccessTier } from "@dragon/shared";
 import {
   getSubscriptionInfoForUser,
   setSignupTrialPlanForUser,
-} from "@terragon/shared/model/subscription";
+} from "@dragon/shared/model/subscription";
 import { UserFacingError } from "@/lib/server-actions";
-import { getFeatureFlagsGlobal } from "@terragon/shared/model/feature-flags";
+import { getFeatureFlagsGlobal } from "@dragon/shared/model/feature-flags";
 
 export const getBillingInfoAction = userOnlyAction(
   async function getBillingInfoAction() {
@@ -31,7 +31,7 @@ export const getStripeCheckoutUrl = userOnlyAction(
     const flags = await getFeatureFlagsGlobal({ db });
     if (flags.shutdownMode) {
       throw new UserFacingError(
-        "New subscriptions are no longer available. Terragon is shutting down on February 14th, 2026.",
+        "New subscriptions are no longer available. Dragon is shutting down on February 14th, 2026.",
       );
     }
 

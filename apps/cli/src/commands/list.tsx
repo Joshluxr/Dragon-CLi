@@ -20,7 +20,7 @@ export function ListCommand() {
     const checkAuth = async () => {
       const apiKey = await getApiKey();
       if (!apiKey) {
-        setAuthError("Not authenticated. Run 'terry auth' first.");
+        setAuthError("Not authenticated. Run 'toothless auth' first.");
       }
     };
     checkAuth();

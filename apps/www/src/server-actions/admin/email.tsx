@@ -2,21 +2,21 @@
 
 import { db } from "@/lib/db";
 import { adminOnly } from "@/lib/auth-server";
-import { User } from "@terragon/shared";
+import { User } from "@dragon/shared";
 import * as z from "zod/v4";
 import { Resend } from "resend";
-import { env } from "@terragon/env/apps-www";
-import { WaitlistWelcomeEmail } from "@terragon/transactional/emails/waitlist-welcome";
-import { OnboardingCompletionReminderEmail } from "@terragon/transactional/emails/onboarding-completion-reminder";
-import { generateAccessCode } from "@terragon/shared/model/access-codes";
+import { env } from "@dragon/env/apps-www";
+import { WaitlistWelcomeEmail } from "@dragon/transactional/emails/waitlist-welcome";
+import { OnboardingCompletionReminderEmail } from "@dragon/transactional/emails/onboarding-completion-reminder";
+import { generateAccessCode } from "@dragon/shared/model/access-codes";
 import {
   getEligibleReengagementRecipients,
   recordReengagementEmail,
-} from "@terragon/shared/model/reengagement-emails";
+} from "@dragon/shared/model/reengagement-emails";
 import {
   getEligibleOnboardingCompletionRecipients,
   recordOnboardingCompletionEmail,
-} from "@terragon/shared/model/onboarding-completion-emails";
+} from "@dragon/shared/model/onboarding-completion-emails";
 
 export const sendOnboardingEmail = adminOnly(async function sendOnboardingEmail(
   adminUser: User,
@@ -52,10 +52,10 @@ export const sendOnboardingEmail = adminOnly(async function sendOnboardingEmail(
   const resend = new Resend(env.RESEND_API_KEY ?? "DUMMY_KEY");
 
   const result = await resend.emails.send({
-    from: "The Terragon Team <onboarding@mail.terragonlabs.com>",
+    from: "The Dragon Team <onboarding@mail.dragonlabs.com>",
     to: email,
-    replyTo: "support@terragonlabs.com",
-    subject: "Welcome to the Terragon Alpha!",
+    replyTo: "support@dragonlabs.com",
+    subject: "Welcome to the Dragon Alpha!",
     react: <WaitlistWelcomeEmail accessLink={accessLink} />,
   });
 
@@ -124,10 +124,10 @@ export const sendReengagementEmails = adminOnly(async (adminUser: User) => {
       const accessLink = `${baseUrl}/invited?code=${recipient.code}`;
 
       const result = await resend.emails.send({
-        from: "The Terragon Team <onboarding@mail.terragonlabs.com>",
+        from: "The Dragon Team <onboarding@mail.dragonlabs.com>",
         to: recipient.email,
-        replyTo: "support@terragonlabs.com",
-        subject: "Reminder: Redeem Terragon Access Code",
+        replyTo: "support@dragonlabs.com",
+        subject: "Reminder: Redeem Dragon Access Code",
         react: <WaitlistWelcomeEmail accessLink={accessLink} />,
       });
 
@@ -209,9 +209,9 @@ export const sendOnboardingCompletionEmails = adminOnly(
         const dashboardLink = `${baseUrl}/`;
 
         const result = await resend.emails.send({
-          from: "The Terragon Team <onboarding@mail.terragonlabs.com>",
+          from: "The Dragon Team <onboarding@mail.dragonlabs.com>",
           to: user.email,
-          replyTo: "support@terragonlabs.com",
+          replyTo: "support@dragonlabs.com",
           subject: "Forget something?",
           react: (
             <OnboardingCompletionReminderEmail dashboardLink={dashboardLink} />

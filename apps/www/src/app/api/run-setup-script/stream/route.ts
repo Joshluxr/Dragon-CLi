@@ -3,17 +3,17 @@ import { getUserOrNull } from "@/lib/auth-server";
 import {
   getDecryptedEnvironmentVariables,
   getEnvironment,
-} from "@terragon/shared/model/environments";
+} from "@dragon/shared/model/environments";
 import { db } from "@/lib/db";
 import {
   getGitHubUserAccessTokenOrThrow,
   getUserSettings,
-} from "@terragon/shared/model/user";
-import { getFeatureFlagsForUser } from "@terragon/shared/model/feature-flags";
-import { env } from "@terragon/env/apps-www";
+} from "@dragon/shared/model/user";
+import { getFeatureFlagsForUser } from "@dragon/shared/model/feature-flags";
+import { env } from "@dragon/env/apps-www";
 import { getOrCreateSandbox, getSandboxProvider } from "@/agent/sandbox";
-import { CreateSandboxOptions } from "@terragon/sandbox/types";
-import { runSetupScript } from "@terragon/sandbox";
+import { CreateSandboxOptions } from "@dragon/sandbox/types";
+import { runSetupScript } from "@dragon/sandbox";
 import { nonLocalhostPublicAppUrl } from "@/lib/server-utils";
 import { getDefaultBranchForRepo } from "@/lib/github";
 import { SandboxOutput } from "@/hooks/use-setup-script";

@@ -1,4 +1,4 @@
-# Terragon OSS - Test Execution Report Index
+# Dragon OSS - Test Execution Report Index
 
 **Date:** January 30, 2026
 **Status:** ✅ ALL TESTS PASSED (1,705/1,708)
@@ -19,7 +19,7 @@
 
 ## Report Documents
 
-All reports are located in the project root directory (`/root/repo/terragon-oss/`).
+All reports are located in the project root directory (`/root/repo/dragon-oss/`).
 
 ### 1. **TEST_RESULTS_SUMMARY.md** (12 KB)
 

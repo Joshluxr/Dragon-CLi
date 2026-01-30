@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 
 const options = [
   "commute",
@@ -106,7 +106,7 @@ export function Hero() {
           <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-lg" />
           <div className="relative w-full rounded-lg bg-white border overflow-hidden">
             <video
-              src="https://cdn.terragonlabs.com/sawyerui-Vxci.webm"
+              src="https://cdn.dragonlabs.com/sawyerui-Vxci.webm"
               className="w-full h-auto"
               controls
               muted

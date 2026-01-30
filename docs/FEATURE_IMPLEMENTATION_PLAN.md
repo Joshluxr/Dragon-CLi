@@ -1,4 +1,4 @@
-# Terragon-OSS Feature Implementation Plan
+# Dragon-OSS Feature Implementation Plan
 
 ## Executive Summary
 
@@ -116,7 +116,7 @@ import {
   getAvailableWarmSandbox,
   addWarmSandbox,
   getPoolConfig,
-} from "@terragon/shared/model/warm-pool";
+} from "@dragon/shared/model/warm-pool";
 
 export class WarmPoolManager {
   private replenishInterval: NodeJS.Timeout | null = null;
@@ -842,7 +842,7 @@ import {
   updatePresence,
   getThreadPresence,
   removePresence,
-} from "@terragon/shared/presence";
+} from "@dragon/shared/presence";
 
 export default class PresenceServer implements Party.Server {
   constructor(readonly room: Party.Room) {}
@@ -1005,7 +1005,7 @@ Automatically snapshot and hibernate inactive sandboxes to save resources.
 import { CronJob } from "cron";
 import { shouldHibernateSandbox } from "@/agent/sandbox-resource";
 import { createThreadSnapshot } from "@/server-actions/snapshots";
-import { hibernateSandbox } from "@terragon/sandbox";
+import { hibernateSandbox } from "@dragon/sandbox";
 
 interface InactivityConfig {
   checkIntervalMs: number;
@@ -1212,7 +1212,7 @@ export class SlackCallbackService {
           elements: [
             {
               type: "button",
-              text: { type: "plain_text", text: "View in Terry" },
+              text: { type: "plain_text", text: "View in Toothless" },
               url: callback.data.threadUrl,
             },
             {
@@ -1556,11 +1556,11 @@ async function createThreadFromSlack(event: SlackMentionEvent) {
 **apps/www/src/app/api/webhooks/slack/commands/route.ts**
 
 ```typescript
-// Handle /terry-settings command
+// Handle /toothless-settings command
 export async function POST(request: Request) {
   const payload = await parseSlackCommand(request);
 
-  if (payload.command === "/terry-settings") {
+  if (payload.command === "/toothless-settings") {
     const preferences = await getSlackUserPreferences(
       db,
       payload.user_id,
@@ -1580,7 +1580,7 @@ export async function POST(request: Request) {
 function buildPreferencesModal(preferences: SlackUserPreferences) {
   return {
     type: "modal",
-    title: { type: "plain_text", text: "Terry Settings" },
+    title: { type: "plain_text", text: "Toothless Settings" },
     submit: { type: "plain_text", text: "Save" },
     blocks: [
       {
@@ -1745,7 +1745,7 @@ export class CircuitOpenError extends Error {
 import {
   CircuitBreaker,
   CircuitOpenError,
-} from "@terragon/utils/circuit-breaker";
+} from "@dragon/utils/circuit-breaker";
 
 const sandboxCircuitBreakers = {
   e2b: new CircuitBreaker("e2b-sandbox", {

@@ -2,8 +2,8 @@ import {
   getOctokitForUserOrThrow,
   getDefaultBranchForRepo,
 } from "@/lib/github";
-import { DB } from "@terragon/shared/db";
-import { getEnvironment } from "@terragon/shared/model/environments";
+import { DB } from "@dragon/shared/db";
+import { getEnvironment } from "@dragon/shared/model/environments";
 
 export async function getSetupScriptFromRepo({
   db,
@@ -35,7 +35,7 @@ export async function getSetupScriptFromRepo({
     const { data } = await octokit.rest.repos.getContent({
       owner,
       repo,
-      path: "terragon-setup.sh",
+      path: "dragon-setup.sh",
       ref: branchName,
     });
     if ("content" in data && typeof data.content === "string") {

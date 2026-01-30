@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getUserIdOrNull } from "@/lib/auth-server";
-import { decryptValue, encryptValue } from "@terragon/utils/encryption";
-import { env } from "@terragon/env/apps-www";
+import { decryptValue, encryptValue } from "@dragon/utils/encryption";
+import { env } from "@dragon/env/apps-www";
 import { redirect, notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import {
@@ -9,8 +9,8 @@ import {
   upsertSlackAccount,
   getSlackSettingsForTeam,
   upsertSlackSettings,
-} from "@terragon/shared/model/slack";
-import { getUserFlags } from "@terragon/shared/model/user-flags";
+} from "@dragon/shared/model/slack";
+import { getUserFlags } from "@dragon/shared/model/user-flags";
 import { nonLocalhostPublicAppUrl } from "@/lib/server-utils";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { getUserCredentials } from "@/server-lib/user-credentials";

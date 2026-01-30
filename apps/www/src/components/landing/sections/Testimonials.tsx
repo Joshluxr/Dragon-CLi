@@ -12,7 +12,7 @@ export default function Testimonials() {
     <section className="container mx-auto px-4 max-w-6xl py-4">
       <div className="text-center mb-12">
         <h2 className="text-2xl font-semibold text-foreground">
-          What developers are saying about Terragon
+          What developers are saying about Dragon
         </h2>
         <p className="text-muted-foreground text-base mt-2">
           We're pretty sure you'll love it as much as they already do

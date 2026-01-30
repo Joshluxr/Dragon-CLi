@@ -5,14 +5,14 @@ import {
   GithubCheckRunStatus,
   GithubCheckRunConclusion,
   Automation,
-} from "@terragon/shared/db/types";
+} from "@dragon/shared/db/types";
 import {
   getGithubCheckRunForThreadChat,
   upsertGithubCheckRun,
-} from "@terragon/shared/model/github";
-import { getAutomation } from "@terragon/shared/model/automations";
-import { getThreadMinimal } from "@terragon/shared/model/threads";
-import { publicAppUrl } from "@terragon/env/next-public";
+} from "@dragon/shared/model/github";
+import { getAutomation } from "@dragon/shared/model/automations";
+import { getThreadMinimal } from "@dragon/shared/model/threads";
+import { publicAppUrl } from "@dragon/env/next-public";
 
 type CreateCheckRunParams =
   Endpoints["POST /repos/{owner}/{repo}/check-runs"]["parameters"];
@@ -108,7 +108,7 @@ function getCheckRunPayloadForAutomation({
   "details_url" | "name" | "output" | "status" | "conclusion"
 > {
   return {
-    name: `Terragon Automation - ${automation.name}`,
+    name: `Dragon Automation - ${automation.name}`,
     output: {
       title: automation.name,
       summary,

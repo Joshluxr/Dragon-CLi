@@ -19,7 +19,7 @@ import {
   X,
   Image,
 } from "lucide-react";
-import { ThreadInfoFull } from "@terragon/shared";
+import { ThreadInfoFull } from "@dragon/shared";
 import { cn } from "@/lib/utils";
 import {
   parseMultiFileDiff,
@@ -28,7 +28,7 @@ import {
   type ParsedDiffFile,
 } from "@/lib/git-diff";
 import { Button } from "@/components/ui/button";
-import type { DBUserMessage } from "@terragon/shared";
+import type { DBUserMessage } from "@dragon/shared";
 import { GenericPromptBox } from "@/components/promptbox/generic-promptbox";
 import { ImageDiffView } from "@/components/chat/image-diff-view";
 import { useFeatureFlag } from "@/hooks/use-feature-flag";

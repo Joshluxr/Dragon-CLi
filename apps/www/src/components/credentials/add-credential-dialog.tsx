@@ -20,10 +20,10 @@ import {
   useSaveApiOverrideMutation,
   useSaveKimiConfigTomlMutation,
 } from "@/queries/credentials-queries";
-import type { ClaudeApiOverrideProvider } from "@terragon/shared/db/types";
+import type { ClaudeApiOverrideProvider } from "@dragon/shared/db/types";
 import type { AuthType } from "@/lib/claude-oauth";
 import { Textarea } from "@/components/ui/textarea";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 
 type ApiKeyConfig = {
   agent: AIAgent;

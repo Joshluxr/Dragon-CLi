@@ -18,8 +18,8 @@ import {
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { publishBroadcastUserMessage } from "../broadcast-server";
-import { AGENT_VERSION } from "@terragon/agent/versions";
-import { LEGACY_THREAD_CHAT_ID } from "@terragon/shared/utils/thread-utils";
+import { AGENT_VERSION } from "@dragon/agent/versions";
+import { LEGACY_THREAD_CHAT_ID } from "@dragon/shared/utils/thread-utils";
 import {
   Thread,
   ThreadInsert,
@@ -34,11 +34,11 @@ import {
   ThreadInfo,
   ThreadChatInsertRaw,
 } from "../db/types";
-import { BroadcastMessageThreadData } from "@terragon/types/broadcast";
+import { BroadcastMessageThreadData } from "@dragon/types/broadcast";
 import { sanitizeForJson } from "../utils/sanitize-json";
 import { toUTC, validateTimezone } from "../utils/timezone";
 import { getUser } from "./user";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 
 /**
  * Status values for rate-limited queues (sandbox creation and agent rate limits)

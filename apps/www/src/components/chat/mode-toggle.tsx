@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ClipboardList, Zap, Bot } from "lucide-react";
-import type { AgentMode } from "@terragon/shared";
+import type { AgentMode } from "@dragon/shared";
 import { updateAgentModeAction } from "@/server-actions/plan-approval";
 import { cn } from "@/lib/utils";
 

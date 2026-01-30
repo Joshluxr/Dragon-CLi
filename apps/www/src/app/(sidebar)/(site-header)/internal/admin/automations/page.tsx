@@ -4,11 +4,11 @@ import { AdminAutomationsList } from "@/components/admin/automations-list";
 import {
   getAllAutomationsForAdmin,
   getAutomationStatsForAdmin,
-} from "@terragon/shared/model/automations";
+} from "@dragon/shared/model/automations";
 import {
   AutomationTriggerType,
   triggerTypeLabels,
-} from "@terragon/shared/automations";
+} from "@dragon/shared/automations";
 
 export default async function AdminAutomationsPage({
   searchParams,

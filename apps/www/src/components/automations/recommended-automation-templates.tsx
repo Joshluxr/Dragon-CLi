@@ -4,7 +4,7 @@ import {
   ScheduleTriggerConfig,
   PullRequestTriggerConfig,
   IssueTriggerConfig,
-} from "@terragon/shared/automations";
+} from "@dragon/shared/automations";
 
 export interface RecommendedAutomation {
   id: string;

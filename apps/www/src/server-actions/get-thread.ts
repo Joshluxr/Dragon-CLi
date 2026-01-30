@@ -1,11 +1,11 @@
 "use server";
 
 import { cache } from "react";
-import { getThreadWithPermissions } from "@terragon/shared/model/threads";
+import { getThreadWithPermissions } from "@dragon/shared/model/threads";
 import { userOnlyAction } from "@/lib/auth-server";
 import { db } from "@/lib/db";
 import { getOctokitForUser, parseRepoFullName } from "@/lib/github";
-import { ThreadInfoFull } from "@terragon/shared/db/types";
+import { ThreadInfoFull } from "@dragon/shared/db/types";
 import { UserFacingError } from "@/lib/server-actions";
 
 export const getThreadAction = cache(

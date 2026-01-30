@@ -39,8 +39,8 @@ export function buildCodexToml({
 
   const modelProvidersToml: Record<string, any> = {};
   if (terryModelProviderBaseUrl) {
-    modelProvidersToml.terry = {
-      name: "terry",
+    modelProvidersToml.toothless = {
+      name: "toothless",
       base_url: terryModelProviderBaseUrl,
       env_http_headers: {
         "X-Daemon-Token": "DAEMON_TOKEN",

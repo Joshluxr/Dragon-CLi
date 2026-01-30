@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "terry": {
+    "toothless": {
       "command": "node",
       "args": ["dist/bundled.js"]
     }

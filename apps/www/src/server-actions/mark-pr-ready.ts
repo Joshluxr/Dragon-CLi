@@ -1,7 +1,7 @@
 "use server";
 
 import { userOnlyAction } from "@/lib/auth-server";
-import { getThreadMinimal } from "@terragon/shared/model/threads";
+import { getThreadMinimal } from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
 import {
   getOctokitForUserOrThrow,

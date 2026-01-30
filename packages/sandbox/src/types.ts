@@ -1,6 +1,6 @@
-import { SandboxProvider, SandboxSize } from "@terragon/types/sandbox";
-import { AIAgent, AIAgentCredentials } from "@terragon/agent/types";
-import { FeatureFlags } from "@terragon/daemon/shared";
+import { SandboxProvider, SandboxSize } from "@dragon/types/sandbox";
+import { AIAgent, AIAgentCredentials } from "@dragon/agent/types";
+import { FeatureFlags } from "@dragon/daemon/shared";
 import { McpConfig } from "./mcp-config";
 // NOTE: This is stored in the database, so don't remove any values from this list.
 export type SandboxStatus =
@@ -38,8 +38,8 @@ export type CreateSandboxOptions = {
   mcpConfig?: McpConfig;
   autoUpdateDaemon: boolean;
   customSystemPrompt?: string | null; // Custom system prompt to append to Claude
-  skipSetupScript?: boolean; // Skip running terragon-setup.sh during sandbox setup
-  setupScript?: string | null; // Custom setup script to override repository's terragon-setup.sh
+  skipSetupScript?: boolean; // Skip running dragon-setup.sh during sandbox setup
+  setupScript?: string | null; // Custom setup script to override repository's dragon-setup.sh
   fastResume?: boolean; // Fast resume mode - skips unnecessary setup steps that run everytime (claude credentials, daemon update, etc)
   publicUrl: string;
   featureFlags: FeatureFlags;

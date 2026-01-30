@@ -10,8 +10,8 @@ import {
   CircuitOpenError,
   type CircuitBreakerConfig,
   type CircuitState,
-} from "@terragon/utils/circuit-breaker";
-import type { SandboxProvider } from "@terragon/types/sandbox";
+} from "@dragon/utils/circuit-breaker";
+import type { SandboxProvider } from "@dragon/types/sandbox";
 
 // Provider-specific circuit breaker configurations
 const CIRCUIT_CONFIGS: Record<SandboxProvider, CircuitBreakerConfig> = {

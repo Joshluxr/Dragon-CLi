@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
-import { getAllAgentProviderCredentialRecords } from "@terragon/shared/model/agent-provider-credentials";
-import { UserCredentials } from "@terragon/shared";
+import { getAllAgentProviderCredentialRecords } from "@dragon/shared/model/agent-provider-credentials";
+import { UserCredentials } from "@dragon/shared";
 
 export async function getUserCredentials({
   userId,

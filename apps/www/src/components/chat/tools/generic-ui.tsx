@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AllToolParts } from "@terragon/shared";
+import { AllToolParts } from "@dragon/shared";
 import { cn } from "@/lib/utils";
 import { getAgentColorClass } from "./agent-colors";
 import { ansiToHtml } from "./utils";

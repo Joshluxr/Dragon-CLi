@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MenuIcon } from "lucide-react";
 import { Wordmark } from "@/components/shared/wordmark";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 

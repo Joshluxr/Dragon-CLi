@@ -16,7 +16,7 @@
 
 ## Overview
 
-Enable GitHub issues labeled with a specific tag (e.g., `terragon`, `auto-fix`) to automatically trigger an agent that creates a PR resolving the issue.
+Enable GitHub issues labeled with a specific tag (e.g., `dragon`, `auto-fix`) to automatically trigger an agent that creates a PR resolving the issue.
 
 ---
 
@@ -24,9 +24,9 @@ Enable GitHub issues labeled with a specific tag (e.g., `terragon`, `auto-fix`) 
 
 ```
 1. User creates GitHub issue describing a bug/feature
-2. User adds label "terragon" to the issue
-3. GitHub webhook fires → Terragon receives event
-4. Terragon creates a new thread/task from issue content
+2. User adds label "dragon" to the issue
+3. GitHub webhook fires → Dragon receives event
+4. Dragon creates a new thread/task from issue content
 5. Agent executes in sandbox
 6. Agent creates PR referencing the issue
 7. PR is linked back to issue with "Fixes #123"
@@ -61,7 +61,7 @@ async function handleIssueLabeledEvent(event: IssuesLabeledEvent) {
   const { issue, label, repository, sender } = event.payload;
 
   // Check if label matches trigger (configurable per environment)
-  if (label.name !== TERRAGON_TRIGGER_LABEL) return;
+  if (label.name !== DRAGON_TRIGGER_LABEL) return;
 
   // Find user who owns this repo integration
   const environment = await findEnvironmentByRepo(repository.full_name);
@@ -124,7 +124,7 @@ ${issueBody}
   await postIssueComment(
     repoFullName,
     issueNumber,
-    `🤖 Terragon is working on this issue. [View progress](${TERRAGON_URL}/thread/${thread.id})`,
+    `🤖 Dragon is working on this issue. [View progress](${DRAGON_URL}/thread/${thread.id})`,
   );
 
   return thread;
@@ -184,7 +184,7 @@ Add label configuration to environment table:
 
 ```typescript
 // packages/shared/src/db/schema.ts
-issueAutoTriggerLabel: text("issue_auto_trigger_label").default("terragon"),
+issueAutoTriggerLabel: text("issue_auto_trigger_label").default("dragon"),
 issueAutoTriggerEnabled: boolean("issue_auto_trigger_enabled").default(false),
 ```
 
@@ -202,7 +202,7 @@ Add toggle and label configuration in environment settings.
 // packages/shared/src/__tests__/issue-trigger.test.ts
 describe("Issue-to-PR Automation", () => {
   it("creates thread from labeled issue", async () => {
-    const event = mockIssueLabeledEvent({ label: "terragon" });
+    const event = mockIssueLabeledEvent({ label: "dragon" });
     await handleIssueLabeledEvent(event);
 
     const thread = await db.query.threadTable.findFirst({

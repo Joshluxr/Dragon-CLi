@@ -19,7 +19,7 @@ import {
   UserSettings,
   UserFlags,
   UserCredentials,
-} from "@terragon/shared";
+} from "@dragon/shared";
 import { useRealtimeUser } from "@/hooks/useRealtime";
 import { useAtom, useSetAtom } from "jotai";
 import posthog from "posthog-js";

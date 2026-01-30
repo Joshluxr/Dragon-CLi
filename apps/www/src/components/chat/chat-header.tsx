@@ -4,7 +4,7 @@ import Link from "next/link";
 import { memo, useState, useRef, useEffect } from "react";
 import { getThreadTitle } from "@/agent/thread-utils";
 import { PRStatusPill } from "../pr-status-pill";
-import { ThreadInfoFull } from "@terragon/shared";
+import { ThreadInfoFull } from "@dragon/shared";
 import { toast } from "sonner";
 import { Pill } from "@/components/shared/pill";
 import { ChatHeaderButtons } from "./chat-header-buttons";

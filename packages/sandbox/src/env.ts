@@ -1,4 +1,4 @@
-import { AIAgentCredentials } from "@terragon/agent/types";
+import { AIAgentCredentials } from "@dragon/agent/types";
 
 export function getEnv({
   userEnv,
@@ -12,8 +12,8 @@ export function getEnv({
   overrides?: Record<string, string>;
 }) {
   const env: Record<string, string> = {
-    // Indicates the agent is running in a Terragon sandbox environment
-    TERRAGON: "true",
+    // Indicates the agent is running in a Dragon sandbox environment
+    DRAGON: "true",
     // Set default GH_TOKEN from GitHub access token
     // This can be overridden if user provides their own GH_TOKEN
     GH_TOKEN: githubAccessToken,

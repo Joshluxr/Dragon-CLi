@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import * as googleAIStudioRoute from "./[[...path]]/route";
 import { logGoogleUsage } from "./log-google-usage";
 import { auth } from "@/lib/auth";
-import { getUserCreditBalance } from "@terragon/shared/model/credits";
+import { getUserCreditBalance } from "@dragon/shared/model/credits";
 
 vi.mock("@/lib/auth", () => ({
   auth: {
@@ -13,7 +13,7 @@ vi.mock("@/lib/auth", () => ({
   },
 }));
 
-vi.mock("@terragon/shared/model/credits", () => ({
+vi.mock("@dragon/shared/model/credits", () => ({
   getUserCreditBalance: vi.fn(),
 }));
 
@@ -21,7 +21,7 @@ vi.mock("@/server-lib/credit-auto-reload", () => ({
   maybeTriggerCreditAutoReload: vi.fn(),
 }));
 
-vi.mock("@terragon/env/apps-www", () => ({
+vi.mock("@dragon/env/apps-www", () => ({
   env: {
     GOOGLE_AI_STUDIO_API_KEY: "test-google-ai-studio-key",
   },

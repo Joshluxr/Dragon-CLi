@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { ThreadInfo, ThreadInfoFull, ThreadVisibility } from "@terragon/shared";
+import { ThreadInfo, ThreadInfoFull, ThreadVisibility } from "@dragon/shared";
 import { useCallback, useState, useEffect, memo } from "react";
 import {
   Terminal,
@@ -27,7 +27,7 @@ import { useUpdateThreadVisibilityMutation } from "@/queries/thread-mutations";
 import { useIsSmallScreen } from "@/hooks/useMediaQuery";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ThreadMenuDropdown } from "../thread-menu-dropdown";
-import { publicDocsUrl } from "@terragon/env/next-public";
+import { publicDocsUrl } from "@dragon/env/next-public";
 import { useAtomValue } from "jotai";
 import { userSettingsAtom } from "@/atoms/user";
 import posthog from "posthog-js";
@@ -117,7 +117,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
   useEffect(() => {
     // Don't load preference for non claude code agents
     if (isClaudeCodeAgent) {
-      const stored = localStorage.getItem("terry-open-claude");
+      const stored = localStorage.getItem("toothless-open-claude");
       if (stored === "true") {
         setOpenClaude(true);
       }
@@ -127,7 +127,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
   // Save the preference to localStorage when it changes
   const handleOpenClaudeChange = (checked: boolean) => {
     setOpenClaude(checked);
-    localStorage.setItem("terry-open-claude", String(checked));
+    localStorage.setItem("toothless-open-claude", String(checked));
   };
 
   const copyToClipboard = async (
@@ -146,7 +146,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
     }
   };
 
-  const pullCommand = `terry pull${openClaude && isClaudeCodeAgent ? " -r" : ""} ${thread.id}`;
+  const pullCommand = `toothless pull${openClaude && isClaudeCodeAgent ? " -r" : ""} ${thread.id}`;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -162,7 +162,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
           {/* Header - matching Share modal style */}
           <div className="p-3 border-b">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium">Pull with Terry CLI</h4>
+              <h4 className="text-sm font-medium">Pull with Toothless CLI</h4>
               <a
                 href={`${publicDocsUrl()}/docs/integrations/cli`}
                 target="_blank"
@@ -180,7 +180,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
             <div
               className="flex items-center bg-muted rounded-md font-mono text-sm cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => {
-                copyToClipboard(pullCommand, "Copied pull command", "terry");
+                copyToClipboard(pullCommand, "Copied pull command", "toothless");
                 posthog.capture("terry_pull_command_copied", {
                   threadId: thread.id,
                   agent: threadChat?.agent,
@@ -196,7 +196,7 @@ function CodeButton({ thread }: { thread: ThreadInfoFull }) {
                 className="h-7 w-7 p-0 mr-1 flex-shrink-0 flex items-center justify-center"
                 aria-label="Copy command"
               >
-                {copiedCommand === "terry" ? (
+                {copiedCommand === "toothless" ? (
                   <Check className="h-3 w-3" />
                 ) : (
                   <Copy className="h-3 w-3" />

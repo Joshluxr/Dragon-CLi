@@ -181,5 +181,5 @@ export async function checkZvecSupport(): Promise<boolean> {
  */
 export function getCacheDir(): string {
   const home = os.homedir();
-  return `${home}/.terragon/zvec-cache`;
+  return `${home}/.dragon/zvec-cache`;
 }

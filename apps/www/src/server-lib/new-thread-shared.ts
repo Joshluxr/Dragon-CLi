@@ -2,8 +2,8 @@ import {
   createThread,
   updateThread,
   updateThreadChat,
-} from "@terragon/shared/model/threads";
-import { getOrCreateEnvironment } from "@terragon/shared/model/environments";
+} from "@dragon/shared/model/threads";
+import { getOrCreateEnvironment } from "@dragon/shared/model/environments";
 import { db } from "@/lib/db";
 import { generateThreadName } from "@/server-lib/generate-thread-name";
 import {
@@ -11,10 +11,10 @@ import {
   DBUserMessage,
   ThreadSource,
   ThreadSourceMetadata,
-} from "@terragon/shared";
-import { modelToAgent } from "@terragon/agent/utils";
+} from "@dragon/shared";
+import { modelToAgent } from "@dragon/agent/utils";
 import { UserFacingError } from "@/lib/server-actions";
-import { getUserSettings } from "@terragon/shared/model/user";
+import { getUserSettings } from "@dragon/shared/model/user";
 import { waitUntil } from "@vercel/functions";
 import { startAgentMessage } from "@/agent/msg/startAgentMessage";
 import { getSandboxProvider } from "@/agent/sandbox";
@@ -38,7 +38,7 @@ import { SUBSCRIPTION_MESSAGES } from "@/lib/subscription-msgs";
 import { getDefaultModel } from "./default-ai-model";
 import { sendLoopsEvent, updateLoopsContact } from "@/lib/loops";
 import { getSandboxSizeForUser } from "@/lib/subscription-tiers";
-import { getFeatureFlagForUser } from "@terragon/shared/model/feature-flags";
+import { getFeatureFlagForUser } from "@dragon/shared/model/feature-flags";
 import { getThreadChatHistory } from "./compact";
 
 export interface CreateThreadOptions {

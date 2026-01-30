@@ -11,12 +11,12 @@ import {
   useToggleActiveCredentialMutation,
 } from "@/queries/credentials-queries";
 import type { AgentProviderCredentialsMap } from "@/server-lib/credentials";
-import { AIAgent } from "@terragon/agent/types";
+import { AIAgent } from "@dragon/agent/types";
 import {
   getAgentDisplayName,
   isConnectedCredentialsSupported,
-} from "@terragon/agent/utils";
-import type { ClaudeApiOverrideMetadata } from "@terragon/shared/db/types";
+} from "@dragon/agent/utils";
+import type { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
 import { AgentIcon } from "@/components/chat/agent-icon";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";

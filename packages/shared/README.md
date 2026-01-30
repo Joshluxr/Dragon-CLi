@@ -1,4 +1,4 @@
-# @terragon/shared
+# @dragon/shared
 
 This package contains our database schema and functions for interacting with it.
 

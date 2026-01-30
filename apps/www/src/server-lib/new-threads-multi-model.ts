@@ -1,5 +1,5 @@
-import { SelectedAIModels } from "@terragon/agent/types";
-import { AIModel } from "@terragon/agent/types";
+import { SelectedAIModels } from "@dragon/agent/types";
+import { AIModel } from "@dragon/agent/types";
 import { type CreateThreadOptions, createNewThread } from "./new-thread-shared";
 
 export async function newThreadsMultiModel({

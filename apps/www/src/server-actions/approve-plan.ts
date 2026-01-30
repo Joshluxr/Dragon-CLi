@@ -1,11 +1,11 @@
 "use server";
 
 import { userOnlyAction } from "@/lib/auth-server";
-import { DBUserMessage } from "@terragon/shared";
+import { DBUserMessage } from "@dragon/shared";
 import { queueFollowUpInternal } from "@/server-lib/follow-up";
 import { getAccessInfoForUser } from "@/lib/subscription";
 import { SUBSCRIPTION_MESSAGES } from "@/lib/subscription-msgs";
-import { getThreadChat } from "@terragon/shared/model/threads";
+import { getThreadChat } from "@dragon/shared/model/threads";
 import { db } from "@/lib/db";
 import { UserFacingError } from "@/lib/server-actions";
 

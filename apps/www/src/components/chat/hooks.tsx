@@ -6,7 +6,7 @@ import { secondaryPaneClosedAtom } from "@/atoms/user-cookies";
 import { atom, useAtom } from "jotai";
 import { usePlatform } from "@/hooks/use-platform";
 import { threadQueryKeys } from "@/queries/thread-queries";
-import { ThreadChatInfoFull, ThreadInfoFull } from "@terragon/shared/db/types";
+import { ThreadChatInfoFull, ThreadInfoFull } from "@dragon/shared/db/types";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function useMarkChatAsRead({
@@ -53,7 +53,7 @@ export function useThreadDocumentTitleAndFavicon({
   // Update document title and favicon based on unread messages
   const documentTitle = name
     ? getThreadDocumentTitle({ name, isUnread: isThreadUnread })
-    : "Terragon";
+    : "Dragon";
   useEffect(() => {
     if (typeof document === "undefined") {
       return;

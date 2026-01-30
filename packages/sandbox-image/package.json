@@ -1,5 +1,5 @@
 {
-  "name": "@terragon/sandbox-image",
+  "name": "@dragon/sandbox-image",
   "version": "0.0.1",
   "description": "Sandbox Dockerfile and code to create template images for sandbox providers",
   "exports": {
@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "@e2b/cli": "^1.5.1",
-    "@terragon/tsconfig": "workspace:*",
-    "@terragon/types": "workspace:*",
+    "@dragon/tsconfig": "workspace:*",
+    "@dragon/types": "workspace:*",
     "@types/node": "^22.10.6",
     "esbuild": "^0.25.5",
     "tsx": "^4.20.3",

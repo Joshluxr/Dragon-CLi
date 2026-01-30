@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import type { CostLimits } from "@terragon/shared";
+import type { CostLimits } from "@dragon/shared";
 import { updateCostLimitsAction } from "@/server-actions/usage";
 
 interface CostLimitsSettingsProps {

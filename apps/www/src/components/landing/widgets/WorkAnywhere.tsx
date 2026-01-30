@@ -14,19 +14,19 @@ export function WorkAnywhere() {
             <div className="px-3 pt-3 pb-2 flex items-center gap-2">
               <Image
                 src={plantLight}
-                alt="Terragon"
+                alt="Dragon"
                 width={14}
                 height={14}
                 className="block dark:hidden"
               />
               <Image
                 src={plantDark}
-                alt="Terragon"
+                alt="Dragon"
                 width={14}
                 height={14}
                 className="hidden dark:block"
               />
-              <div className="text-xs font-semibold">Terragon</div>
+              <div className="text-xs font-semibold">Dragon</div>
             </div>
 
             {/* Prompt box */}
@@ -53,7 +53,7 @@ export function WorkAnywhere() {
 
             {/* Repo selector */}
             <div className="mx-3 mt-2 flex items-center gap-2 text-[9px] text-muted-foreground">
-              <div className="truncate">terragon-labs/terragon</div>
+              <div className="truncate">dragon-labs/dragon</div>
               <div className="px-2 py-0.5 bg-muted/30 rounded ml-auto">
                 main
               </div>

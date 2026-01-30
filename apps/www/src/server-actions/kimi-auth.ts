@@ -2,11 +2,11 @@
 
 import { userOnlyAction } from "@/lib/auth-server";
 import { db } from "@/lib/db";
-import { env } from "@terragon/env/apps-www";
-import { insertAgentProviderCredentials } from "@terragon/shared/model/agent-provider-credentials";
+import { env } from "@dragon/env/apps-www";
+import { insertAgentProviderCredentials } from "@dragon/shared/model/agent-provider-credentials";
 import { UserFacingError } from "@/lib/server-actions";
 import { getPostHogServer } from "@/lib/posthog-server";
-import type { ClaudeApiOverrideMetadata } from "@terragon/shared/db/types";
+import type { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
 
 // Simple TOML parser for Kimi config.toml
 // Handles basic key-value pairs and sections

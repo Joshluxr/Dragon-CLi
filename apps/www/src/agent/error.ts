@@ -1,4 +1,4 @@
-import { ThreadErrorType } from "@terragon/shared";
+import { ThreadErrorType } from "@dragon/shared";
 
 export class ThreadError extends Error {
   type: ThreadErrorType;

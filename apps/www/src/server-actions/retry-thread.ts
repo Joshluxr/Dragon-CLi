@@ -11,7 +11,7 @@ import { UserFacingError } from "@/lib/server-actions";
 import {
   getThreadChat,
   getThreadMinimal,
-} from "@terragon/shared/model/threads";
+} from "@dragon/shared/model/threads";
 
 export const retryThread = userOnlyAction(
   async function retryThread(

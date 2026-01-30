@@ -1,6 +1,6 @@
-# Terragon Installation Guide
+# Dragon Installation Guide
 
-This guide provides detailed instructions for setting up Terragon for local development.
+This guide provides detailed instructions for setting up Dragon for local development.
 
 ## Table of Contents
 
@@ -72,8 +72,8 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Clone the repository
-git clone https://github.com/terragonlabs/terragon.git
-cd terragon
+git clone https://github.com/dragonlabs/dragon.git
+cd dragon
 
 # Install dependencies
 pnpm install
@@ -101,8 +101,8 @@ pnpm dev
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/terragonlabs/terragon.git
-cd terragon
+git clone https://github.com/dragonlabs/dragon.git
+cd dragon
 ```
 
 ### 2. Install Dependencies
@@ -149,7 +149,7 @@ cp packages/shared/.env.example packages/shared/.env.development.local
 #### Database
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/terragon
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dragon
 REDIS_URL=redis://localhost:6379
 ```
 
@@ -197,7 +197,7 @@ E2B_API_KEY=e2b_...
 R2_ACCOUNT_ID=xxx
 R2_ACCESS_KEY_ID=xxx
 R2_SECRET_ACCESS_KEY=xxx
-R2_BUCKET_NAME=terragon-uploads
+R2_BUCKET_NAME=dragon-uploads
 ```
 
 #### Slack Integration
@@ -231,15 +231,15 @@ Or manually:
 ```bash
 # PostgreSQL
 docker run -d \
-  --name terragon-postgres \
+  --name dragon-postgres \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=terragon \
+  -e POSTGRES_DB=dragon \
   -p 5432:5432 \
   postgres:15
 
 # Redis
 docker run -d \
-  --name terragon-redis \
+  --name dragon-redis \
   -p 6379:6379 \
   redis:7
 ```
@@ -416,10 +416,10 @@ kill -9 <PID>
 docker ps | grep postgres
 
 # Restart container
-docker restart terragon-postgres
+docker restart dragon-postgres
 
 # Check logs
-docker logs terragon-postgres
+docker logs dragon-postgres
 ```
 
 #### pnpm Install Fails
@@ -462,11 +462,11 @@ pnpm -C packages/shared drizzle-kit-push-dev
 ## Project Structure
 
 ```
-terragon/
+dragon/
 ├── apps/
 │   ├── www/           # Main Next.js web application
 │   ├── broadcast/     # WebSocket service
-│   ├── cli/           # CLI tool (terry)
+│   ├── cli/           # CLI tool (toothless)
 │   └── docs/          # Documentation site
 ├── packages/
 │   ├── shared/        # Shared utilities, DB schema

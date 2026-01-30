@@ -41,20 +41,20 @@ export function InvitedWaitlist() {
                   ? plantDark
                   : plantLight
               }
-              alt="Terragon Logo"
+              alt="Dragon Logo"
               width={40}
               height={40}
               className="opacity-90"
               priority
             />
             <h1 className="text-4xl font-bold tracking-tight font-[Cabin]">
-              Terragon
+              Dragon
             </h1>
           </div>
           {/* Hero Content */}
           <div className="text-center space-y-4">
             <h2 className="text-lg text-muted-foreground">
-              You've been invited! Welcome to Terragon.
+              You've been invited! Welcome to Dragon.
             </h2>
           </div>
 
@@ -97,13 +97,13 @@ export function InvitedWaitlist() {
             }}
           >
             <video
-              src="https://cdn.terragonlabs.com/hero_slow.webm"
+              src="https://cdn.dragonlabs.com/hero_slow.webm"
               className="w-full h-full object-cover"
               autoPlay
               loop
               muted
               playsInline
-              aria-label="Terragon platform demonstration"
+              aria-label="Dragon platform demonstration"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -131,7 +131,7 @@ export function InvitedWaitlist() {
       {/* Footer */}
       <footer className="p-4">
         <div className="text-center text-sm text-muted-foreground">
-          <div>© {new Date().getFullYear()} Terragon</div>
+          <div>© {new Date().getFullYear()} Dragon</div>
         </div>
       </footer>
 
@@ -148,7 +148,7 @@ export function InvitedWaitlist() {
             <X className="w-8 h-8" />
           </button>
           <video
-            src="https://cdn.terragonlabs.com/hero_slow.webm"
+            src="https://cdn.dragonlabs.com/hero_slow.webm"
             className="max-w-full max-h-full rounded-lg"
             controls
             autoPlay

@@ -5,12 +5,12 @@ import { StructuredData } from "@/components/system/structured-data";
 import type { Metadata } from "next";
 import { OG_IMAGE_URL } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { getFeatureFlagsGlobal } from "@terragon/shared/model/feature-flags";
+import { getFeatureFlagsGlobal } from "@dragon/shared/model/feature-flags";
 
 export const maxDuration = 800;
 
 export const metadata: Metadata = {
-  title: "Terragon - Delegate coding tasks to AI background agents",
+  title: "Dragon - Delegate coding tasks to AI background agents",
   description:
     "Run coding agents in parallel inside remote sandboxes. Automate multiple tasks concurrently and asynchronously with full development environments.",
   keywords: [
@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     "GitHub automation",
     "AI pull requests",
   ],
-  authors: [{ name: "Terragon Labs" }],
-  creator: "Terragon Labs",
-  publisher: "Terragon Labs",
+  authors: [{ name: "Dragon Labs" }],
+  creator: "Dragon Labs",
+  publisher: "Dragon Labs",
   robots: {
     index: true,
     follow: true,
@@ -40,11 +40,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Terragon - Delegate coding tasks to AI background agents",
+    title: "Dragon - Delegate coding tasks to AI background agents",
     description:
       "Run coding agents in parallel inside remote sandboxes. Automate multiple development tasks concurrently with AI-powered assistance.",
-    url: "https://www.terragonlabs.com",
-    siteName: "Terragon",
+    url: "https://www.dragonlabs.com",
+    siteName: "Dragon",
     type: "website",
     locale: "en_US",
     images: [
@@ -52,23 +52,23 @@ export const metadata: Metadata = {
         url: OG_IMAGE_URL,
         width: 1200,
         height: 630,
-        alt: "Terragon - AI coding agents platform",
+        alt: "Dragon - AI coding agents platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Terragon - Delegate coding tasks to AI background agents",
+    title: "Dragon - Delegate coding tasks to AI background agents",
     description:
       "Run coding agents in parallel inside remote sandboxes. Automate development tasks with AI.",
-    site: "@terragonlabs",
-    creator: "@terragonlabs",
+    site: "@dragonlabs",
+    creator: "@dragonlabs",
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.terragonlabs.com",
+    canonical: "https://www.dragonlabs.com",
   },
-  metadataBase: new URL("https://www.terragonlabs.com"),
+  metadataBase: new URL("https://www.dragonlabs.com"),
 };
 
 export default async function Home() {

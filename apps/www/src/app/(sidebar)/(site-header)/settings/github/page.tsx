@@ -3,7 +3,7 @@ import { getUserIdOrRedirect } from "@/lib/auth-server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "GitHub Settings | Terragon",
+  title: "GitHub Settings | Dragon",
 };
 
 export default async function GitHubSettingsPage() {
