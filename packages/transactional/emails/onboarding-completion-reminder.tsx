@@ -73,10 +73,10 @@ export const OnboardingCompletionReminderEmail = ({
               <Text className="text-base text-gray-700 mb-0">
                 Need additional help? Email{" "}
                 <Link
-                  href="mailto:support@dragonlabs.com"
+                  href="mailto:support@dragon-labz.vercel.app"
                   className="text-green-600 underline"
                 >
-                  support@dragonlabs.com
+                  support@dragon-labz.vercel.app
                 </Link>{" "}
                 or join our{" "}
                 <Link

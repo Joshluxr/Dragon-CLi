@@ -101,12 +101,12 @@ export function GitHubSettings() {
 
       {/* @-mention settings */}
       <SettingsSection
-        label="@dragon-labs Defaults"
-        description="Configure what happens when @dragon-labs is tagged on GitHub"
+        label="@terragon-labs Defaults"
+        description="Configure what happens when @terragon-labs is tagged on GitHub"
       >
         <div className="flex flex-col gap-4">
           <SettingsCheckbox
-            label="Create new task when @dragon-labs is tagged on GitHub"
+            label="Create new task when @terragon-labs is tagged on GitHub"
             description="Instead of adding follow-up messages to a pull request's existing task."
             value={!userSettings.singleThreadForGitHubMentions}
             onCheckedChange={async (checked) => {

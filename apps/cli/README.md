@@ -1,8 +1,8 @@
 # Toothless CLI
 
-![](https://img.shields.io/badge/Node.js-18%2B-brightgreen?style=flat-square) [![npm]](https://www.npmjs.com/package/@dragon-labs/cli)
+![](https://img.shields.io/badge/Node.js-18%2B-brightgreen?style=flat-square) [![npm]](https://www.npmjs.com/package/@terragon-labs/cli)
 
-[npm]: https://img.shields.io/npm/v/@dragon-labs/cli.svg?style=flat-square
+[npm]: https://img.shields.io/npm/v/@terragon-labs/cli.svg?style=flat-square
 
 The official CLI for Dragon Labs - your AI-powered coding assistant.
 
@@ -10,13 +10,13 @@ The official CLI for Dragon Labs - your AI-powered coding assistant.
 
 ```bash
 # Using npm
-npm install -g @dragon-labs/cli
+npm install -g @terragon-labs/cli
 
 # Using pnpm
-pnpm add -g @dragon-labs/cli
+pnpm add -g @terragon-labs/cli
 
 # Using yarn
-yarn global add @dragon-labs/cli
+yarn global add @terragon-labs/cli
 ```
 
 ## Commands
@@ -93,7 +93,7 @@ toothless pull <taskId>
 toothless pull <taskId> --resume
 ```
 
-**Getting the task ID**: You can find the task ID at the end of the URL when viewing a task in Dragon. For example, in `https://dragonlabs.com/tasks/abc123-def456`, the task ID is `abc123-def456`.
+**Getting the task ID**: You can find the task ID at the end of the URL when viewing a task in Dragon. For example, in `https://dragon-labz.vercel.app/tasks/abc123-def456`, the task ID is `abc123-def456`.
 
 #### Options
 
@@ -153,5 +153,5 @@ The MCP server acts as a bridge between Claude Code and Dragon, allowing you to 
 
 ## Support
 
-- **Documentation**: [https://docs.dragonlabs.com](https://docs.dragonlabs.com)
-- **Website**: [https://dragonlabs.com](https://dragonlabs.com)
+- **Documentation**: [https://dragon-labz-docs.vercel.app](https://dragon-labz-docs.vercel.app)
+- **Website**: [https://dragon-labz.vercel.app](https://dragon-labz.vercel.app)

@@ -1,5 +1,5 @@
 {
-  "name": "@dragon-labs/cli",
+  "name": "@terragon-labs/cli",
   "version": "0.1.21",
   "type": "module",
   "bin": {
@@ -63,11 +63,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dragon-labs/dragon.git",
+    "url": "https://github.com/terragon-labs/dragon.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://www.dragonlabs.com",
+  "homepage": "https://dragon-labz.vercel.app",
   "bugs": {
-    "url": "https://github.com/dragon-labs/dragon/issues"
+    "url": "https://github.com/terragon-labs/dragon/issues"
   }
 }

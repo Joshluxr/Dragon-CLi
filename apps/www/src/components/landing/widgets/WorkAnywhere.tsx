@@ -53,7 +53,7 @@ export function WorkAnywhere() {
 
             {/* Repo selector */}
             <div className="mx-3 mt-2 flex items-center gap-2 text-[9px] text-muted-foreground">
-              <div className="truncate">dragon-labs/dragon</div>
+              <div className="truncate">terragon-labs/dragon</div>
               <div className="px-2 py-0.5 bg-muted/30 rounded ml-auto">
                 main
               </div>

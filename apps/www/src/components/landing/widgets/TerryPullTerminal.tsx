@@ -10,7 +10,7 @@ const outputLines: Array<string | { text: string; delay: number }> = [
   "",
   "Name           Add konami code easter egg",
   "Branch         dragon/add-konami-code-easter-egg",
-  "Repository     dragon-labs/dragon",
+  "Repository     terragon-labs/dragon",
   "PR Number      #1234",
   { text: "", delay: 600 },
   "✓ Task ready for local work",

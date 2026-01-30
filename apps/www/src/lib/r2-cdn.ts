@@ -7,5 +7,5 @@ export const r2Cdn = new R2Client({
   secretAccessKey: env.R2_SECRET_ACCESS_KEY,
   accountId: env.R2_ACCOUNT_ID,
   bucketName: "cdn-dragon",
-  publicUrl: "https://cdn.terragonlabs.com",
+  publicUrl: "https://cdn.dragon-labz.vercel.app",
 });

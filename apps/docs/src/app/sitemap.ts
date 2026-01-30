@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { source } from "@/lib/source";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://docs.dragonlabs.com";
+  const baseUrl = "https://dragon-labz-docs.vercel.app";
 
   // Get all documentation pages
   const pages = source.getPages();

@@ -33,7 +33,8 @@ export const WaitlistWelcomeEmail = ({
               <Text className="text-base text-gray-700 mb-3">👋 Hi there,</Text>
 
               <Text className="text-base text-gray-700 mb-3">
-                Thanks for signing up for the dragonlabs.com alpha program!
+                Thanks for signing up for the dragon-labz.vercel.app alpha
+                program!
               </Text>
 
               <Text className="text-base text-gray-700 mb-4">
@@ -77,7 +78,7 @@ export const WaitlistWelcomeEmail = ({
                 <ul className="list-disc pl-6 mb-4">
                   <li className="text-base text-gray-700 mb-1">
                     <Link
-                      href="https://docs.dragonlabs.com/docs/"
+                      href="https://dragon-labz-docs.vercel.app/docs/"
                       className="text-green-600 underline"
                     >
                       Documentation & release notes
@@ -118,10 +119,10 @@ export const WaitlistWelcomeEmail = ({
                   <li className="text-base text-gray-700 mb-1">
                     <strong>Direct support email:</strong> email{" "}
                     <Link
-                      href="mailto:support@dragonlabs.com"
+                      href="mailto:support@dragon-labz.vercel.app"
                       className="text-green-600 underline"
                     >
-                      support@dragonlabs.com
+                      support@dragon-labz.vercel.app
                     </Link>
                   </li>
                 </ul>

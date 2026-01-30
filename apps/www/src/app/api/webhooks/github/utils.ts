@@ -24,14 +24,14 @@ export function isAppMentioned(commentBody: string): boolean {
 
 /**
  * Extract model name from GitHub comment body.
- * Looks for patterns like "@dragon-labs [sonnet]" or "@dragon-labs [opus]"
+ * Looks for patterns like "@terragon-labs [sonnet]" or "@terragon-labs [opus]"
  * Returns the model name if valid, null otherwise.
  *
  * Examples:
- * - "@dragon-labs [sonnet] fix this bug" -> "sonnet"
- * - "@dragon-labs [gpt-5] improve code" -> "gpt-5"
- * - "@dragon-labs fix this" -> null
- * - "@dragon-labs [invalid-model]" -> null
+ * - "@terragon-labs [sonnet] fix this bug" -> "sonnet"
+ * - "@terragon-labs [gpt-5] improve code" -> "gpt-5"
+ * - "@terragon-labs fix this" -> null
+ * - "@terragon-labs [invalid-model]" -> null
  */
 export function extractModelFromComment({
   commentBody,

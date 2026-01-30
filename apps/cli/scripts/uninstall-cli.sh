@@ -8,7 +8,7 @@ echo "🗑️  Uninstalling Toothless CLI..."
 
 # Unlink the global package
 echo "📦 Removing global link..."
-npm unlink -g @dragon-labs/cli
+npm unlink -g @terragon-labs/cli
 
 echo "✅ Toothless CLI has been uninstalled!"
 echo ""
