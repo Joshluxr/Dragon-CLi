@@ -57,15 +57,15 @@ importers:
 
   apps/broadcast:
     dependencies:
+      '@dragon/env':
+        specifier: workspace:*
+        version: link:../../packages/env
+      '@dragon/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@e2b/code-interpreter':
         specifier: ^1.2.0-beta.4
         version: 1.2.0-beta.4
-      '@terragon/env':
-        specifier: workspace:*
-        version: link:../../packages/env
-      '@terragon/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@types/lodash.debounce':
         specifier: ^4.0.9
         version: 4.0.9
@@ -134,10 +134,10 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1
     devDependencies:
-      '@terragon/agent':
+      '@dragon/agent':
         specifier: workspace:*
         version: link:../../packages/agent
-      '@terragon/cli-api-contract':
+      '@dragon/cli-api-contract':
         specifier: workspace:*
         version: link:../../packages/cli-api-contract
       '@types/node':
@@ -234,6 +234,42 @@ importers:
       '@daytonaio/sdk':
         specifier: 0.115.2
         version: 0.115.2(ws@8.18.0)
+      '@dragon/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
+      '@dragon/bundled':
+        specifier: workspace:*
+        version: link:../../packages/bundled
+      '@dragon/cli-api-contract':
+        specifier: workspace:*
+        version: link:../../packages/cli-api-contract
+      '@dragon/daemon':
+        specifier: workspace:*
+        version: link:../../packages/daemon
+      '@dragon/env':
+        specifier: workspace:*
+        version: link:../../packages/env
+      '@dragon/r2':
+        specifier: workspace:*
+        version: link:../../packages/r2
+      '@dragon/sandbox':
+        specifier: workspace:*
+        version: link:../../packages/sandbox
+      '@dragon/sandbox-image':
+        specifier: workspace:*
+        version: link:../../packages/sandbox-image
+      '@dragon/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@dragon/transactional':
+        specifier: workspace:*
+        version: link:../../packages/transactional
+      '@dragon/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@dragon/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@e2b/code-interpreter':
         specifier: 1.2.0-beta.4
         version: 1.2.0-beta.4
@@ -315,42 +351,6 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      '@terragon/agent':
-        specifier: workspace:*
-        version: link:../../packages/agent
-      '@terragon/bundled':
-        specifier: workspace:*
-        version: link:../../packages/bundled
-      '@terragon/cli-api-contract':
-        specifier: workspace:*
-        version: link:../../packages/cli-api-contract
-      '@terragon/daemon':
-        specifier: workspace:*
-        version: link:../../packages/daemon
-      '@terragon/env':
-        specifier: workspace:*
-        version: link:../../packages/env
-      '@terragon/r2':
-        specifier: workspace:*
-        version: link:../../packages/r2
-      '@terragon/sandbox':
-        specifier: workspace:*
-        version: link:../../packages/sandbox
-      '@terragon/sandbox-image':
-        specifier: workspace:*
-        version: link:../../packages/sandbox-image
-      '@terragon/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
-      '@terragon/transactional':
-        specifier: workspace:*
-        version: link:../../packages/transactional
-      '@terragon/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@terragon/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
       '@tiptap/extension-link':
         specifier: ^2.14.0
         version: 2.14.0(@tiptap/core@2.14.0(@tiptap/pm@2.14.0))(@tiptap/pm@2.14.0)
@@ -541,6 +541,12 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
+      '@dragon/dev-env':
+        specifier: workspace:*
+        version: link:../../packages/dev-env
+      '@dragon/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@ladle/react':
         specifier: ^5.0.3
         version: 5.0.3(@types/node@24.0.1)(@types/react@19.1.8)(acorn@8.15.0)(jiti@2.4.2)(lightningcss@1.30.1)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(terser@5.40.0)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -550,12 +556,6 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.10
         version: 4.1.10
-      '@terragon/dev-env':
-        specifier: workspace:*
-        version: link:../../packages/dev-env
-      '@terragon/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
@@ -611,7 +611,7 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
@@ -623,14 +623,14 @@ importers:
 
   packages/bundled:
     dependencies:
-      '@terragon/daemon':
+      '@dragon/daemon':
         specifier: workspace:*
         version: link:../daemon
-      '@terragon/mcp-server':
+      '@dragon/mcp-server':
         specifier: workspace:*
         version: link:../mcp-server
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       esbuild:
@@ -642,17 +642,17 @@ importers:
 
   packages/cli-api-contract:
     dependencies:
+      '@dragon/agent':
+        specifier: workspace:*
+        version: link:../agent
       '@orpc/contract':
         specifier: 1.6.0
         version: 1.6.0
-      '@terragon/agent':
-        specifier: workspace:*
-        version: link:../agent
       zod:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
@@ -661,7 +661,7 @@ importers:
 
   packages/daemon:
     dependencies:
-      '@terragon/agent':
+      '@dragon/agent':
         specifier: workspace:*
         version: link:../agent
       nanoid:
@@ -714,15 +714,15 @@ importers:
       '@daytonaio/sdk':
         specifier: 0.115.2
         version: 0.115.2(ws@8.18.0)
+      '@dragon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@e2b/cli':
         specifier: ^1.5.1
         version: 1.5.1
       '@e2b/code-interpreter':
         specifier: 1.2.0-beta.4
         version: 1.2.0-beta.4
-      '@terragon/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
@@ -738,14 +738,14 @@ importers:
 
   packages/dev-env:
     dependencies:
+      '@dragon/env':
+        specifier: workspace:*
+        version: link:../env
       '@ngrok/ngrok':
         specifier: ^1.5.1
         version: 1.5.1
-      '@terragon/env':
-        specifier: workspace:*
-        version: link:../env
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
@@ -770,7 +770,7 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
@@ -786,7 +786,7 @@ importers:
         specifier: ^1.0.6
         version: 1.12.1
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
@@ -829,27 +829,27 @@ importers:
       '@daytonaio/sdk':
         specifier: 0.115.2
         version: 0.115.2(ws@8.18.0)
+      '@dragon/agent':
+        specifier: workspace:*
+        version: link:../agent
+      '@dragon/bundled':
+        specifier: workspace:*
+        version: link:../bundled
+      '@dragon/daemon':
+        specifier: workspace:*
+        version: link:../daemon
+      '@dragon/sandbox-image':
+        specifier: workspace:*
+        version: link:../sandbox-image
+      '@dragon/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@e2b/code-interpreter':
         specifier: ^1.2.0-beta.4
         version: 1.2.0-beta.4
       '@iarna/toml':
         specifier: ^3.0.0
         version: 3.0.0
-      '@terragon/agent':
-        specifier: workspace:*
-        version: link:../agent
-      '@terragon/bundled':
-        specifier: workspace:*
-        version: link:../bundled
-      '@terragon/daemon':
-        specifier: workspace:*
-        version: link:../daemon
-      '@terragon/sandbox-image':
-        specifier: workspace:*
-        version: link:../sandbox-image
-      '@terragon/utils':
-        specifier: workspace:*
-        version: link:../utils
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
@@ -857,10 +857,10 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@terragon/types':
+      '@dragon/types':
         specifier: workspace:*
         version: link:../types
       '@types/node':
@@ -879,15 +879,15 @@ importers:
         specifier: ^4.7.8
         version: 4.7.8
     devDependencies:
+      '@dragon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@dragon/types':
+        specifier: workspace:*
+        version: link:../types
       '@e2b/cli':
         specifier: ^1.5.1
         version: 1.5.1
-      '@terragon/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@terragon/types':
-        specifier: workspace:*
-        version: link:../types
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
@@ -912,24 +912,24 @@ importers:
       '@date-fns/tz':
         specifier: ^1.2.0
         version: 1.2.0
+      '@dragon/agent':
+        specifier: workspace:*
+        version: link:../agent
+      '@dragon/daemon':
+        specifier: workspace:*
+        version: link:../daemon
+      '@dragon/env':
+        specifier: workspace:*
+        version: link:../env
+      '@dragon/types':
+        specifier: workspace:*
+        version: link:../types
+      '@dragon/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@octokit/app':
         specifier: ^16.0.1
         version: 16.0.1
-      '@terragon/agent':
-        specifier: workspace:*
-        version: link:../agent
-      '@terragon/daemon':
-        specifier: workspace:*
-        version: link:../daemon
-      '@terragon/env':
-        specifier: workspace:*
-        version: link:../env
-      '@terragon/types':
-        specifier: workspace:*
-        version: link:../types
-      '@terragon/utils':
-        specifier: workspace:*
-        version: link:../utils
       ai:
         specifier: ^5.0.59
         version: 5.0.59(zod@4.1.11)
@@ -961,18 +961,18 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
+      '@dragon/dev-env':
+        specifier: workspace:*
+        version: link:../dev-env
+      '@dragon/sandbox':
+        specifier: workspace:*
+        version: link:../sandbox
+      '@dragon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@octokit/types':
         specifier: ^14.0.0
         version: 14.0.0
-      '@terragon/dev-env':
-        specifier: workspace:*
-        version: link:../dev-env
-      '@terragon/sandbox':
-        specifier: workspace:*
-        version: link:../sandbox
-      '@terragon/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
@@ -1001,7 +1001,7 @@ importers:
         specifier: ^11.1.0
         version: 11.1.0
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
@@ -1025,12 +1025,12 @@ importers:
 
   packages/transactional:
     dependencies:
+      '@dragon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@react-email/components':
         specifier: 0.1.1
         version: 0.1.1(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      '@terragon/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -1056,7 +1056,7 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
@@ -1068,7 +1068,7 @@ importers:
 
   packages/utils:
     devDependencies:
-      '@terragon/tsconfig':
+      '@dragon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
