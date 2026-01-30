@@ -68,14 +68,14 @@ export default function Login({ returnUrl }: { returnUrl: string }) {
               ) : (
                 <>
                   <Image
-                    src="https://cdn.dragonlabs.com/github-mark-Z5SF.svg"
+                    src="https://cdn.terragonlabs.com/github-mark-Z5SF.svg"
                     alt="GitHub"
                     width={20}
                     height={20}
                     className="hidden dark:block absolute left-4"
                   />
                   <Image
-                    src="https://cdn.dragonlabs.com/github-mark-white-Ue4J.svg"
+                    src="https://cdn.terragonlabs.com/github-mark-white-Ue4J.svg"
                     alt="GitHub"
                     width={20}
                     height={20}

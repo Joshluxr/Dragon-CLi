@@ -151,7 +151,7 @@ export function AdminImageUpload() {
             <CardTitle>Image/Video Upload</CardTitle>
             <CardDescription>
               Upload images or videos (MP4, WebM, MOV) to the CDN bucket
-              (cdn-dragon) at cdn.dragonlabs.com
+              (cdn-dragon) at cdn.terragonlabs.com
             </CardDescription>
           </CardHeader>
           <CardContent>

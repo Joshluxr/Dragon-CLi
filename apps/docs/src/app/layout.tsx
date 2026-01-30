@@ -37,7 +37,7 @@ export const metadata: Metadata = {
       "Documentation for Dragon - AI-powered coding assistant platform",
     images: [
       {
-        url: "https://cdn.dragonlabs.com/og-img-2-_W6t.png",
+        url: "https://cdn.terragonlabs.com/og-img-2-_W6t.png",
         width: 1200,
         height: 630,
         alt: "Dragon Documentation",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title: "Dragon Documentation",
     description:
       "Documentation for Dragon - AI-powered coding assistant platform",
-    images: ["https://cdn.dragonlabs.com/og-img-2-_W6t.png"],
+    images: ["https://cdn.terragonlabs.com/og-img-2-_W6t.png"],
     creator: "@dragonlabs",
     site: "@dragonlabs",
   },

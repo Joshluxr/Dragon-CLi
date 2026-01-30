@@ -64,7 +64,7 @@ export const WaitlistWelcomeEmail = ({
                 </Text>
 
                 <Link
-                  href="https://cdn.dragonlabs.com/censoredlogin.webm"
+                  href="https://cdn.terragonlabs.com/censoredlogin.webm"
                   className="text-base text-green-600 underline mb-3 block"
                 >
                   View setup video

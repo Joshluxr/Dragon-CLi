@@ -7,7 +7,7 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: ["cdn.dragonlabs.com"],
+    domains: ["cdn.terragonlabs.com"],
   },
 
   redirects: async () => {

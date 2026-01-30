@@ -50,7 +50,7 @@ const messageWithImage: DBUserMessage = {
       type: "image",
       mime_type: "image/png",
       image_url:
-        "https://cdn.dragonlabs.com/CleanShot%202025-06-06%20at%2014.34.40@2x-sZjx.png",
+        "https://cdn.terragonlabs.com/CleanShot%202025-06-06%20at%2014.34.40@2x-sZjx.png",
     },
   ],
   timestamp: new Date().toISOString(),
