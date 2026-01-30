@@ -106,7 +106,7 @@ export function Hero() {
           <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-lg" />
           <div className="relative w-full rounded-lg bg-white border overflow-hidden">
             <video
-              src="https://cdn.terragonlabs.com/sawyerui-Vxci.webm"
+              src="/cdn/sawyerui-Vxci.webm"
               className="w-full h-auto"
               controls
               muted

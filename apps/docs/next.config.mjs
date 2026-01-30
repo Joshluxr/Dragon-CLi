@@ -7,7 +7,8 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: ["cdn.terragonlabs.com"],
+    // Local images are now served from /cdn/ directory
+    domains: [],
   },
 
   redirects: async () => {

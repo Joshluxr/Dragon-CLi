@@ -108,14 +108,14 @@ export function SignInGithhubButton({
       onClick={onClick}
     >
       <Image
-        src="https://cdn.terragonlabs.com/github-mark-Z5SF.svg"
+        src="/cdn/github-mark-Z5SF.svg"
         alt="GitHub"
         width={18}
         height={18}
         className="hidden dark:block"
       />
       <Image
-        src="https://cdn.terragonlabs.com/github-mark-white-Ue4J.svg"
+        src="/cdn/github-mark-white-Ue4J.svg"
         alt="GitHub"
         width={18}
         height={18}

@@ -63,12 +63,10 @@ export const WaitlistWelcomeEmail = ({
                   Claude Code subscriptions:
                 </Text>
 
-                <Link
-                  href="https://cdn.terragonlabs.com/censoredlogin.webm"
-                  className="text-base text-green-600 underline mb-3 block"
-                >
-                  View setup video
-                </Link>
+                {/* Setup video link - should be updated to deployed URL */}
+                <Text className="text-base text-gray-600 mb-3">
+                  Check the documentation for setup instructions.
+                </Text>
               </Section>
 
               <Section className="mb-0">

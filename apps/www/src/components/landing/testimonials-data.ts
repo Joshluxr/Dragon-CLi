@@ -1,26 +1,26 @@
 export const testimonialColumn1 = [
   {
     nameOrRole: "David Young",
-    photo: "https://cdn.terragonlabs.com/david-young-hBxz.webp",
+    photo: "/cdn/david-young-hBxz.webp",
     quote:
       "Just wanted to drop a thank you in here. I honestly cannot tell you how much more I'm getting to use Claude Code because of Dragon. And the workflow is actually very good. The fact that this is this good in public beta makes me excited about what's to come in the future. Please start taking my money 🙂",
   },
   {
     nameOrRole: "Avinash",
-    photo: "https://cdn.terragonlabs.com/avinash-8EfU.webp",
+    photo: "/cdn/avinash-8EfU.webp",
     quote:
       "I discovered Dragon 2 days back, and I am blown away by how smooth it went for a brand-new tool. Great job, guys!!\n\nEspecially when I ran out of credits at 1 AM and it queued my task and ran at 4 AM 🤯\n\nI woke up to a PR",
   },
   {
     nameOrRole: "Akhilesh",
     handle: "@akhi20187",
-    photo: "https://cdn.terragonlabs.com/Akhilesh-p0EA.webp",
+    photo: "/cdn/Akhilesh-p0EA.webp",
     quote: "just tried @dragonlabs -- you folks have built something awesome!!",
   },
   {
     nameOrRole: "Michael",
     handle: "@thisismichael13",
-    photo: "https://cdn.terragonlabs.com/Michael-dA7o.webp",
+    photo: "/cdn/Michael-dA7o.webp",
     verified: true,
     quote: "Dragon has been really good. Huge fan of it.",
   },
@@ -34,7 +34,7 @@ export const testimonialColumn1 = [
 export const testimonialColumn2 = [
   {
     nameOrRole: "Ben W",
-    photo: "https://cdn.terragonlabs.com/ben-w-1xQo.webp",
+    photo: "/cdn/ben-w-1xQo.webp",
     quote:
       "Dragon has done nothing short of blow me away every step along the journey. For what is a relatively complex infrastructure under the hood, you guys made it simple beyond words.\n\nI'm genuinely blown away that this isn't the #1 tool for AI engineers, I'd invest if it was possible 🤣",
   },
@@ -51,7 +51,7 @@ export const testimonialColumn2 = [
   {
     nameOrRole: "Michael Jupp",
     handle: "@michael_jupp4",
-    photo: "https://cdn.terragonlabs.com/michael-jupp-8Rri.webp",
+    photo: "/cdn/michael-jupp-8Rri.webp",
     verified: true,
     quote:
       "anybody else found out about dragon for claude code? its awesome! lets you run claude code in the cloud and queue tasks.\n\nliteral lifesaver @dragonlabs",
@@ -62,7 +62,7 @@ export const testimonialColumn3 = [
   {
     nameOrRole: "Robin Ebers",
     handle: "@itsbyrobin",
-    photo: "https://cdn.terragonlabs.com/robin-ebers-yasG.webp",
+    photo: "/cdn/robin-ebers-yasG.webp",
     verified: true,
     quote:
       "Background tasks for Claude Code\n\nIt's real, and made by @dragonlabs\n\nI've been using it a lot today and I really like it. Currently free, not sponsored, and uses your Claude Max subscription. It even shows you stats of how much $$ you've blasted though and how much code it wrote for you.",
@@ -70,7 +70,7 @@ export const testimonialColumn3 = [
   {
     nameOrRole: "Lotfi",
     handle: "@DrifLotfi",
-    photo: "https://cdn.terragonlabs.com/Lotfi-67HH.webp",
+    photo: "/cdn/Lotfi-67HH.webp",
     verified: true,
     quote:
       "use Dragon labs .. let's you run Claude code background agents in the cloud…. Using your Claude code subscription. I spun up 5 agents form my phone yesterday and they built my entire website for me by the time I got home!",
@@ -78,7 +78,7 @@ export const testimonialColumn3 = [
   {
     nameOrRole: "David Boyle",
     handle: "@beglen",
-    photo: "https://cdn.terragonlabs.com/David-Boyle-nhWh.webp",
+    photo: "/cdn/David-Boyle-nhWh.webp",
     verified: true,
     quote:
       "Use Claude Code on web - via @dragonlabs - can spin up multiple insta cues and manage them from phone on the go. A godsend",
@@ -86,7 +86,7 @@ export const testimonialColumn3 = [
   {
     nameOrRole: "Unofficial messanger",
     handle: "@unofficialmsgr",
-    photo: "https://cdn.terragonlabs.com/Unofficial-messanger-KIaX.webp",
+    photo: "/cdn/Unofficial-messanger-KIaX.webp",
     verified: true,
     quote:
       "Mind-blown by this! 🚀 Can't wait to see how it transforms workflows. Way to go, @dragonlabs!",
@@ -94,7 +94,7 @@ export const testimonialColumn3 = [
   {
     nameOrRole: "Felipe Coury 🦀",
     handle: "@fcoury",
-    photo: "https://cdn.terragonlabs.com/Felipe-Coury-gbLM.webp",
+    photo: "/cdn/Felipe-Coury-gbLM.webp",
     verified: true,
     quote:
       "Been using @dragonlabs to spin up background agents for Claude Code and it's been great! 🌿\n\nGive it a try, it connects directly to your GitHub account and run tasks in the background, opening a PR when it's done. It's been working very well for me.",

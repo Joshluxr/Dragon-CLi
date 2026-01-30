@@ -97,7 +97,7 @@ export function InvitedWaitlist() {
             }}
           >
             <video
-              src="https://cdn.terragonlabs.com/hero_slow.webm"
+              src="/cdn/hero_slow.webm"
               className="w-full h-full object-cover"
               autoPlay
               loop
@@ -148,7 +148,7 @@ export function InvitedWaitlist() {
             <X className="w-8 h-8" />
           </button>
           <video
-            src="https://cdn.terragonlabs.com/hero_slow.webm"
+            src="/cdn/hero_slow.webm"
             className="max-w-full max-h-full rounded-lg"
             controls
             autoPlay

@@ -8,4 +8,4 @@ export const ANNOUNCEMENT_BANNER_STRING =
 // NOTE: To re-show the feature upsell toast, bump this number.
 export const FEATURE_UPSELL_VERSION = 2;
 
-export const OG_IMAGE_URL = "https://cdn.terragonlabs.com/og-img-2-_W6t.png";
+export const OG_IMAGE_URL = "/cdn/og-img-2-_W6t.png";
