@@ -69,6 +69,10 @@ describe("settings", () => {
         captureTools: ["Edit", "Write", "Bash", "Task"],
         maxProfileItems: 50,
         debug: false,
+        progressiveDisclosure: true,
+        treeNavigation: true,
+        privacyFilter: true,
+        embeddingEngine: "none",
       });
     });
   });

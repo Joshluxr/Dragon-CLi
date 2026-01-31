@@ -9,12 +9,14 @@ export { databaseTools, databaseToolNames } from "./database.js";
 export { agentTools, agentToolNames } from "./agent.js";
 export { storageTools, storageToolNames } from "./storage.js";
 export { githubTools, githubToolNames } from "./github.js";
+export { memoryTools, memoryToolNames } from "./memory.js";
 
 import { sandboxTools } from "./sandbox.js";
 import { databaseTools } from "./database.js";
 import { agentTools } from "./agent.js";
 import { storageTools } from "./storage.js";
 import { githubTools } from "./github.js";
+import { memoryTools } from "./memory.js";
 import type { ToolDefinition } from "../types/index.js";
 
 /**
@@ -26,6 +28,7 @@ export const allTools: ToolDefinition[] = [
   ...agentTools,
   ...storageTools,
   ...githubTools,
+  ...memoryTools,
 ];
 
 /**
@@ -58,6 +61,7 @@ export const toolCategories = {
   agent: agentTools.map((t) => t.name),
   storage: storageTools.map((t) => t.name),
   github: githubTools.map((t) => t.name),
+  memory: memoryTools.map((t) => t.name),
 } as const;
 
 /**

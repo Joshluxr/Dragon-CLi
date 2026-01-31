@@ -9,17 +9,20 @@ export { handleDatabaseTool } from "./database.js";
 export { handleAgentTool } from "./agent.js";
 export { handleStorageTool } from "./storage.js";
 export { handleGithubTool } from "./github.js";
+export { handleMemoryTool } from "./memory.js";
 
 import { handleSandboxTool } from "./sandbox.js";
 import { handleDatabaseTool } from "./database.js";
 import { handleAgentTool } from "./agent.js";
 import { handleStorageTool } from "./storage.js";
 import { handleGithubTool } from "./github.js";
+import { handleMemoryTool } from "./memory.js";
 import { sandboxToolNames } from "../tools/sandbox.js";
 import { databaseToolNames } from "../tools/database.js";
 import { agentToolNames } from "../tools/agent.js";
 import { storageToolNames } from "../tools/storage.js";
 import { githubToolNames } from "../tools/github.js";
+import { memoryToolNames } from "../tools/memory.js";
 import type { ToolResult } from "../types/index.js";
 
 /**
@@ -50,6 +53,10 @@ export async function routeToolCall(
     return handleGithubTool(name, args);
   }
 
+  if ((memoryToolNames as readonly string[]).includes(name)) {
+    return handleMemoryTool(name as (typeof memoryToolNames)[number], args);
+  }
+
   // Unknown tool
   return {
     content: [
@@ -74,5 +81,6 @@ export function getToolHandler(name: string): string | undefined {
   if (agentToolNames.includes(name)) return "agent";
   if (storageToolNames.includes(name)) return "storage";
   if (githubToolNames.includes(name)) return "github";
+  if ((memoryToolNames as readonly string[]).includes(name)) return "memory";
   return undefined;
 }
