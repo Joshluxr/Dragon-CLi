@@ -6,3 +6,8 @@ export * from "./utils/tokens";
 export * from "./utils/privacy";
 export * from "./tree";
 export * from "./embeddings";
+export * from "./chunking";
+export * from "./cache/router";
+export * from "./cache/factory";
+export * from "./cache/types";
+export * from "./services/memory-service";

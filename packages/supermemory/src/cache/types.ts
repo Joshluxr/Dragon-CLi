@@ -109,3 +109,10 @@ export type SyncTrigger =
   | "periodic"
   | "manual"
   | "debounced";
+
+export interface PruneResult {
+  deleted: number;
+  deletedByAge: number;
+  deletedBySize: number;
+  errors: string[];
+}

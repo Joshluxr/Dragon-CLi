@@ -4,6 +4,9 @@
  * Implements progressive disclosure memory retrieval combining:
  * - claude-mem's 3-layer workflow (search → select → get)
  * - PageIndex's hierarchical tree navigation
+ *
+ * Uses in-memory storage with tree navigation.
+ * TODO: Integrate with MemoryRouter when module resolution is unified.
  */
 
 import type { ToolResult } from "../types/index.js";
@@ -46,11 +49,11 @@ interface MemoryTreeNode {
   tags?: string[];
 }
 
-// In-memory storage for demo/testing (replace with actual MemoryRouter integration)
+// In-memory storage
 const memoryStore = new Map<string, MemoryItem>();
 let cachedTree: MemoryTree | null = null;
 let treeLastBuilt = 0;
-const TREE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const TREE_CACHE_TTL = 5 * 60 * 1000;
 
 /**
  * Estimates tokens for text content.
@@ -79,7 +82,7 @@ function truncate(text: string, maxLength: number): string {
 }
 
 /**
- * Gets all memories (in production, this connects to MemoryRouter).
+ * Gets all memories.
  */
 async function getAllMemories(): Promise<MemoryItem[]> {
   return [...memoryStore.values()];
@@ -96,27 +99,23 @@ async function searchMemories(
   const all = await getAllMemories();
   const queryLower = query.toLowerCase();
 
-  // Simple keyword matching (in production, use vector similarity)
   let results = all.filter((m) => {
     const contentMatch = m.content.toLowerCase().includes(queryLower);
-    const tagMatch = m.metadata?.tags?.some((t) =>
+    const tagMatch = m.metadata?.tags?.some((t: string) =>
       t.toLowerCase().includes(queryLower),
     );
     return contentMatch || tagMatch;
   });
 
-  // Filter by type
   if (typeFilter && typeFilter !== "all") {
     results = results.filter((m) => m.metadata?.type === typeFilter);
   }
 
-  // Calculate basic similarity score
   results = results.map((m) => ({
     ...m,
     similarity: m.content.toLowerCase().includes(queryLower) ? 0.8 : 0.5,
   }));
 
-  // Sort by similarity
   results.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
 
   return results.slice(0, limit);
@@ -129,9 +128,7 @@ async function getMemoriesById(ids: string[]): Promise<MemoryItem[]> {
   const results: MemoryItem[] = [];
   for (const id of ids) {
     const memory = memoryStore.get(id);
-    if (memory) {
-      results.push(memory);
-    }
+    if (memory) results.push(memory);
   }
   return results;
 }
@@ -145,21 +142,49 @@ async function addMemory(
   tags?: string[],
 ): Promise<string> {
   const id = `mem-${Date.now()}-${Math.random().toString(36).substring(7)}`;
-  const memory: MemoryItem = {
+  memoryStore.set(id, {
     id,
     content,
-    metadata: {
-      type,
-      timestamp: new Date().toISOString(),
-      tags,
-    },
-  };
-  memoryStore.set(id, memory);
-
-  // Invalidate tree cache
+    metadata: { type, timestamp: new Date().toISOString(), tags },
+  });
   cachedTree = null;
-
   return id;
+}
+
+/**
+ * Gets timeline of memories around a specific point.
+ */
+async function getTimeline(
+  anchor: string,
+  before: number,
+  after: number,
+): Promise<{ memories: MemoryItem[]; anchorIndex: number }> {
+  const memories = await getAllMemories();
+  const sorted = memories
+    .filter((m) => m.metadata?.timestamp)
+    .sort(
+      (a, b) =>
+        new Date(a.metadata!.timestamp!).getTime() -
+        new Date(b.metadata!.timestamp!).getTime(),
+    );
+
+  let anchorIndex = anchor.startsWith("mem-")
+    ? sorted.findIndex((m) => m.id === anchor)
+    : sorted.findIndex(
+        (m) =>
+          new Date(m.metadata!.timestamp!).getTime() >=
+          new Date(anchor).getTime(),
+      );
+
+  if (anchorIndex === -1 && sorted.length > 0) anchorIndex = sorted.length - 1;
+
+  const startIndex = Math.max(0, anchorIndex - before);
+  const endIndex = Math.min(sorted.length, anchorIndex + after + 1);
+
+  return {
+    memories: sorted.slice(startIndex, endIndex),
+    anchorIndex: anchorIndex - startIndex,
+  };
 }
 
 /**
@@ -167,15 +192,9 @@ async function addMemory(
  */
 async function buildTree(): Promise<MemoryTree> {
   const now = Date.now();
-
-  // Return cached tree if fresh
-  if (cachedTree && now - treeLastBuilt < TREE_CACHE_TTL) {
-    return cachedTree;
-  }
+  if (cachedTree && now - treeLastBuilt < TREE_CACHE_TTL) return cachedTree;
 
   const memories = await getAllMemories();
-
-  // Group by session
   const sessions = new Map<string, MemoryItem[]>();
   const patterns: MemoryItem[] = [];
   const decisions: MemoryItem[] = [];
@@ -185,21 +204,15 @@ async function buildTree(): Promise<MemoryTree> {
     const type = m.metadata?.type || "unknown";
     const sessionId = m.metadata?.sessionId || "default";
 
-    if (type === "pattern") {
-      patterns.push(m);
-    } else if (type === "decision") {
-      decisions.push(m);
-    } else if (type === "context" || type === "static") {
-      context.push(m);
-    } else {
-      if (!sessions.has(sessionId)) {
-        sessions.set(sessionId, []);
-      }
+    if (type === "pattern") patterns.push(m);
+    else if (type === "decision") decisions.push(m);
+    else if (type === "context" || type === "static") context.push(m);
+    else {
+      if (!sessions.has(sessionId)) sessions.set(sessionId, []);
       sessions.get(sessionId)!.push(m);
     }
   }
 
-  // Build tree structure
   const root: MemoryTreeNode = {
     id: "root",
     title: "Memory Index",
@@ -215,7 +228,6 @@ async function buildTree(): Promise<MemoryTree> {
     ),
   };
 
-  // Sessions category
   if (sessions.size > 0) {
     const sessionsNode: MemoryTreeNode = {
       id: "sessions",
@@ -255,11 +267,9 @@ async function buildTree(): Promise<MemoryTree> {
       sessionsNode.memoryCount += sessionNode.memoryCount;
       sessionsNode.tokenEstimate += sessionNode.tokenEstimate;
     }
-
     root.children.push(sessionsNode);
   }
 
-  // Patterns category
   if (patterns.length > 0) {
     root.children.push({
       id: "patterns",
@@ -278,7 +288,6 @@ async function buildTree(): Promise<MemoryTree> {
     });
   }
 
-  // Decisions category
   if (decisions.length > 0) {
     root.children.push({
       id: "decisions",
@@ -297,7 +306,6 @@ async function buildTree(): Promise<MemoryTree> {
     });
   }
 
-  // Context category
   if (context.length > 0) {
     root.children.push({
       id: "context",
@@ -326,13 +334,9 @@ async function buildTree(): Promise<MemoryTree> {
 
   cachedTree = tree;
   treeLastBuilt = now;
-
   return tree;
 }
 
-/**
- * Finds a node in the tree by ID.
- */
 function findNode(tree: MemoryTree, nodeId: string): MemoryTreeNode | null {
   const search = (node: MemoryTreeNode): MemoryTreeNode | null => {
     if (node.id === nodeId) return node;
@@ -345,12 +349,8 @@ function findNode(tree: MemoryTree, nodeId: string): MemoryTreeNode | null {
   return search(tree.root);
 }
 
-/**
- * Gets path from root to a node.
- */
 function getPathToNode(tree: MemoryTree, nodeId: string): string[] {
   const path: string[] = [];
-
   const search = (node: MemoryTreeNode, currentPath: string[]): boolean => {
     currentPath.push(node.id);
     if (node.id === nodeId) {
@@ -363,7 +363,6 @@ function getPathToNode(tree: MemoryTree, nodeId: string): string[] {
     currentPath.pop();
     return false;
   };
-
   search(tree.root, []);
   return path;
 }
@@ -379,16 +378,34 @@ async function handleMemorySearch(args: {
   const { query, limit = 10, type, treeNodeHint } = args;
 
   try {
-    let results = await searchMemories(query, Math.min(limit, 50), type);
-
-    // Filter by tree node if specified
+    // If tree node hint is provided, scope search to that branch
+    let results: MemoryItem[];
     if (treeNodeHint) {
       const tree = await buildTree();
       const node = findNode(tree, treeNodeHint);
-      if (node?.memoryIds) {
-        const nodeIds = new Set(node.memoryIds);
-        results = results.filter((r) => nodeIds.has(r.id));
+      if (node && node.memoryIds) {
+        const branchMemories = await getMemoriesById(node.memoryIds);
+        const queryLower = query.toLowerCase();
+        results = branchMemories
+          .filter(
+            (m) =>
+              m.content.toLowerCase().includes(queryLower) ||
+              m.metadata?.tags?.some((t: string) =>
+                t.toLowerCase().includes(queryLower),
+              ),
+          )
+          .map((m) => ({
+            ...m,
+            similarity: m.content.toLowerCase().includes(queryLower)
+              ? 0.8
+              : 0.5,
+          }))
+          .slice(0, Math.min(limit, 50));
+      } else {
+        results = await searchMemories(query, Math.min(limit, 50), type);
       }
+    } else {
+      results = await searchMemories(query, Math.min(limit, 50), type);
     }
 
     if (results.length === 0) {
@@ -519,52 +536,27 @@ async function handleMemoryTimeline(args: {
   const { anchor, before = 5, after = 5 } = args;
 
   try {
-    const memories = await getAllMemories();
+    const result = await getTimeline(anchor, before, after);
 
-    // Sort by timestamp
-    const sorted = memories
-      .filter((m) => m.metadata?.timestamp)
-      .sort(
-        (a, b) =>
-          new Date(a.metadata!.timestamp!).getTime() -
-          new Date(b.metadata!.timestamp!).getTime(),
-      );
-
-    // Find anchor
-    let anchorIndex: number;
-    if (anchor.startsWith("mem-")) {
-      anchorIndex = sorted.findIndex((m) => m.id === anchor);
-    } else {
-      // Treat as timestamp
-      const anchorTime = new Date(anchor).getTime();
-      anchorIndex = sorted.findIndex(
-        (m) => new Date(m.metadata!.timestamp!).getTime() >= anchorTime,
-      );
-    }
-
-    if (anchorIndex === -1) {
+    if (result.memories.length === 0) {
       return {
         content: [
           {
             type: "text",
-            text: `Anchor "${anchor}" not found in timeline. Use a valid memory ID or ISO timestamp.`,
+            text: `No memories found around anchor: "${anchor}". Use a valid memory ID or ISO timestamp.`,
           },
         ],
       };
     }
 
-    const startIndex = Math.max(0, anchorIndex - before);
-    const endIndex = Math.min(sorted.length, anchorIndex + after + 1);
-    const timeline = sorted.slice(startIndex, endIndex);
-
     let output = `## Memory Timeline\n\n`;
     output += `**Centered on:** ${anchor}\n`;
     output += `**Showing:** ${before} before, ${after} after\n\n`;
 
-    for (let i = 0; i < timeline.length; i++) {
-      const m = timeline[i];
+    for (let i = 0; i < result.memories.length; i++) {
+      const m = result.memories[i];
       if (!m) continue;
-      const isAnchor = i === anchorIndex - startIndex;
+      const isAnchor = i === result.anchorIndex;
       const marker = isAnchor ? ">>> " : "    ";
 
       const timestamp = m.metadata?.timestamp
@@ -636,30 +628,47 @@ async function handleMemoryStats(): Promise<ToolResult> {
     const memories = await getAllMemories();
     const tree = await buildTree();
 
-    const byType = new Map<string, number>();
-    let totalTokens = 0;
+    // Count by category
+    const categories = {
+      sessions: 0,
+      patterns: 0,
+      decisions: 0,
+      context: 0,
+      observations: 0,
+    };
 
     for (const m of memories) {
       const type = m.metadata?.type || "unknown";
-      byType.set(type, (byType.get(type) || 0) + 1);
-      totalTokens += estimateTokens(m.content);
+      if (type === "pattern") categories.patterns++;
+      else if (type === "decision") categories.decisions++;
+      else if (type === "context" || type === "static") categories.context++;
+      else if (type === "tool-observation") categories.observations++;
+      else categories.sessions++;
     }
+
+    // Calculate tree depth
+    const calcDepth = (node: MemoryTreeNode): number => {
+      if (node.children.length === 0) return node.depth;
+      return Math.max(...node.children.map(calcDepth));
+    };
+    const treeDepth = calcDepth(tree.root);
 
     let output = `## Memory Statistics\n\n`;
     output += `**Total memories:** ${memories.length}\n`;
-    output += `**Total tokens:** ${formatTokens(totalTokens)}\n`;
-    output += `**Tree version:** ${tree.version}\n`;
+    output += `**Total tokens:** ${formatTokens(tree.totalTokens)}\n`;
+    output += `**Tree depth:** ${treeDepth}\n`;
     output += `**Last updated:** ${tree.lastUpdated}\n\n`;
 
-    output += `### By Type\n`;
-    for (const [type, count] of byType) {
-      output += `- ${type}: ${count}\n`;
-    }
+    output += `### By Category\n`;
+    output += `- Sessions: ${categories.sessions}\n`;
+    output += `- Patterns: ${categories.patterns}\n`;
+    output += `- Decisions: ${categories.decisions}\n`;
+    output += `- Context: ${categories.context}\n`;
+    output += `- Observations: ${categories.observations}\n\n`;
 
-    output += `\n### Tree Structure\n`;
-    for (const child of tree.root.children) {
-      output += `- ${child.title}: ${child.memoryCount} memories (${formatTokens(child.tokenEstimate)})\n`;
-    }
+    output += `### Cache Status\n`;
+    output += `- Cached items: ${memoryStore.size}\n`;
+    output += `- Pending uploads: 0\n`;
 
     return { content: [{ type: "text", text: output }] };
   } catch (error) {
@@ -673,6 +682,74 @@ async function handleMemoryStats(): Promise<ToolResult> {
       isError: true,
     };
   }
+}
+
+/**
+ * Formats a tree node for display.
+ */
+function formatNode(
+  node: MemoryTreeNode,
+  lines: string[],
+  depth: number,
+  maxDepth: number,
+): void {
+  if (depth > maxDepth) return;
+
+  const indent = "  ".repeat(depth);
+  const tokenLabel = formatTokens(node.tokenEstimate);
+
+  if (node.type === "root") {
+    for (const child of node.children) {
+      formatNode(child, lines, depth, maxDepth);
+    }
+    return;
+  }
+
+  const countLabel =
+    node.memoryCount === 1 ? "1 item" : `${node.memoryCount} items`;
+  lines.push(`${indent}- **[${node.id}]** ${node.title}`);
+  lines.push(`${indent}  ${node.summary} (${countLabel}, ${tokenLabel})`);
+
+  if (node.tags && node.tags.length > 0) {
+    lines.push(`${indent}  Tags: ${node.tags.slice(0, 5).join(", ")}`);
+  }
+
+  if (depth < maxDepth) {
+    for (const child of node.children) {
+      formatNode(child, lines, depth + 1, maxDepth);
+    }
+  } else if (node.children.length > 0) {
+    lines.push(
+      `${indent}  └── (${node.children.length} sub-sections, use MemoryNavigate to expand)`,
+    );
+  }
+}
+
+/**
+ * Formats the tree for display.
+ */
+async function formatTreeOutput(maxDepth: number): Promise<string> {
+  const tree = await buildTree();
+
+  const lines: string[] = [];
+  lines.push("## Memory Tree Index");
+  lines.push("");
+  lines.push(
+    `Total: ${tree.totalMemories} memories (${formatTokens(tree.totalTokens)})`,
+  );
+  lines.push(`Last updated: ${tree.lastUpdated}`);
+  lines.push("");
+
+  formatNode(tree.root, lines, 0, maxDepth);
+
+  lines.push("");
+  lines.push("---");
+  lines.push("**Navigation tips:**");
+  lines.push('- Use `MemoryNavigate nodeId="<id>"` to explore a branch');
+  lines.push('- Use `MemorySearch query="..."` to search within any branch');
+  lines.push("- Use `MemoryGet ids=[...]` to retrieve specific memories");
+
+  return lines.join("\n");
 }
 
 async function handleMemoryTree(args: {
@@ -694,46 +771,10 @@ async function handleMemoryTree(args: {
       };
     }
 
-    let output = `## Memory Tree Index\n\n`;
-    output += `**Total:** ${tree.totalMemories} memories (${formatTokens(tree.totalTokens)})\n`;
-    output += `**Last updated:** ${tree.lastUpdated}\n\n`;
-
-    const formatNode = (node: MemoryTreeNode, depth: number) => {
-      if (depth > maxDepth || node.type === "root") {
-        if (node.type === "root") {
-          for (const child of node.children) {
-            formatNode(child, depth);
-          }
-        }
-        return;
-      }
-
-      const indent = "  ".repeat(depth);
-      const tokens = formatTokens(node.tokenEstimate);
-      const count =
-        node.memoryCount === 1 ? "1 item" : `${node.memoryCount} items`;
-
-      output += `${indent}- **[${node.id}]** ${node.title}\n`;
-      output += `${indent}  ${node.summary} (${count}, ${tokens})\n`;
-
-      if (depth < maxDepth) {
-        for (const child of node.children) {
-          formatNode(child, depth + 1);
-        }
-      } else if (node.children.length > 0) {
-        output += `${indent}  └── (${node.children.length} sub-sections)\n`;
-      }
-    };
-
-    formatNode(tree.root, 0);
-
-    output += `\n---\n`;
-    output += `**Navigation:**\n`;
-    output += `- \`MemoryNavigate nodeId="sessions"\` - Explore session history\n`;
-    output += `- \`MemoryNavigate nodeId="decisions"\` - View key decisions\n`;
-    output += `- \`MemorySearch query="..."\` - Search within any branch`;
-
-    return { content: [{ type: "text", text: output }] };
+    const treeOutput = await formatTreeOutput(
+      Math.max(1, Math.min(maxDepth, 4)),
+    );
+    return { content: [{ type: "text", text: treeOutput }] };
   } catch (error) {
     return {
       content: [
@@ -747,16 +788,95 @@ async function handleMemoryTree(args: {
   }
 }
 
+/**
+ * Expands a node to show its details and children.
+ */
+async function expandNode(nodeId: string): Promise<string> {
+  const tree = await buildTree();
+  const node = findNode(tree, nodeId);
+
+  if (!node) {
+    return `Node "${nodeId}" not found in memory tree.`;
+  }
+
+  const path = getPathToNode(tree, nodeId);
+  const lines: string[] = [];
+
+  lines.push(`## ${node.title}`);
+  lines.push(`**Path:** ${path.join(" → ")}`);
+  lines.push("");
+  lines.push(node.summary);
+  lines.push("");
+
+  if (node.startTime || node.endTime) {
+    const start = node.startTime
+      ? new Date(node.startTime).toLocaleString()
+      : "unknown";
+    const end = node.endTime
+      ? new Date(node.endTime).toLocaleString()
+      : "unknown";
+    lines.push(`**Time range:** ${start} - ${end}`);
+  }
+
+  if (node.tags && node.tags.length > 0) {
+    lines.push(`**Tags:** ${node.tags.join(", ")}`);
+  }
+
+  lines.push("");
+
+  if (node.memoryIds && node.memoryIds.length > 0) {
+    const tokenLabel = formatTokens(node.tokenEstimate);
+    lines.push(
+      `**Contains ${node.memoryIds.length} memories** (${tokenLabel})`,
+    );
+    lines.push("");
+
+    if (node.memoryIds.length <= 10) {
+      lines.push("Memory IDs:");
+      for (const id of node.memoryIds) {
+        lines.push(`- ${id}`);
+      }
+    } else {
+      lines.push(
+        `First 5 IDs: ${node.memoryIds
+          .slice(0, 5)
+          .map((id) => `"${id}"`)
+          .join(", ")}`,
+      );
+      lines.push("");
+      lines.push(
+        `Use \`MemoryGet ids=${JSON.stringify(node.memoryIds.slice(0, 5))}\` to retrieve.`,
+      );
+    }
+  }
+
+  if (node.children.length > 0) {
+    lines.push("");
+    lines.push("**Sub-sections:**");
+    lines.push("");
+
+    for (const child of node.children) {
+      const tokenLabel = formatTokens(child.tokenEstimate);
+      const countLabel =
+        child.memoryCount === 1 ? "1 item" : `${child.memoryCount} items`;
+
+      lines.push(`- **[${child.id}]** ${child.title}`);
+      lines.push(`  ${child.summary} (${countLabel}, ${tokenLabel})`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
 async function handleMemoryNavigate(args: {
   nodeId: string;
 }): Promise<ToolResult> {
   const { nodeId } = args;
 
   try {
-    const tree = await buildTree();
-    const node = findNode(tree, nodeId);
+    const output = await expandNode(nodeId);
 
-    if (!node) {
+    if (output.includes("not found")) {
       return {
         content: [
           {
@@ -765,44 +885,6 @@ async function handleMemoryNavigate(args: {
           },
         ],
       };
-    }
-
-    const path = getPathToNode(tree, nodeId);
-
-    let output = `## ${node.title}\n\n`;
-    output += `**Path:** ${path.join(" → ")}\n`;
-    output += `**Type:** ${node.type}\n`;
-    output += `${node.summary}\n\n`;
-
-    if (node.startTime || node.endTime) {
-      output += `**Time range:** ${node.startTime || "?"} - ${node.endTime || "?"}\n\n`;
-    }
-
-    if (node.memoryIds && node.memoryIds.length > 0) {
-      output += `### Contains ${node.memoryIds.length} memories (${formatTokens(node.tokenEstimate)})\n\n`;
-
-      if (node.memoryIds.length <= 10) {
-        output += `Memory IDs:\n`;
-        for (const id of node.memoryIds) {
-          output += `- ${id}\n`;
-        }
-      } else {
-        output += `First 5 IDs:\n`;
-        for (const id of node.memoryIds.slice(0, 5)) {
-          output += `- ${id}\n`;
-        }
-        output += `...(${node.memoryIds.length - 5} more)\n`;
-      }
-
-      output += `\nUse \`MemoryGet ids=${JSON.stringify(node.memoryIds.slice(0, 5))}\` to retrieve content.\n`;
-    }
-
-    if (node.children.length > 0) {
-      output += `\n### Sub-sections (${node.children.length})\n\n`;
-      for (const child of node.children) {
-        output += `- **[${child.id}]** ${child.title}\n`;
-        output += `  ${child.summary} (${child.memoryCount} items, ${formatTokens(child.tokenEstimate)})\n`;
-      }
     }
 
     return { content: [{ type: "text", text: output }] };
@@ -823,12 +905,10 @@ async function handleMemoryNavigate(args: {
  * Routes memory tool calls to appropriate handlers.
  */
 export async function handleMemoryTool(
-  name: string,
+  name: MemoryToolName,
   args: Record<string, unknown>,
 ): Promise<ToolResult> {
-  const toolName = name as MemoryToolName;
-
-  switch (toolName) {
+  switch (name) {
     case "MemorySearch":
       return handleMemorySearch(
         args as Parameters<typeof handleMemorySearch>[0],

@@ -782,6 +782,9 @@ importers:
 
   packages/mcp-server:
     dependencies:
+      '@dragon/supermemory':
+        specifier: workspace:*
+        version: link:../supermemory
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.6
         version: 1.12.1

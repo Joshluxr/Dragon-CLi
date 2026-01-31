@@ -7,7 +7,11 @@
     ".": "./src/index.ts",
     "./client": "./src/client.ts",
     "./hooks/*": "./src/hooks/*.ts",
-    "./utils/*": "./src/utils/*.ts"
+    "./utils/*": "./src/utils/*.ts",
+    "./services/*": "./src/services/*.ts",
+    "./cache/*": "./src/cache/*.ts",
+    "./tree/*": "./src/tree/*.ts",
+    "./embeddings/*": "./src/embeddings/*.ts"
   },
   "scripts": {
     "build": "pnpm build:hooks && pnpm build:commands",
