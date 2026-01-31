@@ -2,7 +2,13 @@
 
 ## Executive Summary
 
-This plan enhances our `@dragon/supermemory` system by adopting key optimizations from `claude-mem`, primarily the **progressive disclosure pattern** for ~10x token savings. The implementation spans 6 phases across the MCP server, supermemory package, daemon, and frontend.
+This plan enhances our `@dragon/supermemory` system by adopting key optimizations from **claude-mem** (progressive disclosure) and **PageIndex** (hierarchical reasoning-based retrieval). The combination provides:
+
+1. **~10x token savings** via progressive disclosure (claude-mem)
+2. **Better relevance** via hierarchical tree navigation (PageIndex)
+3. **Hybrid search** combining semantic similarity + keyword + reasoning-based retrieval
+
+The implementation spans 8 phases across the MCP server, supermemory package, daemon, and frontend.
 
 ## Current State Analysis
 
@@ -20,42 +26,80 @@ This plan enhances our `@dragon/supermemory` system by adopting key optimization
 - **Search**: Hybrid semantic + FTS5 keyword
 - **Token Management**: 3-layer workflow with ~10x savings
 
+### PageIndex's Approach (NEW)
+- **Core Insight**: "Similarity ≠ Relevance" - vector similarity alone isn't enough
+- **Structure**: Hierarchical tree index (like table of contents)
+- **Search**: LLM reasoning-based tree navigation (inspired by AlphaGo's MCTS)
+- **No Chunking**: Preserves natural document/memory structure
+- **Explainability**: Traceable retrieval paths with reasoning
+- **Performance**: 98.7% accuracy on FinanceBench (vs vector-based RAG)
+
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         Claude Code Session                              │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ┌──────────────┐    ┌──────────────────────────────────────────────┐  │
-│  │   Hooks      │    │              MCP Tools (NEW)                  │  │
-│  │              │    │  ┌────────────┐ ┌─────────┐ ┌─────────────┐  │  │
-│  │ SessionStart │    │  │mem-search  │ │mem-get  │ │mem-timeline │  │  │
-│  │ UserPrompt   │    │  │~50-100 tok │ │~500 tok │ │~200 tok     │  │  │
-│  │ PostToolUse  │    │  └────────────┘ └─────────┘ └─────────────┘  │  │
-│  │ Stop         │    │                                               │  │
-│  │ SessionEnd   │◄───┤  ┌────────────┐ ┌─────────┐                  │  │
-│  │ (NEW)        │    │  │mem-add     │ │mem-stats│                  │  │
-│  └──────────────┘    │  └────────────┘ └─────────┘                  │  │
-│         │            └──────────────────────────────────────────────┘  │
-│         │                              │                                │
-│         ▼                              ▼                                │
-│  ┌─────────────────────────────────────────────────────────────────┐  │
-│  │                     MemoryRouter (Enhanced)                       │  │
-│  │  ┌─────────────────┐  ┌───────────────┐  ┌──────────────────┐   │  │
-│  │  │  Token Estimator │  │ Privacy Filter│  │ Embedding Engine │   │  │
-│  │  └─────────────────┘  └───────────────┘  └──────────────────┘   │  │
-│  └─────────────────────────────────────────────────────────────────┘  │
-│                              │                                         │
-│         ┌────────────────────┴────────────────────┐                   │
-│         ▼                                         ▼                    │
-│  ┌─────────────────┐                    ┌─────────────────┐           │
-│  │   Zvec Cache    │                    │  Supermemory    │           │
-│  │   (Local)       │◄──────sync────────►│  (Remote API)   │           │
-│  │  + FTS5 Index   │                    │                 │           │
-│  └─────────────────┘                    └─────────────────┘           │
-└─────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           Claude Code Session                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────┐    ┌─────────────────────────────────────────────────────┐│
+│  │   Hooks      │    │                   MCP Tools                          ││
+│  │              │    │  ┌────────────┐ ┌─────────┐ ┌─────────────────────┐ ││
+│  │ SessionStart │    │  │mem-search  │ │mem-get  │ │mem-tree (PageIndex) │ ││
+│  │ UserPrompt   │    │  │~50-100 tok │ │~500 tok │ │reasoning navigation │ ││
+│  │ PostToolUse  │    │  └────────────┘ └─────────┘ └─────────────────────┘ ││
+│  │ Stop         │    │  ┌────────────┐ ┌─────────┐ ┌─────────────────────┐ ││
+│  │ SessionEnd   │◄───┤  │mem-add     │ │mem-stats│ │mem-navigate         │ ││
+│  │ (NEW)        │    │  └────────────┘ └─────────┘ └─────────────────────┘ ││
+│  └──────────────┘    └─────────────────────────────────────────────────────┘│
+│         │                                    │                               │
+│         ▼                                    ▼                               │
+│  ┌───────────────────────────────────────────────────────────────────────┐  │
+│  │                      MemoryRouter (Enhanced)                           │  │
+│  │  ┌───────────────┐ ┌───────────────┐ ┌────────────────────────────┐   │  │
+│  │  │Token Estimator│ │Privacy Filter │ │  Embedding Engine          │   │  │
+│  │  └───────────────┘ └───────────────┘ └────────────────────────────┘   │  │
+│  │  ┌────────────────────────────────────────────────────────────────┐   │  │
+│  │  │              Memory Tree Index (PageIndex-inspired)             │   │  │
+│  │  │  ┌─────────────────────────────────────────────────────────┐   │   │  │
+│  │  │  │  Root: Project Context                                   │   │   │  │
+│  │  │  │  ├── Sessions (chronological)                            │   │   │  │
+│  │  │  │  │   ├── Session 1: "Auth implementation"                │   │   │  │
+│  │  │  │  │   │   ├── Decisions: JWT vs Session                   │   │   │  │
+│  │  │  │  │   │   └── Observations: 15 tool calls                 │   │   │  │
+│  │  │  │  │   └── Session 2: "Bug fixes"                          │   │   │  │
+│  │  │  │  ├── Patterns (learned behaviors)                        │   │   │  │
+│  │  │  │  │   ├── "Uses Tailwind for styling"                     │   │   │  │
+│  │  │  │  │   └── "Prefers functional components"                 │   │   │  │
+│  │  │  │  └── Decisions (key choices)                             │   │   │  │
+│  │  │  │       └── "Database: PostgreSQL with Drizzle ORM"        │   │   │  │
+│  │  │  └─────────────────────────────────────────────────────────┘   │   │  │
+│  │  └────────────────────────────────────────────────────────────────┘   │  │
+│  └───────────────────────────────────────────────────────────────────────┘  │
+│                              │                                               │
+│         ┌────────────────────┴────────────────────┐                         │
+│         ▼                                         ▼                          │
+│  ┌─────────────────┐                    ┌─────────────────┐                 │
+│  │   Zvec Cache    │                    │  Supermemory    │                 │
+│  │   (Local)       │◄──────sync────────►│  (Remote API)   │                 │
+│  │  + FTS5 Index   │                    │                 │                 │
+│  │  + Tree Index   │                    │                 │                 │
+│  └─────────────────┘                    └─────────────────┘                 │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Why PageIndex-Style Tree Navigation?
+
+Traditional vector search has a fundamental flaw: **similarity ≠ relevance**. A memory about "React hooks" might be semantically similar to a query about "fishing hooks" but completely irrelevant.
+
+PageIndex solves this by:
+1. **Organizing memories hierarchically** (like a table of contents)
+2. **Using LLM reasoning** to navigate the tree (not just similarity)
+3. **Providing explainable paths** to retrieved memories
+
+For our memory system, this means:
+- Sessions are organized by topic/intent, not just timestamp
+- Claude can reason: "I need auth-related memories → Sessions category → Auth implementation session"
+- Retrieval decisions are traceable and debuggable
 
 ---
 
@@ -1035,6 +1079,8 @@ async function main() {
 You have access to a persistent memory system via MCP tools:
 - **MemorySearch**: Find relevant past context (~50-100 tokens per result)
 - **MemoryGet**: Retrieve full details for specific IDs (~500-1000 tokens)
+- **MemoryTree**: View hierarchical memory structure for reasoning-based navigation
+- **MemoryNavigate**: Drill into specific tree nodes
 - **MemoryTimeline**: See chronological context around events
 - **MemoryAdd**: Store important decisions for future sessions
 
@@ -1042,7 +1088,7 @@ Use progressive disclosure: search first, then retrieve only what you need.
 This saves tokens compared to loading all memories upfront.
 
 **Quick start**: If this project looks unfamiliar, try:
-\`MemorySearch query="project overview"\`
+\`MemoryTree\` to see the memory hierarchy, then navigate to relevant sections.
 </system-reminder>`;
 
   console.log(guidance);
@@ -1066,7 +1112,668 @@ export const featureFlagsDefinitions = {
     defaultValue: false,
     description: "Enable MCP tools for memory search/retrieval",
   },
+
+  memoryTreeNavigation: {
+    defaultValue: false,
+    description: "Enable PageIndex-style tree navigation for memory retrieval",
+  },
 } satisfies Record<string, FeatureFlagDefinition>;
+```
+
+---
+
+## Phase 8: PageIndex-Style Hierarchical Memory Tree (NEW)
+
+**Goal**: Implement reasoning-based retrieval using hierarchical tree structure.
+
+### 8.1 Memory Tree Schema
+
+**Location**: `packages/supermemory/src/tree/types.ts`
+
+```typescript
+/**
+ * PageIndex-inspired memory tree structure.
+ * Enables LLM reasoning-based navigation instead of pure similarity search.
+ */
+
+export interface MemoryTreeNode {
+  id: string;
+  title: string;
+  summary: string;                    // LLM-generated summary (~50 tokens)
+  type: "root" | "category" | "session" | "topic" | "memory";
+
+  // Hierarchy
+  parentId: string | null;
+  children: MemoryTreeNode[];
+  depth: number;
+
+  // Content bounds (for leaf nodes)
+  memoryIds?: string[];               // IDs of memories in this node
+  memoryCount: number;
+  tokenEstimate: number;              // Estimated tokens if fully expanded
+
+  // Temporal info
+  startTime?: string;                 // ISO timestamp
+  endTime?: string;
+
+  // Metadata
+  tags?: string[];
+  relevanceHints?: string[];          // Keywords that indicate relevance
+}
+
+export interface MemoryTree {
+  root: MemoryTreeNode;
+  version: number;
+  lastUpdated: string;
+  totalMemories: number;
+  totalTokens: number;
+}
+
+/**
+ * Tree navigation result with reasoning trace.
+ */
+export interface TreeNavigationResult {
+  path: string[];                     // Node IDs from root to target
+  reasoning: string;                  // LLM's reasoning for this path
+  node: MemoryTreeNode;
+  memories?: MemoryItem[];            // Populated if leaf node
+}
+```
+
+### 8.2 Memory Tree Builder
+
+**Location**: `packages/supermemory/src/tree/builder.ts`
+
+```typescript
+import { MemoryTree, MemoryTreeNode } from "./types";
+import { MemoryItem } from "../utils/formatter";
+import { estimateTokens } from "../utils/tokens";
+
+/**
+ * Builds a hierarchical tree from flat memories.
+ *
+ * Structure:
+ * - Root
+ *   - Sessions (by time period)
+ *     - Session 1: "User request summary"
+ *       - Decisions
+ *       - Observations
+ *   - Patterns (learned behaviors)
+ *   - Key Decisions (important choices)
+ *   - Project Context (static info)
+ */
+export class MemoryTreeBuilder {
+  private memories: MemoryItem[] = [];
+
+  constructor(memories: MemoryItem[]) {
+    this.memories = memories;
+  }
+
+  async build(): Promise<MemoryTree> {
+    const root = this.createRootNode();
+
+    // Group memories by type and session
+    const sessions = this.groupBySession();
+    const patterns = this.extractPatterns();
+    const decisions = this.extractDecisions();
+    const context = this.extractContext();
+
+    // Build session nodes
+    const sessionsNode = this.createCategoryNode("sessions", "Sessions", "Chronological session history");
+    for (const [sessionId, sessionMemories] of sessions) {
+      const sessionNode = await this.buildSessionNode(sessionId, sessionMemories);
+      sessionsNode.children.push(sessionNode);
+    }
+    sessionsNode.memoryCount = sessionsNode.children.reduce((sum, c) => sum + c.memoryCount, 0);
+    root.children.push(sessionsNode);
+
+    // Build pattern nodes
+    if (patterns.length > 0) {
+      const patternsNode = this.createCategoryNode("patterns", "Learned Patterns", "Coding preferences and behaviors");
+      patternsNode.memoryIds = patterns.map(p => p.id);
+      patternsNode.memoryCount = patterns.length;
+      patternsNode.tokenEstimate = patterns.reduce((sum, p) => sum + estimateTokens(p.content), 0);
+      root.children.push(patternsNode);
+    }
+
+    // Build decisions node
+    if (decisions.length > 0) {
+      const decisionsNode = this.createCategoryNode("decisions", "Key Decisions", "Important architectural and design choices");
+      decisionsNode.memoryIds = decisions.map(d => d.id);
+      decisionsNode.memoryCount = decisions.length;
+      decisionsNode.tokenEstimate = decisions.reduce((sum, d) => sum + estimateTokens(d.content), 0);
+      root.children.push(decisionsNode);
+    }
+
+    // Build context node
+    if (context.length > 0) {
+      const contextNode = this.createCategoryNode("context", "Project Context", "Static project information");
+      contextNode.memoryIds = context.map(c => c.id);
+      contextNode.memoryCount = context.length;
+      contextNode.tokenEstimate = context.reduce((sum, c) => sum + estimateTokens(c.content), 0);
+      root.children.push(contextNode);
+    }
+
+    // Calculate totals
+    root.memoryCount = this.memories.length;
+    root.tokenEstimate = this.memories.reduce((sum, m) => sum + estimateTokens(m.content), 0);
+
+    return {
+      root,
+      version: 1,
+      lastUpdated: new Date().toISOString(),
+      totalMemories: this.memories.length,
+      totalTokens: root.tokenEstimate,
+    };
+  }
+
+  private createRootNode(): MemoryTreeNode {
+    return {
+      id: "root",
+      title: "Memory Index",
+      summary: "Hierarchical index of all stored memories",
+      type: "root",
+      parentId: null,
+      children: [],
+      depth: 0,
+      memoryCount: 0,
+      tokenEstimate: 0,
+    };
+  }
+
+  private createCategoryNode(id: string, title: string, summary: string): MemoryTreeNode {
+    return {
+      id,
+      title,
+      summary,
+      type: "category",
+      parentId: "root",
+      children: [],
+      depth: 1,
+      memoryCount: 0,
+      tokenEstimate: 0,
+    };
+  }
+
+  private groupBySession(): Map<string, MemoryItem[]> {
+    const sessions = new Map<string, MemoryItem[]>();
+
+    for (const memory of this.memories) {
+      const sessionId = memory.metadata?.sessionId || "unknown";
+      if (!sessions.has(sessionId)) {
+        sessions.set(sessionId, []);
+      }
+      sessions.get(sessionId)!.push(memory);
+    }
+
+    return sessions;
+  }
+
+  private async buildSessionNode(sessionId: string, memories: MemoryItem[]): Promise<MemoryTreeNode> {
+    // Extract session summary from memories
+    const summaryMemory = memories.find(m => m.metadata?.type === "session-summary");
+    const title = summaryMemory?.content.substring(0, 50) || `Session ${sessionId.substring(0, 8)}`;
+
+    // Group by type within session
+    const decisions = memories.filter(m => m.metadata?.type === "decision");
+    const observations = memories.filter(m => m.metadata?.type === "observation" || m.metadata?.type === "tool-observation");
+    const prompts = memories.filter(m => m.metadata?.type === "user-prompt");
+
+    const node: MemoryTreeNode = {
+      id: `session-${sessionId}`,
+      title,
+      summary: summaryMemory?.content.substring(0, 100) || "Session details",
+      type: "session",
+      parentId: "sessions",
+      children: [],
+      depth: 2,
+      memoryCount: memories.length,
+      tokenEstimate: memories.reduce((sum, m) => sum + estimateTokens(m.content), 0),
+      memoryIds: memories.map(m => m.id),
+      startTime: memories[0]?.metadata?.timestamp,
+      endTime: memories[memories.length - 1]?.metadata?.timestamp,
+    };
+
+    // Add sub-nodes for decisions and observations if substantial
+    if (decisions.length > 2) {
+      node.children.push({
+        id: `${node.id}-decisions`,
+        title: "Decisions",
+        summary: `${decisions.length} decisions made`,
+        type: "topic",
+        parentId: node.id,
+        children: [],
+        depth: 3,
+        memoryCount: decisions.length,
+        tokenEstimate: decisions.reduce((sum, d) => sum + estimateTokens(d.content), 0),
+        memoryIds: decisions.map(d => d.id),
+      });
+    }
+
+    if (observations.length > 5) {
+      node.children.push({
+        id: `${node.id}-observations`,
+        title: "Tool Observations",
+        summary: `${observations.length} tool results captured`,
+        type: "topic",
+        parentId: node.id,
+        children: [],
+        depth: 3,
+        memoryCount: observations.length,
+        tokenEstimate: observations.reduce((sum, o) => sum + estimateTokens(o.content), 0),
+        memoryIds: observations.map(o => o.id),
+      });
+    }
+
+    return node;
+  }
+
+  private extractPatterns(): MemoryItem[] {
+    return this.memories.filter(m => m.metadata?.type === "pattern");
+  }
+
+  private extractDecisions(): MemoryItem[] {
+    return this.memories.filter(m => m.metadata?.type === "decision");
+  }
+
+  private extractContext(): MemoryItem[] {
+    return this.memories.filter(m =>
+      m.metadata?.type === "static" ||
+      m.metadata?.type === "context" ||
+      m.metadata?.type === "project-info"
+    );
+  }
+}
+```
+
+### 8.3 LLM-Guided Tree Navigation
+
+**Location**: `packages/supermemory/src/tree/navigator.ts`
+
+```typescript
+import { MemoryTree, MemoryTreeNode, TreeNavigationResult } from "./types";
+import { MemoryItem } from "../utils/formatter";
+
+/**
+ * PageIndex-inspired tree navigation using LLM reasoning.
+ *
+ * Instead of vector similarity, we present the tree structure to Claude
+ * and ask it to reason about which branches are most relevant.
+ */
+export class TreeNavigator {
+  private tree: MemoryTree;
+
+  constructor(tree: MemoryTree) {
+    this.tree = tree;
+  }
+
+  /**
+   * Format tree for Claude to reason about.
+   * Shows structure with summaries and token estimates.
+   */
+  formatTreeForReasoning(maxDepth: number = 3): string {
+    const lines: string[] = [];
+    lines.push("## Memory Tree Index");
+    lines.push("");
+    lines.push(`Total: ${this.tree.totalMemories} memories (~${this.tree.totalTokens} tokens)`);
+    lines.push("");
+
+    this.formatNode(this.tree.root, lines, 0, maxDepth);
+
+    lines.push("");
+    lines.push("Use `MemoryNavigate node_id=\"<id>\"` to explore a branch.");
+    lines.push("Use `MemoryGet ids=[...]` to retrieve specific memories.");
+
+    return lines.join("\n");
+  }
+
+  private formatNode(node: MemoryTreeNode, lines: string[], depth: number, maxDepth: number): void {
+    if (depth > maxDepth) return;
+
+    const indent = "  ".repeat(depth);
+    const tokenLabel = node.tokenEstimate > 1000
+      ? `~${(node.tokenEstimate / 1000).toFixed(1)}k tokens`
+      : `~${node.tokenEstimate} tokens`;
+
+    if (node.type === "root") {
+      // Skip root label, just show children
+    } else {
+      lines.push(`${indent}- **[${node.id}]** ${node.title}`);
+      lines.push(`${indent}  ${node.summary} (${node.memoryCount} items, ${tokenLabel})`);
+    }
+
+    for (const child of node.children) {
+      this.formatNode(child, lines, depth + 1, maxDepth);
+    }
+  }
+
+  /**
+   * Navigate to a specific node and return its details.
+   */
+  navigate(nodeId: string): TreeNavigationResult | null {
+    const path: string[] = [];
+    const node = this.findNode(this.tree.root, nodeId, path);
+
+    if (!node) {
+      return null;
+    }
+
+    return {
+      path,
+      reasoning: `Navigated to ${node.title}`,
+      node,
+    };
+  }
+
+  private findNode(current: MemoryTreeNode, targetId: string, path: string[]): MemoryTreeNode | null {
+    path.push(current.id);
+
+    if (current.id === targetId) {
+      return current;
+    }
+
+    for (const child of current.children) {
+      const found = this.findNode(child, targetId, path);
+      if (found) return found;
+    }
+
+    path.pop();
+    return null;
+  }
+
+  /**
+   * Get expanded view of a node with its children's details.
+   */
+  expandNode(nodeId: string): string {
+    const result = this.navigate(nodeId);
+    if (!result) {
+      return `Node "${nodeId}" not found.`;
+    }
+
+    const { node, path } = result;
+    const lines: string[] = [];
+
+    lines.push(`## ${node.title}`);
+    lines.push(`Path: ${path.join(" → ")}`);
+    lines.push(`${node.summary}`);
+    lines.push("");
+
+    if (node.memoryIds && node.memoryIds.length > 0) {
+      lines.push(`**Contains ${node.memoryIds.length} memories** (~${node.tokenEstimate} tokens)`);
+      lines.push(`Use \`MemoryGet ids=${JSON.stringify(node.memoryIds.slice(0, 5))}\` to retrieve.`);
+    }
+
+    if (node.children.length > 0) {
+      lines.push("");
+      lines.push("**Sub-sections:**");
+      for (const child of node.children) {
+        const tokenLabel = child.tokenEstimate > 1000
+          ? `~${(child.tokenEstimate / 1000).toFixed(1)}k tokens`
+          : `~${child.tokenEstimate} tokens`;
+        lines.push(`- **[${child.id}]** ${child.title} (${child.memoryCount} items, ${tokenLabel})`);
+        lines.push(`  ${child.summary}`);
+      }
+    }
+
+    return lines.join("\n");
+  }
+}
+```
+
+### 8.4 Tree-Based MCP Tools
+
+**Location**: `packages/mcp-server/src/tools/memory.ts` (additions)
+
+```typescript
+// Add to existing memoryTools array:
+
+{
+  name: "MemoryTree",
+  description: "View the hierarchical memory index. Use this to understand what memories exist and reason about which branches to explore. More effective than keyword search for complex queries.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      maxDepth: {
+        type: "number",
+        default: 2,
+        description: "Maximum tree depth to display (1-4)"
+      }
+    }
+  }
+},
+{
+  name: "MemoryNavigate",
+  description: "Navigate to a specific node in the memory tree and see its contents/children. Use after MemoryTree to drill into relevant sections.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      nodeId: {
+        type: "string",
+        description: "The node ID from MemoryTree output (e.g., 'sessions', 'session-abc123', 'decisions')"
+      }
+    },
+    required: ["nodeId"]
+  }
+}
+```
+
+### 8.5 Tree-Based Tool Handlers
+
+**Location**: `packages/mcp-server/src/handlers/memory.ts` (additions)
+
+```typescript
+import { MemoryTreeBuilder } from "@dragon/supermemory/tree/builder";
+import { TreeNavigator } from "@dragon/supermemory/tree/navigator";
+
+// Cache tree per project
+const treeCache = new Map<string, { tree: MemoryTree; navigator: TreeNavigator; timestamp: number }>();
+const TREE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function getTreeNavigator(projectPath: string): Promise<TreeNavigator> {
+  const cached = treeCache.get(projectPath);
+  if (cached && Date.now() - cached.timestamp < TREE_CACHE_TTL) {
+    return cached.navigator;
+  }
+
+  const router = getRouter(projectPath);
+  await router.initialize();
+
+  // Get all memories to build tree
+  const memories = await router.getAllMemories();
+
+  const builder = new MemoryTreeBuilder(memories);
+  const tree = await builder.build();
+  const navigator = new TreeNavigator(tree);
+
+  treeCache.set(projectPath, { tree, navigator, timestamp: Date.now() });
+
+  return navigator;
+}
+
+export async function handleMemoryTree(args: { maxDepth?: number }): Promise<ToolResult> {
+  const navigator = await getTreeNavigator(process.cwd());
+  const formatted = navigator.formatTreeForReasoning(args.maxDepth || 2);
+
+  return {
+    content: [{
+      type: "text",
+      text: formatted,
+    }],
+  };
+}
+
+export async function handleMemoryNavigate(args: { nodeId: string }): Promise<ToolResult> {
+  const navigator = await getTreeNavigator(process.cwd());
+  const expanded = navigator.expandNode(args.nodeId);
+
+  return {
+    content: [{
+      type: "text",
+      text: expanded,
+    }],
+  };
+}
+```
+
+### 8.6 Hybrid Retrieval Strategy
+
+**Location**: `packages/supermemory/src/cache/router.ts` (enhancement)
+
+```typescript
+/**
+ * Enhanced search combining:
+ * 1. Vector similarity (semantic)
+ * 2. FTS5 keyword (exact match)
+ * 3. Tree navigation (reasoning-based)
+ *
+ * The tree provides the "map" - Claude can reason about where to look.
+ * Vector/FTS provide the "search" - quick similarity-based retrieval.
+ */
+async hybridSearch(
+  query: string,
+  options: {
+    limit?: number;
+    useVector?: boolean;
+    useKeyword?: boolean;
+    treeNodeHint?: string;  // Optional: limit search to specific tree branch
+  } = {}
+): Promise<MemoryItem[]> {
+  const {
+    limit = 10,
+    useVector = true,
+    useKeyword = true,
+    treeNodeHint,
+  } = options;
+
+  await this.initialize();
+
+  const results: MemoryItem[] = [];
+  const seenIds = new Set<string>();
+
+  // If tree node hint provided, filter to that branch first
+  let candidateIds: Set<string> | null = null;
+  if (treeNodeHint) {
+    const tree = await this.getTree();
+    const navigator = new TreeNavigator(tree);
+    const navResult = navigator.navigate(treeNodeHint);
+    if (navResult?.node.memoryIds) {
+      candidateIds = new Set(navResult.node.memoryIds);
+    }
+  }
+
+  // 1. Vector search
+  if (useVector) {
+    const vectorResults = await this.vectorSearch(query, limit * 2);
+    for (const r of vectorResults) {
+      if (candidateIds && !candidateIds.has(r.id)) continue;
+      if (!seenIds.has(r.id)) {
+        results.push(r);
+        seenIds.add(r.id);
+      }
+    }
+  }
+
+  // 2. Keyword search
+  if (useKeyword) {
+    const keywordResults = await this.keywordSearch(query, limit * 2);
+    for (const r of keywordResults) {
+      if (candidateIds && !candidateIds.has(r.id)) continue;
+      if (!seenIds.has(r.id)) {
+        results.push(r);
+        seenIds.add(r.id);
+      }
+    }
+  }
+
+  // Sort by relevance and limit
+  return results
+    .sort((a, b) => (b.similarity || 0) - (a.similarity || 0))
+    .slice(0, limit);
+}
+```
+
+### 8.7 Auto-Categorization on Memory Add
+
+**Location**: `packages/supermemory/src/tree/categorizer.ts`
+
+```typescript
+/**
+ * Automatically categorizes memories into the tree structure.
+ * Uses heuristics + optional LLM classification.
+ */
+
+export interface CategorizationResult {
+  category: "session" | "pattern" | "decision" | "context" | "observation";
+  sessionId?: string;
+  confidence: number;
+  tags: string[];
+}
+
+export function categorizeMemory(content: string, type: string): CategorizationResult {
+  // Heuristic-based categorization
+
+  // Decision patterns
+  if (/\b(decided|chose|selected|will use|approach is)\b/i.test(content)) {
+    return {
+      category: "decision",
+      confidence: 0.8,
+      tags: extractTags(content),
+    };
+  }
+
+  // Pattern detection
+  if (/\b(always|usually|prefer|convention|standard)\b/i.test(content)) {
+    return {
+      category: "pattern",
+      confidence: 0.7,
+      tags: extractTags(content),
+    };
+  }
+
+  // Context/static info
+  if (/\b(project|repository|codebase|architecture|structure)\b/i.test(content)) {
+    return {
+      category: "context",
+      confidence: 0.6,
+      tags: extractTags(content),
+    };
+  }
+
+  // Default to observation for tool outputs
+  if (type === "tool-observation" || type === "observation") {
+    return {
+      category: "observation",
+      confidence: 0.9,
+      tags: extractTags(content),
+    };
+  }
+
+  // Fallback
+  return {
+    category: "session",
+    confidence: 0.5,
+    tags: extractTags(content),
+  };
+}
+
+function extractTags(content: string): string[] {
+  const tags: string[] = [];
+
+  // Extract technology mentions
+  const techPatterns = [
+    /\b(React|Vue|Angular|Next\.js|TypeScript|JavaScript|Python|Rust|Go)\b/gi,
+    /\b(PostgreSQL|MySQL|MongoDB|Redis|Drizzle|Prisma)\b/gi,
+    /\b(Tailwind|CSS|SCSS|styled-components)\b/gi,
+    /\b(API|REST|GraphQL|gRPC|WebSocket)\b/gi,
+  ];
+
+  for (const pattern of techPatterns) {
+    const matches = content.match(pattern) || [];
+    tags.push(...matches.map(m => m.toLowerCase()));
+  }
+
+  return [...new Set(tags)].slice(0, 10);
+}
 ```
 
 ---
@@ -1085,14 +1792,20 @@ export const featureFlagsDefinitions = {
 5. **Phase 4**: Implement real embedding generation
 6. **Phase 6**: Add FTS5 keyword search
 
-### Week 4-5: Lifecycle & Polish
-7. **Phase 5.1-5.2**: Add SessionEnd hook
-8. **Phase 7**: Transition to progressive disclosure (behind feature flag)
+### Week 4-5: Tree Navigation (PageIndex)
+7. **Phase 8.1-8.3**: Memory tree schema, builder, and navigator
+8. **Phase 8.4-8.5**: Tree-based MCP tools (MemoryTree, MemoryNavigate)
+9. **Phase 8.6-8.7**: Hybrid retrieval and auto-categorization
 
-### Week 5-6: Testing & Rollout
-9. Comprehensive testing
-10. Gradual rollout via feature flags
-11. Documentation updates
+### Week 5-6: Lifecycle & Integration
+10. **Phase 5.1-5.2**: Add SessionEnd hook
+11. **Phase 7**: Transition to progressive disclosure (behind feature flag)
+
+### Week 6-7: Testing & Rollout
+12. Comprehensive testing (unit, integration, E2E)
+13. A/B testing: tree nav vs vector-only vs hybrid
+14. Gradual rollout via feature flags
+15. Documentation updates
 
 ---
 
@@ -1101,15 +1814,16 @@ export const featureFlagsDefinitions = {
 | Metric | Current | Target |
 |--------|---------|--------|
 | Memory tokens per session | ~2000-5000 (upfront) | ~200-500 (on-demand) |
-| Search relevance (MRR@10) | Unknown | >0.7 |
+| Search relevance (MRR@10) | Unknown | >0.8 |
 | Session start latency | ~3-5s | <1s |
-| Memory recall accuracy | Unknown | >80% |
+| Memory recall accuracy | Unknown | >85% |
+| Tree navigation success | N/A | >90% reach relevant node |
 
 ---
 
 ## Files to Create/Modify
 
-### New Files
+### New Files (Phase 1-7 - claude-mem inspired)
 - `packages/mcp-server/src/tools/memory.ts`
 - `packages/mcp-server/src/handlers/memory.ts`
 - `packages/supermemory/src/utils/tokens.ts`
@@ -1120,6 +1834,13 @@ export const featureFlagsDefinitions = {
 - `packages/supermemory/src/embeddings/factory.ts`
 - `packages/supermemory/src/hooks/session-end-hook.ts`
 - `packages/supermemory/python/zvec_bridge/fts.py`
+
+### New Files (Phase 8 - PageIndex inspired)
+- `packages/supermemory/src/tree/types.ts`
+- `packages/supermemory/src/tree/builder.ts`
+- `packages/supermemory/src/tree/navigator.ts`
+- `packages/supermemory/src/tree/categorizer.ts`
+- `packages/supermemory/src/tree/index.ts`
 
 ### Modified Files
 - `packages/mcp-server/src/tools/index.ts`
@@ -1140,13 +1861,123 @@ export const featureFlagsDefinitions = {
 3. **Performance**: Cache warmed on session start
 4. **Privacy**: Explicit filtering before storage
 5. **Token Budget**: Clear estimates shown to Claude
+6. **Tree Staleness**: Rebuild tree on significant memory additions
+7. **LLM Reasoning Errors**: Fallback to vector search if tree navigation fails
 
 ---
 
 ## Testing Strategy
 
-1. **Unit Tests**: Token estimation, privacy filtering, embedding generation
-2. **Integration Tests**: MCP tool handlers, search quality
-3. **E2E Tests**: Full session with memory retrieval
-4. **Load Tests**: Cache performance with large memory sets
-5. **A/B Tests**: Progressive disclosure vs upfront injection
+1. **Unit Tests**: Token estimation, privacy filtering, embedding generation, tree building
+2. **Integration Tests**: MCP tool handlers, search quality, tree navigation
+3. **E2E Tests**: Full session with memory retrieval via tree + vector hybrid
+4. **Load Tests**: Cache performance with large memory sets, tree with 1000+ nodes
+5. **A/B Tests**: Tree navigation vs vector-only vs hybrid approach
+6. **Relevance Tests**: Compare retrieval quality across methods using golden test set
+
+---
+
+## How It All Works Together
+
+### Memory Flow (Write Path)
+
+```
+User Action / Tool Result
+         │
+         ▼
+   PostToolUse Hook ────► Privacy Filter ────► Categorizer
+         │                                         │
+         │                        ┌────────────────┘
+         ▼                        ▼
+   MemoryRouter.addMemory() ◄─── Auto-tags & category
+         │
+         ├──────────────────┬─────────────────────┐
+         ▼                  ▼                     ▼
+    Zvec Cache         FTS5 Index           Tree Index
+    (vectors)          (keywords)          (hierarchy)
+         │                  │                     │
+         └──────────────────┼─────────────────────┘
+                            ▼
+                    Supermemory API
+                    (remote backup)
+```
+
+### Memory Flow (Read Path - Progressive Disclosure)
+
+```
+Claude needs context
+         │
+         ▼
+┌─────────────────────────────────────────────────────┐
+│  Option A: MemoryTree (PageIndex-style)             │
+│  "Show me the memory hierarchy"                     │
+│                                                     │
+│  Returns: ~200 tokens                               │
+│  ┌──────────────────────────────────────────────┐  │
+│  │ Memory Index                                  │  │
+│  │ ├── Sessions (45 items, ~12k tokens)         │  │
+│  │ │   ├── [session-abc] Auth implementation    │  │
+│  │ │   └── [session-def] Bug fixes              │  │
+│  │ ├── Patterns (8 items, ~2k tokens)           │  │
+│  │ └── Decisions (12 items, ~3k tokens)         │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+│  Claude reasons: "I need auth details"             │
+│         │                                          │
+│         ▼                                          │
+│  MemoryNavigate node_id="session-abc"              │
+│  Returns: ~100 tokens with memory IDs              │
+│         │                                          │
+│         ▼                                          │
+│  MemoryGet ids=["mem-123", "mem-456"]              │
+│  Returns: ~800 tokens (full content)               │
+│                                                     │
+│  Total: ~1100 tokens (vs ~12000 upfront)           │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  Option B: MemorySearch (claude-mem style)          │
+│  "Search for authentication"                        │
+│                                                     │
+│  Returns: ~300 tokens (compact index)               │
+│  ┌──────────────────────────────────────────────┐  │
+│  │ Results:                                      │  │
+│  │ - [mem-123] JWT token setup... (~400 tok)    │  │
+│  │ - [mem-456] Auth middleware... (~350 tok)    │  │
+│  │ - [mem-789] Password hashing... (~280 tok)   │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+│  Claude picks relevant IDs                          │
+│         │                                          │
+│         ▼                                          │
+│  MemoryGet ids=["mem-123", "mem-456"]              │
+│  Returns: ~750 tokens                               │
+│                                                     │
+│  Total: ~1050 tokens                                │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  Option C: Hybrid (Tree + Search)                   │
+│                                                     │
+│  1. MemoryTree → Identify relevant branch           │
+│  2. MemorySearch with treeNodeHint → Focused search │
+│  3. MemoryGet → Retrieve specific items             │
+│                                                     │
+│  Best of both: Structure + Similarity               │
+└─────────────────────────────────────────────────────┘
+```
+
+### Why This Design is Better
+
+| Approach | Tokens | Relevance | Explainability |
+|----------|--------|-----------|----------------|
+| **Current (upfront)** | ~5000 | Medium | None |
+| **Vector-only** | ~500 | Medium-High | Low |
+| **Tree-only** | ~500 | High | High |
+| **Hybrid (recommended)** | ~500-1000 | Highest | High |
+
+**Key insight from PageIndex**: Similarity ≠ Relevance
+
+- Vector search finds "similar" memories but may miss truly relevant ones
+- Tree navigation lets Claude *reason* about what's relevant
+- Combining both gives the best results
