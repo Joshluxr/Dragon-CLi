@@ -20,7 +20,6 @@ async function main(): Promise<void> {
     await router.clearCache();
 
     console.log("Cache cleared successfully.");
-    console.log("Note: Remote data in Supermemory is preserved.");
   } catch (error) {
     console.error("Error clearing cache:", error);
     process.exit(1);

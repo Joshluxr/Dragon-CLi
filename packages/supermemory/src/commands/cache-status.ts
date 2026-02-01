@@ -13,11 +13,6 @@ function formatBytes(bytes: number): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
-function formatTime(timestamp: number): string {
-  if (!timestamp) return "Never";
-  return new Date(timestamp).toLocaleString();
-}
-
 async function main(): Promise<void> {
   try {
     const router = await getMemoryRouter();
@@ -36,23 +31,17 @@ async function main(): Promise<void> {
     }
 
     const stats = await router.getCacheStats();
-    const health = await router.getHealth();
 
     console.log("Cache Status: ENABLED");
     console.log("");
     console.log("Statistics:");
     console.log(`  Items:           ${stats.item_count}`);
     console.log(`  Size:            ${formatBytes(stats.size_bytes)}`);
-    console.log(`  Last Sync:       ${formatTime(stats.last_sync_time)}`);
-    console.log(`  Pending Uploads: ${stats.pending_uploads}`);
     console.log(
       `  Index Complete:  ${(stats.index_completeness * 100).toFixed(1)}%`,
     );
     console.log("");
-    console.log("Health:");
-    console.log(
-      `  Supermemory:     ${health.supermemoryOnline ? "ONLINE" : "OFFLINE"}`,
-    );
+    console.log("Storage: Local only (Zvec vector cache)");
   } catch (error) {
     console.error("Error getting cache status:", error);
     process.exit(1);
