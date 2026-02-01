@@ -1,6 +1,6 @@
-import { SupermemoryClient } from "../client";
+import { getMemoryRouter } from "../cache/factory";
 import { readStdin, writeOutput } from "./types";
-import { isDebugEnabled, loadSettings, getApiKey } from "../utils/settings";
+import { isDebugEnabled, loadSettings } from "../utils/settings";
 import { filterPrivateContent } from "../utils/privacy";
 
 /**
@@ -19,12 +19,6 @@ interface SessionEndInput {
 
 async function main(): Promise<void> {
   try {
-    // Skip if no API key configured
-    if (!getApiKey()) {
-      writeOutput({ continue: true });
-      return;
-    }
-
     const input: SessionEndInput = await readStdin();
     const settings = loadSettings();
 
@@ -33,7 +27,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    const client = new SupermemoryClient(input.workingDirectory);
+    const router = await getMemoryRouter(input.workingDirectory);
 
     // Extract session summary
     const summary = extractSessionSummary(
@@ -49,7 +43,7 @@ async function main(): Promise<void> {
         filteredSummary = filterResult.filtered;
       }
 
-      await client.addMemory(filteredSummary, "session-summary");
+      await router.addMemory(filteredSummary, "session-summary");
 
       if (isDebugEnabled()) {
         console.log("[session-end-hook] Stored session summary");
@@ -65,7 +59,7 @@ async function main(): Promise<void> {
         filteredDecision = filterResult.filtered;
       }
 
-      await client.addMemory(filteredDecision, "decision");
+      await router.addMemory(filteredDecision, "decision");
     }
 
     if (isDebugEnabled() && decisions.length > 0) {

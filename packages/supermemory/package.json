@@ -1,11 +1,10 @@
 {
   "name": "@dragon/supermemory",
   "version": "1.0.0",
-  "description": "Supermemory integration for persistent memory across Claude sessions",
+  "description": "Local-only persistent memory system for Claude sessions",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./utils/*": "./src/utils/*.ts",
     "./services/*": "./src/services/*.ts",
@@ -22,7 +21,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "supermemory": "^4.0.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

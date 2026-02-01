@@ -1,5 +1,8 @@
 /**
- * MemoryRouter - Unified interface routing between Zvec cache and Supermemory.
+ * MemoryRouter - Local-only memory storage with Zvec vector cache.
+ *
+ * This router operates entirely locally without any external API dependencies.
+ * All memories are stored in the local Zvec cache.
  */
 
 import { v4 as uuidv4 } from "uuid";
@@ -8,12 +11,10 @@ import { detectPlatform, getCacheDir } from "./platform";
 import type {
   CachedMemory,
   MemoryRouterConfig,
-  SyncResult,
   HealthStatus,
   CacheStats,
   PruneResult,
 } from "./types";
-import { SupermemoryClient } from "../client";
 import type { MemoryItem, FormattedContext } from "../utils/formatter";
 import { getProjectInfo, type ProjectInfo } from "../utils/container";
 import { formatContextForClaude } from "../utils/formatter";
@@ -22,27 +23,23 @@ import { getDefaultEmbeddingEngine } from "../embeddings/factory";
 import { SemanticChunker, type ChunkConfig } from "../chunking";
 
 const DEFAULT_CONFIG: MemoryRouterConfig = {
-  mode: "hybrid",
+  mode: "cache-only",
   cacheEnabled: true,
-  syncEnabled: true,
-  syncIntervalMs: 5 * 60 * 1000, // 5 minutes
-  maxCacheSize: 50,
-  ttlSeconds: 30 * 24 * 60 * 60, // 30 days
+  syncEnabled: false,
+  syncIntervalMs: 0,
+  maxCacheSize: 1000,
+  ttlSeconds: 90 * 24 * 60 * 60, // 90 days
 };
 
 /**
- * MemoryRouter provides a unified interface for memory operations,
- * intelligently routing between local Zvec cache and remote Supermemory.
+ * MemoryRouter provides a unified interface for local memory operations.
+ * All data is stored locally in Zvec cache - no external API calls.
  */
 export class MemoryRouter {
   private zvecBridge: ZvecBridge | null = null;
-  private supermemory: SupermemoryClient;
   private projectInfo: ProjectInfo;
   private config: MemoryRouterConfig;
-  private syncTimer: NodeJS.Timeout | null = null;
   private initialized = false;
-  private lastRefresh = 0;
-  private refreshIntervalMs = 60000; // 1 minute cache freshness
   private embeddingEngine: EmbeddingEngine | null = null;
   private chunker: SemanticChunker;
   private chunkConfig: ChunkConfig;
@@ -53,7 +50,6 @@ export class MemoryRouter {
     chunkConfig?: Partial<ChunkConfig>,
   ) {
     this.projectInfo = getProjectInfo(workingDir);
-    this.supermemory = new SupermemoryClient(workingDir);
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.chunkConfig = {
       targetSize: 512,
@@ -88,7 +84,7 @@ export class MemoryRouter {
       this.embeddingEngine = null;
     }
 
-    if (this.config.cacheEnabled && this.config.mode !== "remote-only") {
+    if (this.config.cacheEnabled) {
       try {
         const platform = await detectPlatform();
 
@@ -124,8 +120,6 @@ export class MemoryRouter {
    * Shutdown the router and cleanup resources.
    */
   async shutdown(): Promise<void> {
-    this.stopBackgroundSync();
-
     if (this.zvecBridge) {
       await this.zvecBridge.stop();
       this.zvecBridge = null;
@@ -142,18 +136,6 @@ export class MemoryRouter {
   }
 
   /**
-   * Check if Supermemory is reachable.
-   */
-  async isOnline(): Promise<boolean> {
-    try {
-      await this.supermemory.getContext();
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
    * Get project info.
    */
   getProjectInfo(): ProjectInfo {
@@ -163,51 +145,29 @@ export class MemoryRouter {
   // Core Operations
 
   /**
-   * Get context for Claude, using cache when available.
+   * Get context for Claude from local cache.
    */
   async getContext(): Promise<FormattedContext> {
     await this.initialize();
 
     const memories: MemoryItem[] = [];
-    let cacheHit = false;
 
-    // Try cache first
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const cached = await this.zvecBridge!.getRecent(
           this.projectInfo.containerTag,
           this.config.maxCacheSize,
         );
 
-        if (cached.length > 0) {
-          for (const m of cached) {
-            memories.push({
-              id: m.memory_id || m.id,
-              content: m.content,
-              metadata: { type: m.memory_type },
-            });
-          }
-          cacheHit = true;
+        for (const m of cached) {
+          memories.push({
+            id: m.memory_id || m.id,
+            content: m.content,
+            metadata: { type: m.memory_type },
+          });
         }
       } catch (error) {
         console.warn("[MemoryRouter] Cache read failed:", error);
-      }
-    }
-
-    // Refresh from Supermemory if needed
-    if (!cacheHit || this.shouldRefresh()) {
-      if (this.config.mode !== "cache-only") {
-        this.refreshFromSupermemory().catch(console.error);
-      }
-    }
-
-    // If no cache hit and not cache-only mode, fetch from Supermemory
-    if (!cacheHit && this.config.mode !== "cache-only") {
-      try {
-        const context = await this.supermemory.getContext();
-        return context;
-      } catch (error) {
-        console.warn("[MemoryRouter] Remote fetch failed:", error);
       }
     }
 
@@ -215,7 +175,7 @@ export class MemoryRouter {
   }
 
   /**
-   * Add a memory, writing to both cache and remote.
+   * Add a memory to local cache.
    * Long content is automatically chunked for better retrieval.
    */
   async addMemory(
@@ -239,7 +199,7 @@ export class MemoryRouter {
         const chunkId = uuidv4();
         const embedding = await this.generateEmbedding(chunk.content);
 
-        if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+        if (this.isCacheAvailable()) {
           try {
             const memory: CachedMemory = {
               id: chunkId,
@@ -249,7 +209,7 @@ export class MemoryRouter {
               project: this.projectInfo.containerTag,
               created_at: timestamp,
               updated_at: timestamp,
-              synced_at: undefined,
+              synced_at: timestamp,
               source: "local",
               metadata: {
                 chunkIndex: chunk.index,
@@ -267,13 +227,6 @@ export class MemoryRouter {
             console.warn("[MemoryRouter] Chunk write failed:", error);
           }
         }
-
-        // Sync chunks to Supermemory (async)
-        if (this.config.mode !== "cache-only") {
-          this.syncToSupermemory(chunkId, chunk.content, type).catch(
-            console.error,
-          );
-        }
       }
 
       return chunkIds[0] || null;
@@ -283,8 +236,7 @@ export class MemoryRouter {
     const localId = uuidv4();
     const embedding = await this.generateEmbedding(content);
 
-    // Write to cache
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const memory: CachedMemory = {
           id: localId,
@@ -294,7 +246,7 @@ export class MemoryRouter {
           project: this.projectInfo.containerTag,
           created_at: timestamp,
           updated_at: timestamp,
-          synced_at: undefined,
+          synced_at: timestamp,
           source: "local",
         };
 
@@ -302,11 +254,6 @@ export class MemoryRouter {
       } catch (error) {
         console.warn("[MemoryRouter] Cache write failed:", error);
       }
-    }
-
-    // Write to Supermemory (async, non-blocking)
-    if (this.config.mode !== "cache-only") {
-      this.syncToSupermemory(localId, content, type).catch(console.error);
     }
 
     return localId;
@@ -320,8 +267,7 @@ export class MemoryRouter {
 
     const memories: MemoryItem[] = [];
 
-    // Get from cache first
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const cached = await this.zvecBridge!.getAll(
           this.projectInfo.containerTag,
@@ -357,7 +303,7 @@ export class MemoryRouter {
   async getMemoryById(id: string): Promise<MemoryItem | null> {
     await this.initialize();
 
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const memories = await this.zvecBridge!.fetch(
           this.projectInfo.containerTag,
@@ -397,7 +343,7 @@ export class MemoryRouter {
 
     const memories: MemoryItem[] = [];
 
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const cached = await this.zvecBridge!.fetch(
           this.projectInfo.containerTag,
@@ -513,8 +459,7 @@ export class MemoryRouter {
     // Generate embedding using real engine
     const embedding = await this.generateEmbedding(content);
 
-    // Write to cache
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const memory: CachedMemory = {
           id: localId,
@@ -524,7 +469,7 @@ export class MemoryRouter {
           project: this.projectInfo.containerTag,
           created_at: timestamp,
           updated_at: timestamp,
-          synced_at: undefined,
+          synced_at: timestamp,
           source: "local",
           metadata: metadata as Record<string, unknown>,
         };
@@ -533,11 +478,6 @@ export class MemoryRouter {
       } catch (error) {
         console.warn("[MemoryRouter] Cache write failed:", error);
       }
-    }
-
-    // Write to Supermemory (async, non-blocking)
-    if (this.config.mode !== "cache-only") {
-      this.syncToSupermemory(localId, content, type).catch(console.error);
     }
 
     return localId;
@@ -706,19 +646,17 @@ export class MemoryRouter {
   }
 
   /**
-   * Search memories.
+   * Search memories using vector similarity.
    */
   async search(query: string, limit: number = 10): Promise<MemoryItem[]> {
     await this.initialize();
 
     const results: MemoryItem[] = [];
-    const seenIds = new Set<string>();
 
     // Generate real embedding for query
     const embedding = await this.generateEmbedding(query);
 
-    // Search cache
-    if (this.isCacheAvailable() && this.config.mode !== "remote-only") {
+    if (this.isCacheAvailable()) {
       try {
         const cached = await this.zvecBridge!.search(
           this.projectInfo.containerTag,
@@ -732,25 +670,9 @@ export class MemoryRouter {
             metadata: { type: r.memory_type },
             similarity: r.score,
           });
-          if (r.memory_id) seenIds.add(r.memory_id);
         }
       } catch (error) {
         console.warn("[MemoryRouter] Cache search failed:", error);
-      }
-    }
-
-    // Search Supermemory for broader results
-    if (this.config.mode !== "cache-only" && results.length < limit) {
-      try {
-        const remote = await this.supermemory.search(query, limit);
-
-        for (const r of remote) {
-          if (!seenIds.has(r.id)) {
-            results.push(r);
-          }
-        }
-      } catch (error) {
-        console.warn("[MemoryRouter] Remote search failed:", error);
       }
     }
 
@@ -761,17 +683,6 @@ export class MemoryRouter {
   }
 
   // Cache Management
-
-  /**
-   * Warm the cache by loading from Supermemory.
-   */
-  async warmCache(): Promise<void> {
-    if (!this.isCacheAvailable()) {
-      return;
-    }
-
-    await this.refreshFromSupermemory();
-  }
 
   /**
    * Clear the local cache.
@@ -920,95 +831,6 @@ export class MemoryRouter {
     }
   }
 
-  // Sync Operations
-
-  /**
-   * Trigger a manual sync.
-   */
-  async syncNow(): Promise<SyncResult> {
-    const startTime = Date.now();
-    const result: SyncResult = {
-      success: false,
-      uploaded: 0,
-      downloaded: 0,
-      conflicts: 0,
-      errors: [],
-      duration: 0,
-    };
-
-    if (!this.isCacheAvailable()) {
-      result.errors.push("Cache not available");
-      result.duration = Date.now() - startTime;
-      return result;
-    }
-
-    try {
-      // Upload unsynced local memories
-      const unsynced = await this.zvecBridge!.getUnsynced(
-        this.projectInfo.containerTag,
-      );
-
-      for (const memory of unsynced) {
-        try {
-          const remoteId = await this.supermemory.addMemory(
-            memory.content,
-            memory.memory_type,
-          );
-
-          if (remoteId) {
-            await this.zvecBridge!.markSynced(
-              this.projectInfo.containerTag,
-              [memory.id],
-              Date.now(),
-              remoteId,
-            );
-            result.uploaded++;
-          }
-        } catch (error) {
-          result.errors.push(`Upload failed: ${memory.id}`);
-        }
-      }
-
-      // Download new memories from Supermemory
-      await this.refreshFromSupermemory();
-      result.downloaded = 0; // Would need to track actual downloads
-
-      result.success = result.errors.length === 0;
-    } catch (error) {
-      result.errors.push(`Sync failed: ${error}`);
-    }
-
-    result.duration = Date.now() - startTime;
-    return result;
-  }
-
-  /**
-   * Start background sync.
-   */
-  startBackgroundSync(): void {
-    if (!this.config.syncEnabled || this.syncTimer) {
-      return;
-    }
-
-    this.syncTimer = setInterval(async () => {
-      try {
-        await this.syncNow();
-      } catch (error) {
-        console.error("[MemoryRouter] Background sync failed:", error);
-      }
-    }, this.config.syncIntervalMs);
-  }
-
-  /**
-   * Stop background sync.
-   */
-  stopBackgroundSync(): void {
-    if (this.syncTimer) {
-      clearInterval(this.syncTimer);
-      this.syncTimer = null;
-    }
-  }
-
   // Health & Status
 
   /**
@@ -1019,56 +841,11 @@ export class MemoryRouter {
 
     return {
       cacheAvailable: this.isCacheAvailable(),
-      supermemoryOnline: await this.isOnline(),
+      supermemoryOnline: false, // Always false - local only
       lastSyncTime: stats.last_sync_time,
-      pendingUploads: stats.pending_uploads,
+      pendingUploads: 0, // No sync needed
       cacheItemCount: stats.item_count,
     };
-  }
-
-  // Private methods
-
-  private shouldRefresh(): boolean {
-    return Date.now() - this.lastRefresh > this.refreshIntervalMs;
-  }
-
-  private async refreshFromSupermemory(): Promise<void> {
-    if (!this.isCacheAvailable()) {
-      return;
-    }
-
-    try {
-      // Fetch context from Supermemory - we don't use the result here
-      // because we'd need actual embeddings, but we update the refresh time
-      await this.supermemory.getContext();
-      this.lastRefresh = Date.now();
-
-      // Store memories in cache
-      // Note: We'd need actual embeddings here - this is a simplified version
-    } catch (error) {
-      console.warn("[MemoryRouter] Refresh failed:", error);
-    }
-  }
-
-  private async syncToSupermemory(
-    localId: string,
-    content: string,
-    type: string,
-  ): Promise<void> {
-    try {
-      const remoteId = await this.supermemory.addMemory(content, type);
-
-      if (remoteId && this.isCacheAvailable()) {
-        await this.zvecBridge!.markSynced(
-          this.projectInfo.containerTag,
-          [localId],
-          Date.now(),
-          remoteId,
-        );
-      }
-    } catch (error) {
-      console.warn("[MemoryRouter] Sync to Supermemory failed:", error);
-    }
   }
 
   /**

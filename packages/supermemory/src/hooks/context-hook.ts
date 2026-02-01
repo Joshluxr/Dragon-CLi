@@ -1,6 +1,6 @@
-import { SupermemoryClient } from "../client";
+import { getMemoryRouter } from "../cache/factory";
 import { readStdin, writeOutput, HookOutput } from "./types";
-import { isDebugEnabled, getApiKey, loadSettings } from "../utils/settings";
+import { isDebugEnabled, loadSettings } from "../utils/settings";
 
 /**
  * Context Hook
@@ -14,14 +14,8 @@ async function main(): Promise<void> {
     const settings = loadSettings();
     const useProgressiveDisclosure = settings.progressiveDisclosure ?? true;
 
-    // Skip if no API key configured
-    if (!getApiKey()) {
-      writeOutput({ continue: true });
-      return;
-    }
-
     const input = await readStdin();
-    const client = new SupermemoryClient(input.workingDirectory);
+    const router = await getMemoryRouter(input.workingDirectory);
 
     const output: HookOutput = {
       continue: true,
@@ -29,7 +23,7 @@ async function main(): Promise<void> {
 
     if (useProgressiveDisclosure) {
       // New progressive disclosure approach - just inform about memory system
-      const context = await client.getContext();
+      const context = await router.getContext();
 
       if (context.itemCount > 0) {
         output.context = `
@@ -55,12 +49,12 @@ This approach saves ~10x tokens compared to loading all memories upfront.
       }
     } else {
       // Legacy: Full context injection (for backwards compatibility)
-      const context = await client.getContext();
+      const context = await router.getContext();
 
       if (context.itemCount > 0) {
         output.context = `
 <system-reminder>
-## Supermemory - Previous Context
+## Memory - Previous Context
 
 The following memories from previous sessions may be relevant to this conversation:
 

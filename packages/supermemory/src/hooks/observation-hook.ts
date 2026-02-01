@@ -1,10 +1,9 @@
-import { SupermemoryClient } from "../client";
+import { getMemoryRouter } from "../cache/factory";
 import { readStdin, writeOutput } from "./types";
 import {
   isDebugEnabled,
   loadSettings,
   getSkipToolsFromEnv,
-  getApiKey,
 } from "../utils/settings";
 import { filterPrivateContent, shouldStore } from "../utils/privacy";
 
@@ -24,12 +23,6 @@ const NOISE_PATTERNS = [
 
 async function main(): Promise<void> {
   try {
-    // Skip if no API key configured
-    if (!getApiKey()) {
-      writeOutput({ continue: true });
-      return;
-    }
-
     const input = await readStdin();
     const settings = loadSettings();
 
@@ -62,7 +55,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    const client = new SupermemoryClient(input.workingDirectory);
+    const router = await getMemoryRouter(input.workingDirectory);
 
     // Format and filter the observation
     let content = formatObservation(input.toolName, input.toolResult);
@@ -89,7 +82,7 @@ async function main(): Promise<void> {
 
       // Check if content is still worth storing after filtering
       if (shouldStore(content)) {
-        await client.addMemory(content, "tool-observation");
+        await router.addMemory(content, "tool-observation");
       }
     }
 

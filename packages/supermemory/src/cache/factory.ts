@@ -35,14 +35,14 @@ export async function getMemoryRouter(
   const rawSettings = settings as typeof settings & { cache?: CacheConfig };
   const userCacheSettings = rawSettings.cache || {};
 
-  // Determine cache settings (with defaults)
+  // Determine cache settings (with defaults) - now local-only
   const cacheSettings = {
     enabled: true,
-    mode: "hybrid" as const,
-    syncEnabled: true,
-    syncIntervalMinutes: 5,
+    mode: "cache-only" as const,
+    syncEnabled: false, // No external sync needed
+    syncIntervalMinutes: 0,
     maxCacheSizeMb: 100,
-    ttlDays: 30,
+    ttlDays: 90, // 90 days for local-only storage
     ...userCacheSettings,
   };
 
@@ -51,10 +51,10 @@ export async function getMemoryRouter(
   const cacheEnabled = cacheSettings.enabled && zvecAvailable;
 
   const config: MemoryRouterConfig = {
-    mode: cacheEnabled ? cacheSettings.mode : "remote-only",
+    mode: "cache-only", // Always local-only
     cacheEnabled,
-    syncEnabled: cacheSettings.syncEnabled,
-    syncIntervalMs: cacheSettings.syncIntervalMinutes * 60 * 1000,
+    syncEnabled: false, // No external sync
+    syncIntervalMs: 0,
     maxCacheSize: settings.maxProfileItems,
     ttlSeconds: cacheSettings.ttlDays * 24 * 60 * 60,
   };
@@ -70,7 +70,6 @@ export async function getMemoryRouter(
  */
 export function resetRouter(): void {
   if (globalRouter) {
-    globalRouter.stopBackgroundSync();
     globalRouter = null;
   }
 }
