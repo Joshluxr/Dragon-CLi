@@ -18,6 +18,8 @@ export const memoryToolNames = [
   "MemoryStats",
   "MemoryTree",
   "MemoryNavigate",
+  "MemoryContext",
+  "MemoryPromote",
 ] as const;
 
 export type MemoryToolName = (typeof memoryToolNames)[number];
@@ -29,7 +31,7 @@ export const memoryTools: ToolDefinition[] = [
   {
     name: "MemorySearch",
     description:
-      "Search stored memories by semantic similarity or keyword. Returns compact index with IDs and summaries (~50-100 tokens per result). Use MemoryGet to fetch full details for specific items.",
+      "Search stored memories using two-tier system. Searches short-term memory first (recent + important), then expands to long-term if needed. Returns compact index with IDs and summaries (~50-100 tokens per result). Use MemoryGet to fetch full details.",
     inputSchema: {
       type: "object",
       properties: {
@@ -58,6 +60,12 @@ export const memoryTools: ToolDefinition[] = [
           type: "string",
           description:
             "Optional: Limit search to a specific tree branch (node ID from MemoryTree)",
+        },
+        tier: {
+          type: "string",
+          enum: ["short-term", "long-term", "all"],
+          description:
+            "Which memory tier to search. 'all' (default) searches short-term first, then expands to long-term if few results found",
         },
       },
       required: ["query"],
@@ -172,6 +180,36 @@ export const memoryTools: ToolDefinition[] = [
         },
       },
       required: ["nodeId"],
+    },
+  },
+  {
+    name: "MemoryContext",
+    description:
+      "Get the short-term memory context for loading into conversation. Returns recent sessions and important memories (decisions, patterns) that should be readily available. Also includes a summary of what's in long-term storage for discoverability. Use this at the start of a session to quickly load relevant context.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        maxTokens: {
+          type: "number",
+          description:
+            "Maximum tokens to include in context (default: 800). Prioritizes most important/recent.",
+        },
+      },
+    },
+  },
+  {
+    name: "MemoryPromote",
+    description:
+      "Promote a memory from long-term to short-term storage. Use this when you need frequent access to a memory that was compressed into long-term storage. The memory will be added to the fast-access tier.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        memoryId: {
+          type: "string",
+          description: "The memory ID to promote to short-term storage",
+        },
+      },
+      required: ["memoryId"],
     },
   },
 ];

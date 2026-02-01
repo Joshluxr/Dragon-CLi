@@ -12,8 +12,21 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { handleMemoryTool, _testUtils } from "./memory.js";
 
-const { clearAll, addTestMemory, stem, tokenize, hashContent, getConfig } =
-  _testUtils;
+const {
+  clearAll,
+  addTestMemory,
+  stem,
+  tokenize,
+  hashContent,
+  getConfig,
+  shortTermMemory,
+  longTermCompressed,
+  organizeTiers,
+  calculateImportance,
+  compressSession,
+  getShortTermContext,
+  getSummaryIndex,
+} = _testUtils;
 
 describe("Memory Handlers", () => {
   beforeEach(() => {
@@ -406,6 +419,290 @@ describe("Memory Handlers", () => {
 
       // First result should be the one with most "authentication" mentions
       expect(lines[0]).toContain("auth");
+    });
+  });
+
+  describe("Tiered Memory System", () => {
+    describe("calculateImportance()", () => {
+      it("should score decisions higher than conversations", () => {
+        const decision = {
+          id: "1",
+          content: "We decided to use TypeScript",
+          metadata: { type: "decision", timestamp: new Date().toISOString() },
+        };
+        const conversation = {
+          id: "2",
+          content: "Hello world test",
+          metadata: {
+            type: "conversation",
+            timestamp: new Date().toISOString(),
+          },
+        };
+
+        const decisionScore = calculateImportance(decision);
+        const conversationScore = calculateImportance(conversation);
+
+        expect(decisionScore).toBeGreaterThan(conversationScore);
+      });
+
+      it("should boost recently accessed memories", () => {
+        const accessed = {
+          id: "1",
+          content: "Accessed memory",
+          metadata: {
+            type: "conversation",
+            timestamp: new Date().toISOString(),
+            accessCount: 5,
+          },
+        };
+        const notAccessed = {
+          id: "2",
+          content: "Not accessed memory",
+          metadata: {
+            type: "conversation",
+            timestamp: new Date().toISOString(),
+            accessCount: 0,
+          },
+        };
+
+        expect(calculateImportance(accessed)).toBeGreaterThan(
+          calculateImportance(notAccessed),
+        );
+      });
+
+      it("should boost tagged memories", () => {
+        const tagged = {
+          id: "1",
+          content: "Tagged memory",
+          metadata: {
+            type: "conversation",
+            timestamp: new Date().toISOString(),
+            tags: ["important"],
+          },
+        };
+        const untagged = {
+          id: "2",
+          content: "Untagged memory",
+          metadata: {
+            type: "conversation",
+            timestamp: new Date().toISOString(),
+          },
+        };
+
+        expect(calculateImportance(tagged)).toBeGreaterThan(
+          calculateImportance(untagged),
+        );
+      });
+    });
+
+    describe("compressSession()", () => {
+      it("should create summary with key information", () => {
+        const memories = [
+          {
+            id: "1",
+            content: "Started working on auth feature",
+            tokenCount: 10,
+            metadata: {
+              type: "conversation",
+              timestamp: "2024-01-01T10:00:00Z",
+              sessionId: "sess-1",
+            },
+          },
+          {
+            id: "2",
+            content: "Decision: Use JWT for authentication",
+            tokenCount: 15,
+            metadata: {
+              type: "decision",
+              timestamp: "2024-01-01T11:00:00Z",
+              sessionId: "sess-1",
+            },
+          },
+          {
+            id: "3",
+            content: "Pattern: Always validate tokens on backend",
+            tokenCount: 12,
+            metadata: {
+              type: "pattern",
+              timestamp: "2024-01-01T12:00:00Z",
+              sessionId: "sess-1",
+            },
+          },
+        ];
+
+        const compressed = compressSession("sess-1", memories);
+
+        expect(compressed.sessionId).toBe("sess-1");
+        expect(compressed.originalMemoryCount).toBe(3);
+        expect(compressed.keyDecisions.length).toBeGreaterThan(0);
+        expect(compressed.patternsLearned.length).toBeGreaterThan(0);
+        expect(compressed.keywords.length).toBeGreaterThan(0);
+        expect(compressed.memoryIds).toEqual(["1", "2", "3"]);
+      });
+
+      it("should handle empty sessions", () => {
+        const compressed = compressSession("empty-sess", []);
+
+        expect(compressed.originalMemoryCount).toBe(0);
+        expect(compressed.summary).toContain("No memories");
+      });
+    });
+
+    describe("organizeTiers()", () => {
+      it("should place decisions in short-term memory", async () => {
+        await addTestMemory("Regular conversation content", "conversation");
+        await addTestMemory(
+          "Important decision about architecture",
+          "decision",
+        );
+
+        await organizeTiers();
+
+        // Decisions should be in short-term
+        let decisionInShortTerm = false;
+        for (const id of shortTermMemory) {
+          const memory = _testUtils.memoryStore.get(id);
+          if (memory?.metadata?.type === "decision") {
+            decisionInShortTerm = true;
+            break;
+          }
+        }
+        expect(decisionInShortTerm).toBe(true);
+      });
+
+      it("should place patterns in short-term memory", async () => {
+        await addTestMemory("Regular content", "conversation");
+        await addTestMemory("Pattern: Always use error boundaries", "pattern");
+
+        await organizeTiers();
+
+        let patternInShortTerm = false;
+        for (const id of shortTermMemory) {
+          const memory = _testUtils.memoryStore.get(id);
+          if (memory?.metadata?.type === "pattern") {
+            patternInShortTerm = true;
+            break;
+          }
+        }
+        expect(patternInShortTerm).toBe(true);
+      });
+    });
+
+    describe("MemoryContext", () => {
+      it("should return short-term context", async () => {
+        await addTestMemory("Important decision for context", "decision");
+        await addTestMemory("Pattern for context", "pattern");
+
+        const result = await handleMemoryTool("MemoryContext", {});
+
+        expect(result.isError).toBeUndefined();
+        const text = (result.content[0] as { text: string }).text;
+        expect(text).toContain("Short-Term Memory");
+      });
+
+      it("should include long-term summary", async () => {
+        await addTestMemory("Decision in context", "decision");
+
+        const result = await handleMemoryTool("MemoryContext", {});
+
+        const text = (result.content[0] as { text: string }).text;
+        expect(text).toContain("Long-term storage");
+      });
+    });
+
+    describe("MemoryPromote", () => {
+      it("should promote memory to short-term", async () => {
+        const id = await addTestMemory("Memory to promote", "conversation");
+
+        // First organize tiers
+        await organizeTiers();
+
+        const result = await handleMemoryTool("MemoryPromote", {
+          memoryId: id,
+        });
+
+        expect(result.isError).toBeUndefined();
+        expect(shortTermMemory.has(id)).toBe(true);
+      });
+
+      it("should handle already short-term memory", async () => {
+        const id = await addTestMemory("Already short-term", "decision");
+        await organizeTiers();
+
+        const result = await handleMemoryTool("MemoryPromote", {
+          memoryId: id,
+        });
+
+        const text = (result.content[0] as { text: string }).text;
+        expect(text).toContain("already in short-term");
+      });
+
+      it("should handle invalid memory ID", async () => {
+        const result = await handleMemoryTool("MemoryPromote", {
+          memoryId: "invalid-id",
+        });
+
+        expect(result.isError).toBe(true);
+      });
+    });
+
+    describe("Tiered Search", () => {
+      it("should search short-term first", async () => {
+        // Add enough memories to trigger tiered search (> 50)
+        for (let i = 0; i < 55; i++) {
+          await addTestMemory(
+            `Filler memory ${i} random content`,
+            "conversation",
+          );
+        }
+        await addTestMemory(
+          "Authentication decision in short-term",
+          "decision",
+        );
+        await organizeTiers();
+
+        const result = await handleMemoryTool("MemorySearch", {
+          query: "authentication decision",
+          tier: "short-term",
+        });
+
+        expect(result.isError).toBeUndefined();
+        const text = (result.content[0] as { text: string }).text;
+        expect(text).toContain("Authentication");
+      });
+
+      it("should indicate when long-term was searched", async () => {
+        // Create enough memories to trigger tiering
+        for (let i = 0; i < 60; i++) {
+          await addTestMemory(
+            `Filler memory ${i} with unique content`,
+            "conversation",
+          );
+        }
+        await addTestMemory("Specific auth pattern to find", "pattern");
+        await organizeTiers();
+
+        const result = await handleMemoryTool("MemorySearch", {
+          query: "auth pattern",
+        });
+
+        expect(result.isError).toBeUndefined();
+      });
+    });
+
+    describe("Stats with Tiers", () => {
+      it("should show tier statistics", async () => {
+        await addTestMemory("Decision for stats", "decision");
+        await addTestMemory("Pattern for stats", "pattern");
+        await addTestMemory("Conversation for stats", "conversation");
+
+        const result = await handleMemoryTool("MemoryStats", {});
+
+        const text = (result.content[0] as { text: string }).text;
+        expect(text).toContain("Tiers");
+        expect(text).toContain("Short-term");
+        expect(text).toContain("Long-term");
+      });
     });
   });
 });
