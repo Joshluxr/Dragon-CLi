@@ -90,7 +90,7 @@ export class MemoryService {
   private router: MemoryRouter;
   private cachedTree: MemoryTree | null = null;
   private treeLastBuilt = 0;
-  private readonly TREE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+  private readonly TREE_CACHE_TTL = 30 * 60 * 1000; // 30 minutes (aligned with MCP handler)
 
   constructor(router: MemoryRouter) {
     this.router = router;

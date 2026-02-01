@@ -5,17 +5,49 @@
  * - claude-mem's 3-layer workflow (search → select → get)
  * - PageIndex's hierarchical tree navigation
  *
- * Uses in-memory storage with tree navigation.
- * TODO: Integrate with MemoryRouter when module resolution is unified.
+ * Optimized for:
+ * - Token efficiency (budgets, compact output)
+ * - Speed (caching, lazy loading, inverted index)
+ * - Accuracy (higher similarity threshold, deduplication, stemming)
  */
 
 import type { ToolResult } from "../types/index.js";
 import type { MemoryToolName } from "../tools/memory.js";
 
-// Types for memory operations
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+
+const CONFIG = {
+  // Token budgets per operation
+  TOKEN_BUDGETS: {
+    search: 400, // Compact index output
+    tree: 600, // Tree structure
+    navigate: 500, // Node expansion
+    get: 2000, // Full content retrieval
+    stats: 200, // Statistics
+    timeline: 400, // Timeline view
+  },
+  // Similarity thresholds
+  MIN_SIMILARITY: 0.65, // Raised from 0.5 for higher precision
+  // Cache settings
+  TREE_CACHE_TTL: 30 * 60 * 1000, // 30 minutes (was 5 min)
+  // Output limits
+  MAX_SEARCH_RESULTS: 20,
+  MAX_CHILDREN_DISPLAY: 10,
+  SUMMARY_TRUNCATE_LENGTH: 60, // Compact summaries
+  TITLE_TRUNCATE_LENGTH: 40,
+};
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
 interface MemoryItem {
   id: string;
   content: string;
+  contentHash?: string; // For deduplication
+  tokenCount?: number; // Cached token count
   metadata?: {
     type?: string;
     timestamp?: string;
@@ -31,6 +63,8 @@ interface MemoryTree {
   lastUpdated: string;
   totalMemories: number;
   totalTokens: number;
+  maxDepth: number; // Cached depth
+  nodeIndex: Map<string, MemoryTreeNode>; // Fast lookup
 }
 
 interface MemoryTreeNode {
@@ -49,111 +83,362 @@ interface MemoryTreeNode {
   tags?: string[];
 }
 
-// In-memory storage
+// Inverted index for fast keyword search
+interface InvertedIndex {
+  terms: Map<string, Set<string>>; // term -> memory IDs
+  lastBuilt: number;
+}
+
+// ============================================================================
+// STORAGE & CACHING
+// ============================================================================
+
 const memoryStore = new Map<string, MemoryItem>();
 let cachedTree: MemoryTree | null = null;
 let treeLastBuilt = 0;
-const TREE_CACHE_TTL = 5 * 60 * 1000;
+let invertedIndex: InvertedIndex = { terms: new Map(), lastBuilt: 0 };
 
-/**
- * Estimates tokens for text content.
- */
+// ============================================================================
+// TOKEN UTILITIES
+// ============================================================================
+
 function estimateTokens(text: string): number {
   if (!text) return 0;
-  const isCode = /[{}\[\]();=]/.test(text);
-  return Math.ceil(text.length * (isCode ? 0.35 : 0.25));
+  const isCode = /[{}\[\]();=<>]/.test(text) && /\n/.test(text);
+  const hasUrls = /https?:\/\//.test(text);
+  let multiplier = 0.25;
+  if (isCode) multiplier = 0.35;
+  else if (hasUrls) multiplier = 0.4;
+  return Math.ceil(text.length * multiplier);
 }
 
-/**
- * Formats token count for display.
- */
 function formatTokens(tokens: number): string {
-  if (tokens < 100) return `~${tokens} tokens`;
-  if (tokens < 1000) return `~${Math.round(tokens / 10) * 10} tokens`;
-  return `~${(tokens / 1000).toFixed(1)}k tokens`;
+  if (tokens < 100) return `~${tokens}tk`;
+  if (tokens < 1000) return `~${Math.round(tokens / 10) * 10}tk`;
+  return `~${(tokens / 1000).toFixed(1)}k`;
 }
 
-/**
- * Truncates text to a maximum length.
- */
 function truncate(text: string, maxLength: number): string {
+  if (!text) return "";
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + "...";
+  return text.substring(0, maxLength - 3) + "...";
 }
 
-/**
- * Gets all memories.
- */
+// ============================================================================
+// TEXT PROCESSING (Stemming, Tokenization)
+// ============================================================================
+
+// Simple Porter-like suffix stripping for English
+const SUFFIX_RULES: [RegExp, string][] = [
+  [/ing$/, ""],
+  [/ed$/, ""],
+  [/tion$/, "t"],
+  [/ness$/, ""],
+  [/ment$/, ""],
+  [/able$/, ""],
+  [/ible$/, ""],
+  [/ful$/, ""],
+  [/less$/, ""],
+  [/ous$/, ""],
+  [/ive$/, ""],
+  [/ly$/, ""],
+  [/er$/, ""],
+  [/est$/, ""],
+  [/ies$/, "y"],
+  [/es$/, ""],
+  [/s$/, ""],
+];
+
+function stem(word: string): string {
+  if (word.length < 4) return word;
+  let result = word.toLowerCase();
+  for (const [pattern, replacement] of SUFFIX_RULES) {
+    if (
+      pattern.test(result) &&
+      result.replace(pattern, replacement).length >= 3
+    ) {
+      result = result.replace(pattern, replacement);
+      break; // Apply only one rule
+    }
+  }
+  return result;
+}
+
+function tokenize(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((t) => t.length >= 2);
+}
+
+function stemTokens(tokens: string[]): string[] {
+  return tokens.map(stem);
+}
+
+// Content hash for deduplication
+function hashContent(content: string): string {
+  let hash = 0;
+  for (let i = 0; i < content.length; i++) {
+    const char = content.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return hash.toString(36);
+}
+
+// ============================================================================
+// INVERTED INDEX
+// ============================================================================
+
+function buildInvertedIndex(memories: MemoryItem[]): void {
+  invertedIndex.terms.clear();
+
+  for (const memory of memories) {
+    const tokens = tokenize(memory.content);
+    const stems = stemTokens(tokens);
+    const uniqueStems = new Set(stems);
+
+    // Also index tags
+    if (memory.metadata?.tags) {
+      for (const tag of memory.metadata.tags) {
+        uniqueStems.add(stem(tag.toLowerCase()));
+      }
+    }
+
+    for (const term of uniqueStems) {
+      if (!invertedIndex.terms.has(term)) {
+        invertedIndex.terms.set(term, new Set());
+      }
+      invertedIndex.terms.get(term)!.add(memory.id);
+    }
+  }
+
+  invertedIndex.lastBuilt = Date.now();
+}
+
+function searchWithIndex(query: string): Set<string> {
+  const queryTokens = stemTokens(tokenize(query));
+  if (queryTokens.length === 0) return new Set<string>();
+
+  // Find memories containing ALL query terms (AND logic)
+  let resultIds: Set<string> | null = null;
+
+  for (const term of queryTokens) {
+    const termIds = invertedIndex.terms.get(term);
+    if (!termIds || termIds.size === 0) {
+      return new Set<string>(); // Term not found, no results
+    }
+
+    if (resultIds === null) {
+      resultIds = new Set<string>(termIds);
+    } else {
+      // Intersect with current results
+      const intersection = new Set<string>();
+      for (const id of resultIds) {
+        if (termIds.has(id)) {
+          intersection.add(id);
+        }
+      }
+      resultIds = intersection;
+    }
+  }
+
+  return resultIds || new Set<string>();
+}
+
+// ============================================================================
+// TF-IDF SCORING
+// ============================================================================
+
+function calculateTfIdf(
+  memory: MemoryItem,
+  queryTokens: string[],
+  totalDocs: number,
+): number {
+  const contentTokens = stemTokens(tokenize(memory.content));
+  const contentTermFreq = new Map<string, number>();
+
+  for (const token of contentTokens) {
+    contentTermFreq.set(token, (contentTermFreq.get(token) || 0) + 1);
+  }
+
+  let score = 0;
+  let matchedTerms = 0;
+
+  for (const queryTerm of queryTokens) {
+    const stemmed = stem(queryTerm);
+    const tf = contentTermFreq.get(stemmed) || 0;
+    if (tf === 0) continue;
+
+    matchedTerms++;
+
+    // IDF: log(N / df) where df is docs containing term
+    const df = invertedIndex.terms.get(stemmed)?.size || 1;
+    const idf = Math.log((totalDocs + 1) / df);
+
+    // TF-IDF with log normalization
+    score += (1 + Math.log(tf)) * idf;
+  }
+
+  if (matchedTerms === 0) return 0;
+
+  // Calculate coverage - what fraction of query terms were found
+  const coverage = matchedTerms / queryTokens.length;
+
+  // Normalize TF-IDF score to roughly 0-1 range
+  // Average TF-IDF per matched term, scaled
+  const avgTfIdf = score / matchedTerms;
+  const normalizedTfIdf = Math.min(1, avgTfIdf / 3);
+
+  // Final score: weighted combination of coverage (60%) and TF-IDF quality (40%)
+  // This ensures high coverage queries score well while still ranking by relevance
+  return coverage * 0.6 + normalizedTfIdf * 0.4;
+}
+
+// ============================================================================
+// DEDUPLICATION
+// ============================================================================
+
+function deduplicateResults(results: MemoryItem[]): MemoryItem[] {
+  const seen = new Map<string, MemoryItem>();
+
+  for (const result of results) {
+    const hash = result.contentHash || hashContent(result.content);
+
+    if (!seen.has(hash)) {
+      seen.set(hash, result);
+    } else {
+      // Keep the one with higher similarity
+      const existing = seen.get(hash)!;
+      if ((result.similarity || 0) > (existing.similarity || 0)) {
+        seen.set(hash, result);
+      }
+    }
+  }
+
+  return [...seen.values()];
+}
+
+// ============================================================================
+// MEMORY OPERATIONS
+// ============================================================================
+
 async function getAllMemories(): Promise<MemoryItem[]> {
   return [...memoryStore.values()];
 }
 
-/**
- * Searches memories by query.
- */
 async function searchMemories(
   query: string,
   limit: number,
   typeFilter?: string,
 ): Promise<MemoryItem[]> {
   const all = await getAllMemories();
-  const queryLower = query.toLowerCase();
 
-  let results = all.filter((m) => {
-    const contentMatch = m.content.toLowerCase().includes(queryLower);
-    const tagMatch = m.metadata?.tags?.some((t: string) =>
-      t.toLowerCase().includes(queryLower),
-    );
-    return contentMatch || tagMatch;
-  });
-
-  if (typeFilter && typeFilter !== "all") {
-    results = results.filter((m) => m.metadata?.type === typeFilter);
+  // Rebuild inverted index if stale
+  if (
+    invertedIndex.lastBuilt < treeLastBuilt ||
+    invertedIndex.terms.size === 0
+  ) {
+    buildInvertedIndex(all);
   }
 
-  results = results.map((m) => ({
-    ...m,
-    similarity: m.content.toLowerCase().includes(queryLower) ? 0.8 : 0.5,
-  }));
+  // Use inverted index for fast lookup
+  const candidateIds = searchWithIndex(query);
+  const queryTokens = tokenize(query);
 
+  let results: MemoryItem[] = [];
+
+  if (candidateIds.size > 0) {
+    // Score candidates with TF-IDF
+    for (const id of candidateIds) {
+      const memory = memoryStore.get(id);
+      if (!memory) continue;
+
+      if (
+        typeFilter &&
+        typeFilter !== "all" &&
+        memory.metadata?.type !== typeFilter
+      ) {
+        continue;
+      }
+
+      const score = calculateTfIdf(memory, queryTokens, all.length);
+      results.push({ ...memory, similarity: score }); // Already normalized to 0-1
+    }
+  } else {
+    // Fallback to substring search if no index matches
+    const queryLower = query.toLowerCase();
+    results = all
+      .filter((m) => {
+        if (
+          typeFilter &&
+          typeFilter !== "all" &&
+          m.metadata?.type !== typeFilter
+        ) {
+          return false;
+        }
+        return (
+          m.content.toLowerCase().includes(queryLower) ||
+          m.metadata?.tags?.some((t) => t.toLowerCase().includes(queryLower))
+        );
+      })
+      .map((m) => ({
+        ...m,
+        similarity: m.content.toLowerCase().includes(queryLower) ? 0.7 : 0.5,
+      }));
+  }
+
+  // Filter by similarity threshold
+  results = results.filter((r) => (r.similarity || 0) >= CONFIG.MIN_SIMILARITY);
+
+  // Deduplicate
+  results = deduplicateResults(results);
+
+  // Sort by relevance
   results.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
 
   return results.slice(0, limit);
 }
 
-/**
- * Gets memories by ID.
- */
 async function getMemoriesById(ids: string[]): Promise<MemoryItem[]> {
   const results: MemoryItem[] = [];
+  const seen = new Set<string>();
+
   for (const id of ids) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+
     const memory = memoryStore.get(id);
     if (memory) results.push(memory);
   }
   return results;
 }
 
-/**
- * Adds a new memory.
- */
 async function addMemory(
   content: string,
   type: string,
   tags?: string[],
 ): Promise<string> {
   const id = `mem-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+  const tokenCount = estimateTokens(content);
+  const contentHash = hashContent(content);
+
   memoryStore.set(id, {
     id,
     content,
+    contentHash,
+    tokenCount,
     metadata: { type, timestamp: new Date().toISOString(), tags },
   });
+
+  // Invalidate caches
   cachedTree = null;
+  invertedIndex.lastBuilt = 0;
+
   return id;
 }
 
-/**
- * Gets timeline of memories around a specific point.
- */
 async function getTimeline(
   anchor: string,
   before: number,
@@ -187,187 +472,190 @@ async function getTimeline(
   };
 }
 
-/**
- * Builds the memory tree.
- */
+// ============================================================================
+// TREE BUILDING (Optimized)
+// ============================================================================
+
 async function buildTree(): Promise<MemoryTree> {
   const now = Date.now();
-  if (cachedTree && now - treeLastBuilt < TREE_CACHE_TTL) return cachedTree;
+  if (cachedTree && now - treeLastBuilt < CONFIG.TREE_CACHE_TTL) {
+    return cachedTree;
+  }
 
   const memories = await getAllMemories();
   const sessions = new Map<string, MemoryItem[]>();
   const patterns: MemoryItem[] = [];
   const decisions: MemoryItem[] = [];
   const context: MemoryItem[] = [];
+  const observations: MemoryItem[] = [];
 
+  // Single pass categorization with cached token counts
+  let totalTokens = 0;
   for (const m of memories) {
+    const tokens = m.tokenCount || estimateTokens(m.content);
+    if (!m.tokenCount) m.tokenCount = tokens;
+    totalTokens += tokens;
+
     const type = m.metadata?.type || "unknown";
     const sessionId = m.metadata?.sessionId || "default";
 
     if (type === "pattern") patterns.push(m);
     else if (type === "decision") decisions.push(m);
     else if (type === "context" || type === "static") context.push(m);
+    else if (type === "tool-observation" || type === "observation")
+      observations.push(m);
     else {
       if (!sessions.has(sessionId)) sessions.set(sessionId, []);
       sessions.get(sessionId)!.push(m);
     }
   }
 
+  // Build node index for fast lookup
+  const nodeIndex = new Map<string, MemoryTreeNode>();
+  let maxDepth = 0;
+
   const root: MemoryTreeNode = {
     id: "root",
     title: "Memory Index",
-    summary: "Hierarchical index of all stored memories",
+    summary: "All stored memories",
     type: "root",
     parentId: null,
     children: [],
     depth: 0,
     memoryCount: memories.length,
-    tokenEstimate: memories.reduce(
-      (sum, m) => sum + estimateTokens(m.content),
-      0,
-    ),
+    tokenEstimate: totalTokens,
   };
+  nodeIndex.set("root", root);
 
-  if (sessions.size > 0) {
-    const sessionsNode: MemoryTreeNode = {
-      id: "sessions",
-      title: "Sessions",
-      summary: `Chronological session history (${sessions.size} sessions)`,
+  // Helper to add category nodes
+  const addCategoryNode = (
+    id: string,
+    title: string,
+    summary: string,
+    items: MemoryItem[],
+  ) => {
+    if (items.length === 0) return;
+
+    const tokens = items.reduce((sum, m) => sum + (m.tokenCount || 0), 0);
+    const node: MemoryTreeNode = {
+      id,
+      title,
+      summary: `${items.length} items (${formatTokens(tokens)})`,
       type: "category",
       parentId: "root",
       children: [],
       depth: 1,
-      memoryCount: 0,
-      tokenEstimate: 0,
+      memoryIds: items.map((m) => m.id),
+      memoryCount: items.length,
+      tokenEstimate: tokens,
     };
+    root.children.push(node);
+    nodeIndex.set(id, node);
+    if (node.depth > maxDepth) maxDepth = node.depth;
+  };
+
+  // Add session nodes with children
+  if (sessions.size > 0) {
+    const sessionItems = [...sessions.values()].flat();
+    const sessionTokens = sessionItems.reduce(
+      (sum, m) => sum + (m.tokenCount || 0),
+      0,
+    );
+
+    const sessionsNode: MemoryTreeNode = {
+      id: "sessions",
+      title: "Sessions",
+      summary: `${sessions.size} sessions (${formatTokens(sessionTokens)})`,
+      type: "category",
+      parentId: "root",
+      children: [],
+      depth: 1,
+      memoryCount: sessionItems.length,
+      tokenEstimate: sessionTokens,
+    };
+    nodeIndex.set("sessions", sessionsNode);
 
     for (const [sessionId, sessionMemories] of sessions) {
+      const sTokens = sessionMemories.reduce(
+        (sum, m) => sum + (m.tokenCount || 0),
+        0,
+      );
       const sessionNode: MemoryTreeNode = {
-        id: `session-${sessionId.substring(0, 12)}`,
+        id: `session-${sessionId.substring(0, 8)}`,
         title: truncate(
           sessionMemories[0]?.content || `Session ${sessionId}`,
-          50,
+          CONFIG.TITLE_TRUNCATE_LENGTH,
         ),
-        summary: `${sessionMemories.length} memories from this session`,
+        summary: `${sessionMemories.length} items`,
         type: "session",
         parentId: "sessions",
         children: [],
         depth: 2,
         memoryIds: sessionMemories.map((m) => m.id),
         memoryCount: sessionMemories.length,
-        tokenEstimate: sessionMemories.reduce(
-          (sum, m) => sum + estimateTokens(m.content),
-          0,
-        ),
+        tokenEstimate: sTokens,
         startTime: sessionMemories[0]?.metadata?.timestamp,
         endTime:
           sessionMemories[sessionMemories.length - 1]?.metadata?.timestamp,
       };
       sessionsNode.children.push(sessionNode);
-      sessionsNode.memoryCount += sessionNode.memoryCount;
-      sessionsNode.tokenEstimate += sessionNode.tokenEstimate;
+      nodeIndex.set(sessionNode.id, sessionNode);
+      if (sessionNode.depth > maxDepth) maxDepth = sessionNode.depth;
     }
     root.children.push(sessionsNode);
+    if (sessionsNode.depth > maxDepth) maxDepth = sessionsNode.depth;
   }
 
-  if (patterns.length > 0) {
-    root.children.push({
-      id: "patterns",
-      title: "Learned Patterns",
-      summary: "Coding preferences, conventions, and behaviors",
-      type: "category",
-      parentId: "root",
-      children: [],
-      depth: 1,
-      memoryIds: patterns.map((p) => p.id),
-      memoryCount: patterns.length,
-      tokenEstimate: patterns.reduce(
-        (sum, p) => sum + estimateTokens(p.content),
-        0,
-      ),
-    });
-  }
-
-  if (decisions.length > 0) {
-    root.children.push({
-      id: "decisions",
-      title: "Key Decisions",
-      summary: "Important architectural and design choices",
-      type: "category",
-      parentId: "root",
-      children: [],
-      depth: 1,
-      memoryIds: decisions.map((d) => d.id),
-      memoryCount: decisions.length,
-      tokenEstimate: decisions.reduce(
-        (sum, d) => sum + estimateTokens(d.content),
-        0,
-      ),
-    });
-  }
-
-  if (context.length > 0) {
-    root.children.push({
-      id: "context",
-      title: "Project Context",
-      summary: "Static project information and configuration",
-      type: "category",
-      parentId: "root",
-      children: [],
-      depth: 1,
-      memoryIds: context.map((c) => c.id),
-      memoryCount: context.length,
-      tokenEstimate: context.reduce(
-        (sum, c) => sum + estimateTokens(c.content),
-        0,
-      ),
-    });
-  }
+  addCategoryNode("patterns", "Patterns", "Learned patterns", patterns);
+  addCategoryNode("decisions", "Decisions", "Key decisions", decisions);
+  addCategoryNode("context", "Context", "Project context", context);
+  addCategoryNode(
+    "observations",
+    "Observations",
+    "Tool observations",
+    observations,
+  );
 
   const tree: MemoryTree = {
     root,
     version: 1,
     lastUpdated: new Date().toISOString(),
     totalMemories: memories.length,
-    totalTokens: root.tokenEstimate,
+    totalTokens,
+    maxDepth,
+    nodeIndex,
   };
 
   cachedTree = tree;
   treeLastBuilt = now;
+
+  // Build inverted index alongside tree
+  buildInvertedIndex(memories);
+
   return tree;
 }
 
 function findNode(tree: MemoryTree, nodeId: string): MemoryTreeNode | null {
-  const search = (node: MemoryTreeNode): MemoryTreeNode | null => {
-    if (node.id === nodeId) return node;
-    for (const child of node.children) {
-      const found = search(child);
-      if (found) return found;
-    }
-    return null;
-  };
-  return search(tree.root);
+  return tree.nodeIndex.get(nodeId) || null;
 }
 
 function getPathToNode(tree: MemoryTree, nodeId: string): string[] {
   const path: string[] = [];
-  const search = (node: MemoryTreeNode, currentPath: string[]): boolean => {
-    currentPath.push(node.id);
-    if (node.id === nodeId) {
-      path.push(...currentPath);
-      return true;
-    }
-    for (const child of node.children) {
-      if (search(child, currentPath)) return true;
-    }
-    currentPath.pop();
-    return false;
-  };
-  search(tree.root, []);
+  let current: MemoryTreeNode | undefined = tree.nodeIndex.get(nodeId);
+
+  while (current) {
+    path.unshift(current.id);
+    current = current.parentId
+      ? tree.nodeIndex.get(current.parentId)
+      : undefined;
+  }
+
   return path;
 }
 
-// Handler implementations
+// ============================================================================
+// HANDLER IMPLEMENTATIONS (Token-Optimized)
+// ============================================================================
 
 async function handleMemorySearch(args: {
   query: string;
@@ -378,34 +666,36 @@ async function handleMemorySearch(args: {
   const { query, limit = 10, type, treeNodeHint } = args;
 
   try {
-    // If tree node hint is provided, scope search to that branch
     let results: MemoryItem[];
+
     if (treeNodeHint) {
       const tree = await buildTree();
       const node = findNode(tree, treeNodeHint);
       if (node && node.memoryIds) {
         const branchMemories = await getMemoriesById(node.memoryIds);
-        const queryLower = query.toLowerCase();
+        const queryTokens = tokenize(query);
+
         results = branchMemories
-          .filter(
-            (m) =>
-              m.content.toLowerCase().includes(queryLower) ||
-              m.metadata?.tags?.some((t: string) =>
-                t.toLowerCase().includes(queryLower),
-              ),
-          )
-          .map((m) => ({
-            ...m,
-            similarity: m.content.toLowerCase().includes(queryLower)
-              ? 0.8
-              : 0.5,
-          }))
-          .slice(0, Math.min(limit, 50));
+          .map((m) => {
+            const score = calculateTfIdf(m, queryTokens, branchMemories.length);
+            return { ...m, similarity: score }; // Already normalized to 0-1
+          })
+          .filter((m) => (m.similarity || 0) >= CONFIG.MIN_SIMILARITY)
+          .sort((a, b) => (b.similarity || 0) - (a.similarity || 0))
+          .slice(0, Math.min(limit, CONFIG.MAX_SEARCH_RESULTS));
       } else {
-        results = await searchMemories(query, Math.min(limit, 50), type);
+        results = await searchMemories(
+          query,
+          Math.min(limit, CONFIG.MAX_SEARCH_RESULTS),
+          type,
+        );
       }
     } else {
-      results = await searchMemories(query, Math.min(limit, 50), type);
+      results = await searchMemories(
+        query,
+        Math.min(limit, CONFIG.MAX_SEARCH_RESULTS),
+        type,
+      );
     }
 
     if (results.length === 0) {
@@ -413,50 +703,44 @@ async function handleMemorySearch(args: {
         content: [
           {
             type: "text",
-            text: `No memories found for query: "${query}"${type ? ` (type: ${type})` : ""}${treeNodeHint ? ` (in branch: ${treeNodeHint})` : ""}\n\nTry:\n- Different keywords\n- MemoryTree to browse available memories\n- Remove type filter`,
+            text: `No memories found for "${query}"${type ? ` (type: ${type})` : ""}. Try different keywords or use MemoryTree.`,
           },
         ],
       };
     }
 
-    // Format as compact index
-    const indexItems = results.map((r) => {
-      const tokens = estimateTokens(r.content);
-      return {
-        id: r.id,
-        summary: truncate(r.content, 100),
-        type: r.metadata?.type || "unknown",
-        similarity: r.similarity ? `${Math.round(r.similarity * 100)}%` : "N/A",
-        tokens: formatTokens(tokens),
-        fullTokens: tokens,
-      };
-    });
+    // Compact output format (token-optimized)
+    const lines: string[] = [
+      `## Search: "${truncate(query, 30)}" (${results.length} results)`,
+    ];
+    lines.push("");
 
-    const summaryTokens = indexItems.length * 75;
-    const fullTokens = indexItems.reduce((sum, i) => sum + i.fullTokens, 0);
+    let outputTokens = 0;
+    for (const r of results) {
+      if (outputTokens > CONFIG.TOKEN_BUDGETS.search) {
+        lines.push(
+          `... ${results.length - lines.length + 2} more (use higher limit)`,
+        );
+        break;
+      }
 
-    let output = `## Memory Search Results (${results.length} items)\n\n`;
-    output += `**Summary tokens:** ~${summaryTokens} | **Full retrieval:** ${formatTokens(fullTokens)}\n\n`;
-
-    for (const item of indexItems) {
-      output += `- **[${item.id}]** (${item.type}, ${item.tokens})\n`;
-      output += `  ${item.summary}\n`;
-      output += `  Match: ${item.similarity}\n\n`;
+      const tokens = r.tokenCount || estimateTokens(r.content);
+      const sim = r.similarity ? Math.round(r.similarity * 100) : 0;
+      const line = `• [${r.id}] ${truncate(r.content, CONFIG.SUMMARY_TRUNCATE_LENGTH)} (${sim}%, ${formatTokens(tokens)})`;
+      lines.push(line);
+      outputTokens += estimateTokens(line);
     }
 
-    output += `---\n`;
-    output += `Use \`MemoryGet ids=[${indexItems
-      .slice(0, 3)
-      .map((i) => `"${i.id}"`)
-      .join(", ")}]\` to retrieve full content.`;
+    lines.push("");
+    lines.push(`Use \`MemoryGet ids=["${results[0]?.id}"]\` for full content.`);
 
-    return { content: [{ type: "text", text: output }] };
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error searching memories: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Search error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
@@ -464,15 +748,18 @@ async function handleMemorySearch(args: {
   }
 }
 
-async function handleMemoryGet(args: { ids: string[] }): Promise<ToolResult> {
-  const { ids } = args;
+async function handleMemoryGet(args: {
+  ids: string[];
+  maxTokens?: number;
+}): Promise<ToolResult> {
+  const { ids, maxTokens = CONFIG.TOKEN_BUDGETS.get } = args;
 
   if (!ids || ids.length === 0) {
     return {
       content: [
         {
           type: "text",
-          text: "No memory IDs provided. Use MemorySearch or MemoryNavigate to find memory IDs first.",
+          text: "No IDs provided. Use MemorySearch first.",
         },
       ],
       isError: true,
@@ -487,40 +774,48 @@ async function handleMemoryGet(args: { ids: string[] }): Promise<ToolResult> {
         content: [
           {
             type: "text",
-            text: `No memories found for IDs: ${ids.join(", ")}`,
+            text: `No memories found for: ${ids.join(", ")}`,
           },
         ],
       };
     }
 
-    const totalTokens = memories.reduce(
-      (sum, m) => sum + estimateTokens(m.content),
-      0,
-    );
+    const lines: string[] = [`## Retrieved (${memories.length} items)`];
+    let totalTokens = 0;
+    let truncated = false;
 
-    let output = `## Retrieved Memories (${memories.length} items, ${formatTokens(totalTokens)})\n\n`;
+    for (const m of memories) {
+      const tokens = m.tokenCount || estimateTokens(m.content);
 
-    for (const memory of memories) {
-      output += `### ${memory.id}\n`;
-      output += `**Type:** ${memory.metadata?.type || "unknown"}`;
-      if (memory.metadata?.timestamp) {
-        output += ` | **Time:** ${new Date(memory.metadata.timestamp).toLocaleString()}`;
+      if (totalTokens + tokens > maxTokens && lines.length > 1) {
+        truncated = true;
+        lines.push(
+          `\n... truncated (${maxTokens}tk limit). Request fewer IDs.`,
+        );
+        break;
       }
-      if (memory.metadata?.tags?.length) {
-        output += ` | **Tags:** ${memory.metadata.tags.join(", ")}`;
-      }
-      output += `\n\n`;
-      output += memory.content;
-      output += `\n\n---\n\n`;
+
+      lines.push("");
+      lines.push(`### ${m.id}`);
+      if (m.metadata?.type) lines.push(`Type: ${m.metadata.type}`);
+      lines.push("");
+      lines.push(m.content);
+      lines.push("---");
+
+      totalTokens += tokens;
     }
 
-    return { content: [{ type: "text", text: output }] };
+    if (!truncated) {
+      lines.push(`\nTotal: ${formatTokens(totalTokens)}`);
+    }
+
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error retrieving memories: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
@@ -543,36 +838,32 @@ async function handleMemoryTimeline(args: {
         content: [
           {
             type: "text",
-            text: `No memories found around anchor: "${anchor}". Use a valid memory ID or ISO timestamp.`,
+            text: `No memories around: "${anchor}"`,
           },
         ],
       };
     }
 
-    let output = `## Memory Timeline\n\n`;
-    output += `**Centered on:** ${anchor}\n`;
-    output += `**Showing:** ${before} before, ${after} after\n\n`;
+    const lines: string[] = [`## Timeline (${result.memories.length} items)`];
+    lines.push("");
 
     for (let i = 0; i < result.memories.length; i++) {
       const m = result.memories[i];
       if (!m) continue;
-      const isAnchor = i === result.anchorIndex;
-      const marker = isAnchor ? ">>> " : "    ";
-
-      const timestamp = m.metadata?.timestamp
-        ? new Date(m.metadata.timestamp).toLocaleString()
-        : "unknown time";
-      output += `${marker}**[${m.id}]** ${timestamp}\n`;
-      output += `${marker}${m.metadata?.type || "unknown"}: ${truncate(m.content, 80)}\n\n`;
+      const marker = i === result.anchorIndex ? ">>>" : "   ";
+      const time = m.metadata?.timestamp
+        ? new Date(m.metadata.timestamp).toLocaleTimeString()
+        : "??:??";
+      lines.push(`${marker} [${m.id}] ${time}: ${truncate(m.content, 50)}`);
     }
 
-    return { content: [{ type: "text", text: output }] };
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error getting timeline: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
@@ -592,7 +883,7 @@ async function handleMemoryAdd(args: {
       content: [
         {
           type: "text",
-          text: "Content too short. Provide meaningful content to remember (at least 10 characters).",
+          text: "Content too short (min 10 chars).",
         },
       ],
       isError: true,
@@ -601,12 +892,13 @@ async function handleMemoryAdd(args: {
 
   try {
     const id = await addMemory(content, type, tags);
+    const tokens = estimateTokens(content);
 
     return {
       content: [
         {
           type: "text",
-          text: `Memory added successfully.\n\n**ID:** ${id}\n**Type:** ${type}${tags?.length ? `\n**Tags:** ${tags.join(", ")}` : ""}\n\nThis will be available in future sessions via MemorySearch or MemoryTree.`,
+          text: `Added: ${id} (${type}, ${formatTokens(tokens)})`,
         },
       ],
     };
@@ -615,7 +907,7 @@ async function handleMemoryAdd(args: {
       content: [
         {
           type: "text",
-          text: `Error adding memory: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
@@ -625,131 +917,38 @@ async function handleMemoryAdd(args: {
 
 async function handleMemoryStats(): Promise<ToolResult> {
   try {
-    const memories = await getAllMemories();
     const tree = await buildTree();
 
-    // Count by category
-    const categories = {
-      sessions: 0,
-      patterns: 0,
-      decisions: 0,
-      context: 0,
-      observations: 0,
-    };
-
-    for (const m of memories) {
-      const type = m.metadata?.type || "unknown";
-      if (type === "pattern") categories.patterns++;
-      else if (type === "decision") categories.decisions++;
-      else if (type === "context" || type === "static") categories.context++;
-      else if (type === "tool-observation") categories.observations++;
-      else categories.sessions++;
+    // Use cached values from tree
+    const categories: Record<string, number> = {};
+    for (const child of tree.root.children) {
+      categories[child.id] = child.memoryCount;
     }
 
-    // Calculate tree depth
-    const calcDepth = (node: MemoryTreeNode): number => {
-      if (node.children.length === 0) return node.depth;
-      return Math.max(...node.children.map(calcDepth));
-    };
-    const treeDepth = calcDepth(tree.root);
+    const lines: string[] = [
+      `## Stats`,
+      `Memories: ${tree.totalMemories} (${formatTokens(tree.totalTokens)})`,
+      `Depth: ${tree.maxDepth}`,
+      "",
+      "Categories:",
+    ];
 
-    let output = `## Memory Statistics\n\n`;
-    output += `**Total memories:** ${memories.length}\n`;
-    output += `**Total tokens:** ${formatTokens(tree.totalTokens)}\n`;
-    output += `**Tree depth:** ${treeDepth}\n`;
-    output += `**Last updated:** ${tree.lastUpdated}\n\n`;
+    for (const [cat, count] of Object.entries(categories)) {
+      lines.push(`• ${cat}: ${count}`);
+    }
 
-    output += `### By Category\n`;
-    output += `- Sessions: ${categories.sessions}\n`;
-    output += `- Patterns: ${categories.patterns}\n`;
-    output += `- Decisions: ${categories.decisions}\n`;
-    output += `- Context: ${categories.context}\n`;
-    output += `- Observations: ${categories.observations}\n\n`;
-
-    output += `### Cache Status\n`;
-    output += `- Cached items: ${memoryStore.size}\n`;
-    output += `- Pending uploads: 0\n`;
-
-    return { content: [{ type: "text", text: output }] };
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error getting stats: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
     };
   }
-}
-
-/**
- * Formats a tree node for display.
- */
-function formatNode(
-  node: MemoryTreeNode,
-  lines: string[],
-  depth: number,
-  maxDepth: number,
-): void {
-  if (depth > maxDepth) return;
-
-  const indent = "  ".repeat(depth);
-  const tokenLabel = formatTokens(node.tokenEstimate);
-
-  if (node.type === "root") {
-    for (const child of node.children) {
-      formatNode(child, lines, depth, maxDepth);
-    }
-    return;
-  }
-
-  const countLabel =
-    node.memoryCount === 1 ? "1 item" : `${node.memoryCount} items`;
-  lines.push(`${indent}- **[${node.id}]** ${node.title}`);
-  lines.push(`${indent}  ${node.summary} (${countLabel}, ${tokenLabel})`);
-
-  if (node.tags && node.tags.length > 0) {
-    lines.push(`${indent}  Tags: ${node.tags.slice(0, 5).join(", ")}`);
-  }
-
-  if (depth < maxDepth) {
-    for (const child of node.children) {
-      formatNode(child, lines, depth + 1, maxDepth);
-    }
-  } else if (node.children.length > 0) {
-    lines.push(
-      `${indent}  └── (${node.children.length} sub-sections, use MemoryNavigate to expand)`,
-    );
-  }
-}
-
-/**
- * Formats the tree for display.
- */
-async function formatTreeOutput(maxDepth: number): Promise<string> {
-  const tree = await buildTree();
-
-  const lines: string[] = [];
-  lines.push("## Memory Tree Index");
-  lines.push("");
-  lines.push(
-    `Total: ${tree.totalMemories} memories (${formatTokens(tree.totalTokens)})`,
-  );
-  lines.push(`Last updated: ${tree.lastUpdated}`);
-  lines.push("");
-
-  formatNode(tree.root, lines, 0, maxDepth);
-
-  lines.push("");
-  lines.push("---");
-  lines.push("**Navigation tips:**");
-  lines.push('- Use `MemoryNavigate nodeId="<id>"` to explore a branch');
-  lines.push('- Use `MemorySearch query="..."` to search within any branch');
-  lines.push("- Use `MemoryGet ids=[...]` to retrieve specific memories");
-
-  return lines.join("\n");
 }
 
 async function handleMemoryTree(args: {
@@ -765,107 +964,64 @@ async function handleMemoryTree(args: {
         content: [
           {
             type: "text",
-            text: `## Memory Tree Index\n\nNo memories stored yet. Use MemoryAdd to store important context for future sessions.`,
+            text: "## Memory Tree\n\nNo memories yet. Use MemoryAdd.",
           },
         ],
       };
     }
 
-    const treeOutput = await formatTreeOutput(
-      Math.max(1, Math.min(maxDepth, 4)),
-    );
-    return { content: [{ type: "text", text: treeOutput }] };
+    const lines: string[] = [
+      `## Tree (${tree.totalMemories} items, ${formatTokens(tree.totalTokens)})`,
+      "",
+    ];
+
+    let outputTokens = 0;
+    const formatNodeCompact = (node: MemoryTreeNode, depth: number) => {
+      if (depth > maxDepth || outputTokens > CONFIG.TOKEN_BUDGETS.tree) return;
+      if (node.type === "root") {
+        for (const child of node.children) {
+          formatNodeCompact(child, depth);
+        }
+        return;
+      }
+
+      const indent = "  ".repeat(depth);
+      const line = `${indent}• [${node.id}] ${truncate(node.title, CONFIG.TITLE_TRUNCATE_LENGTH)} (${node.memoryCount}, ${formatTokens(node.tokenEstimate)})`;
+      lines.push(line);
+      outputTokens += estimateTokens(line);
+
+      if (depth < maxDepth) {
+        const children = node.children.slice(0, CONFIG.MAX_CHILDREN_DISPLAY);
+        for (const child of children) {
+          formatNodeCompact(child, depth + 1);
+        }
+        if (node.children.length > CONFIG.MAX_CHILDREN_DISPLAY) {
+          lines.push(
+            `${indent}  ... +${node.children.length - CONFIG.MAX_CHILDREN_DISPLAY} more`,
+          );
+        }
+      } else if (node.children.length > 0) {
+        lines.push(`${indent}  └ ${node.children.length} sub-nodes`);
+      }
+    };
+
+    formatNodeCompact(tree.root, 0);
+
+    lines.push("");
+    lines.push('Navigate: `MemoryNavigate nodeId="sessions"`');
+
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error building tree: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
     };
   }
-}
-
-/**
- * Expands a node to show its details and children.
- */
-async function expandNode(nodeId: string): Promise<string> {
-  const tree = await buildTree();
-  const node = findNode(tree, nodeId);
-
-  if (!node) {
-    return `Node "${nodeId}" not found in memory tree.`;
-  }
-
-  const path = getPathToNode(tree, nodeId);
-  const lines: string[] = [];
-
-  lines.push(`## ${node.title}`);
-  lines.push(`**Path:** ${path.join(" → ")}`);
-  lines.push("");
-  lines.push(node.summary);
-  lines.push("");
-
-  if (node.startTime || node.endTime) {
-    const start = node.startTime
-      ? new Date(node.startTime).toLocaleString()
-      : "unknown";
-    const end = node.endTime
-      ? new Date(node.endTime).toLocaleString()
-      : "unknown";
-    lines.push(`**Time range:** ${start} - ${end}`);
-  }
-
-  if (node.tags && node.tags.length > 0) {
-    lines.push(`**Tags:** ${node.tags.join(", ")}`);
-  }
-
-  lines.push("");
-
-  if (node.memoryIds && node.memoryIds.length > 0) {
-    const tokenLabel = formatTokens(node.tokenEstimate);
-    lines.push(
-      `**Contains ${node.memoryIds.length} memories** (${tokenLabel})`,
-    );
-    lines.push("");
-
-    if (node.memoryIds.length <= 10) {
-      lines.push("Memory IDs:");
-      for (const id of node.memoryIds) {
-        lines.push(`- ${id}`);
-      }
-    } else {
-      lines.push(
-        `First 5 IDs: ${node.memoryIds
-          .slice(0, 5)
-          .map((id) => `"${id}"`)
-          .join(", ")}`,
-      );
-      lines.push("");
-      lines.push(
-        `Use \`MemoryGet ids=${JSON.stringify(node.memoryIds.slice(0, 5))}\` to retrieve.`,
-      );
-    }
-  }
-
-  if (node.children.length > 0) {
-    lines.push("");
-    lines.push("**Sub-sections:**");
-    lines.push("");
-
-    for (const child of node.children) {
-      const tokenLabel = formatTokens(child.tokenEstimate);
-      const countLabel =
-        child.memoryCount === 1 ? "1 item" : `${child.memoryCount} items`;
-
-      lines.push(`- **[${child.id}]** ${child.title}`);
-      lines.push(`  ${child.summary} (${countLabel}, ${tokenLabel})`);
-    }
-  }
-
-  return lines.join("\n");
 }
 
 async function handleMemoryNavigate(args: {
@@ -874,26 +1030,61 @@ async function handleMemoryNavigate(args: {
   const { nodeId } = args;
 
   try {
-    const output = await expandNode(nodeId);
+    const tree = await buildTree();
+    const node = findNode(tree, nodeId);
 
-    if (output.includes("not found")) {
+    if (!node) {
       return {
         content: [
           {
             type: "text",
-            text: `Node "${nodeId}" not found.\n\nUse \`MemoryTree\` to see available nodes.`,
+            text: `Node "${nodeId}" not found. Use MemoryTree.`,
           },
         ],
       };
     }
 
-    return { content: [{ type: "text", text: output }] };
+    const path = getPathToNode(tree, nodeId);
+    const lines: string[] = [
+      `## ${node.title}`,
+      `Path: ${path.join(" → ")}`,
+      `Items: ${node.memoryCount} (${formatTokens(node.tokenEstimate)})`,
+      "",
+    ];
+
+    // Show memory IDs (limited)
+    if (node.memoryIds && node.memoryIds.length > 0) {
+      const showIds = node.memoryIds.slice(0, 5);
+      lines.push("IDs: " + showIds.map((id) => `"${id}"`).join(", "));
+      if (node.memoryIds.length > 5) {
+        lines.push(`... +${node.memoryIds.length - 5} more`);
+      }
+      lines.push("");
+    }
+
+    // Show children (limited)
+    if (node.children.length > 0) {
+      lines.push("Children:");
+      const showChildren = node.children.slice(0, CONFIG.MAX_CHILDREN_DISPLAY);
+      for (const child of showChildren) {
+        lines.push(
+          `• [${child.id}] ${truncate(child.title, 30)} (${child.memoryCount})`,
+        );
+      }
+      if (node.children.length > CONFIG.MAX_CHILDREN_DISPLAY) {
+        lines.push(
+          `... +${node.children.length - CONFIG.MAX_CHILDREN_DISPLAY} more`,
+        );
+      }
+    }
+
+    return { content: [{ type: "text", text: lines.join("\n") }] };
   } catch (error) {
     return {
       content: [
         {
           type: "text",
-          text: `Error navigating: ${error instanceof Error ? error.message : String(error)}`,
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
       isError: true,
@@ -901,9 +1092,10 @@ async function handleMemoryNavigate(args: {
   }
 }
 
-/**
- * Routes memory tool calls to appropriate handlers.
- */
+// ============================================================================
+// ROUTER
+// ============================================================================
+
 export async function handleMemoryTool(
   name: MemoryToolName,
   args: Record<string, unknown>,
@@ -931,13 +1123,28 @@ export async function handleMemoryTool(
       );
     default:
       return {
-        content: [
-          {
-            type: "text",
-            text: `Unknown memory tool: ${name}`,
-          },
-        ],
+        content: [{ type: "text", text: `Unknown tool: ${name}` }],
         isError: true,
       };
   }
 }
+
+// ============================================================================
+// TESTING UTILITIES (exported for tests)
+// ============================================================================
+
+export const _testUtils = {
+  memoryStore,
+  clearAll: () => {
+    memoryStore.clear();
+    cachedTree = null;
+    treeLastBuilt = 0;
+    invertedIndex.terms.clear();
+    invertedIndex.lastBuilt = 0;
+  },
+  addTestMemory: addMemory,
+  getConfig: () => CONFIG,
+  stem,
+  tokenize,
+  hashContent,
+};
