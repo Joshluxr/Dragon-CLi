@@ -46,9 +46,9 @@ export const env = envsafe({
     devDefault: "dev-encryption-master-key-32chars!!",
   }),
 
-  // AI Providers
-  ANTHROPIC_API_KEY: str(),
-  OPENAI_API_KEY: str(),
+  // AI Providers (users provide their own keys via credentials UI)
+  ANTHROPIC_API_KEY: str({ allowEmpty: true, default: "" }),
+  OPENAI_API_KEY: str({ allowEmpty: true, default: "" }),
   OPENROUTER_API_KEY: str({ allowEmpty: true, default: "" }),
   GOOGLE_AI_STUDIO_API_KEY: str({ allowEmpty: true, default: "" }),
 
@@ -56,26 +56,26 @@ export const env = envsafe({
   NGROK_DOMAIN: str({ allowEmpty: true, default: "" }),
   LOCALHOST_PUBLIC_DOMAIN: str({ allowEmpty: true, default: "" }),
 
-  // R2
-  R2_ACCESS_KEY_ID: str(),
-  R2_SECRET_ACCESS_KEY: str(),
-  R2_ACCOUNT_ID: str(),
-  R2_BUCKET_NAME: str(),
-  R2_PRIVATE_BUCKET_NAME: str(),
-  R2_PUBLIC_URL: str(),
+  // R2 (optional in development - file uploads won't work without these)
+  R2_ACCESS_KEY_ID: str({ allowEmpty: true, default: "" }),
+  R2_SECRET_ACCESS_KEY: str({ allowEmpty: true, default: "" }),
+  R2_ACCOUNT_ID: str({ allowEmpty: true, default: "" }),
+  R2_BUCKET_NAME: str({ allowEmpty: true, default: "" }),
+  R2_PRIVATE_BUCKET_NAME: str({ allowEmpty: true, default: "" }),
+  R2_PUBLIC_URL: str({ allowEmpty: true, default: "" }),
   R2_ENDPOINT: str({ allowEmpty: true, default: "" }),
 
-  // Sandbox providers
-  E2B_API_KEY: str(),
+  // Sandbox providers (E2B optional if using Docker in development)
+  E2B_API_KEY: str({ allowEmpty: true, default: "" }),
   DAYTONA_API_KEY: str({ default: "", allowEmpty: true }),
 
-  // GitHub App
-  GITHUB_CLIENT_ID: str(),
-  GITHUB_CLIENT_SECRET: str(),
-  NEXT_PUBLIC_GITHUB_APP_NAME: str({ devDefault: "" }),
-  GITHUB_WEBHOOK_SECRET: str(),
-  GITHUB_APP_ID: str(),
-  GITHUB_APP_PRIVATE_KEY: str(),
+  // GitHub App (optional in development - GitHub features won't work without these)
+  GITHUB_CLIENT_ID: str({ allowEmpty: true, default: "" }),
+  GITHUB_CLIENT_SECRET: str({ allowEmpty: true, default: "" }),
+  NEXT_PUBLIC_GITHUB_APP_NAME: str({ allowEmpty: true, default: "" }),
+  GITHUB_WEBHOOK_SECRET: str({ allowEmpty: true, default: "" }),
+  GITHUB_APP_ID: str({ allowEmpty: true, default: "" }),
+  GITHUB_APP_PRIVATE_KEY: str({ allowEmpty: true, default: "" }),
 
   // Posthog
   NEXT_PUBLIC_POSTHOG_KEY: str({

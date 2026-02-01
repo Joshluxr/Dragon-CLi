@@ -11,14 +11,15 @@ import { publicAppUrl } from "@dragon/env/next-public";
  */
 export function nonLocalhostPublicAppUrl() {
   if (process.env.NODE_ENV === "development") {
-    if (!env.NGROK_DOMAIN && !env.LOCALHOST_PUBLIC_DOMAIN) {
-      throw new Error("LOCALHOST_PUBLIC_DOMAIN is not set");
-    }
     // Deprecated, use LOCALHOST_PUBLIC_DOMAIN instead
     if (env.NGROK_DOMAIN) {
       return `https://${env.NGROK_DOMAIN}`;
     }
-    return `https://${env.LOCALHOST_PUBLIC_DOMAIN}`;
+    if (env.LOCALHOST_PUBLIC_DOMAIN) {
+      return `https://${env.LOCALHOST_PUBLIC_DOMAIN}`;
+    }
+    // Fallback to localhost for local development (OAuth callbacks won't work without a public domain)
+    return "http://localhost:3000";
   }
   if (process.env.NODE_ENV === "test") {
     return process.env.NEXT_PUBLIC_APP_URL!;
