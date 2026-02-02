@@ -16,8 +16,13 @@ export const getUserRepos = userOnlyAction(
     const octokit = await getOctokitForUserOrThrow({ userId });
     try {
       // Try to get installations if GitHub App is configured
+      console.log(`[getUserRepos] Fetching installations for user ${userId}`);
       const { data } =
         await octokit.rest.apps.listInstallationsForAuthenticatedUser();
+
+      console.log(
+        `[getUserRepos] Found ${data.installations.length} installations`,
+      );
 
       if (data.installations.length > 0) {
         // If user has app installations, get repositories from those installations in parallel
@@ -32,6 +37,9 @@ export const getUserRepos = userOnlyAction(
               },
             );
 
+            console.log(
+              `[getUserRepos] Installation ${installation.id}: found ${repositories.length} repos`,
+            );
             return repositories;
           } catch (installationError) {
             console.warn(
@@ -44,6 +52,10 @@ export const getUserRepos = userOnlyAction(
 
         const repoArrays = await Promise.all(repoPromises);
         const allRepos = repoArrays.flat();
+
+        console.log(
+          `[getUserRepos] Total repos before filter: ${allRepos.length}`,
+        );
 
         if (allRepos.length > 0) {
           const filteredRepos = allRepos
@@ -59,11 +71,26 @@ export const getUserRepos = userOnlyAction(
               return bPushedAt - aPushedAt;
             });
 
+          console.log(
+            `[getUserRepos] Repos with push permission: ${filteredRepos.length}`,
+          );
+
           return { repos: filteredRepos };
+        } else {
+          console.log(
+            `[getUserRepos] No repos found from any installation for user ${userId}`,
+          );
         }
+      } else {
+        console.log(
+          `[getUserRepos] No GitHub App installations found for user ${userId}`,
+        );
       }
     } catch (appError) {
-      console.warn("Failed to get app installations or user info:", appError);
+      console.error(
+        "[getUserRepos] Failed to get app installations or user info:",
+        appError,
+      );
     }
     return { repos: [] };
   },
