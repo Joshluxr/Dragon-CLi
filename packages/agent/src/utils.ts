@@ -883,7 +883,12 @@ export function normalizedModelForDaemon(model: AIModel): string {
  * These models require user-provided Kimi/GLM API credentials.
  */
 export function isKimiOrGlmModel(model: AIModel | null): boolean {
-  return model === "claude/kimi" || model === "claude/glm";
+  return (
+    model === "claude/kimi" ||
+    model === "claude/glm" ||
+    model === "opencode/kimi-k2" ||
+    model === "opencode/glm-4.6"
+  );
 }
 
 /**

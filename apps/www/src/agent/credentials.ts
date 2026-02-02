@@ -64,7 +64,10 @@ export async function getAndVerifyCredentials({
     case "claudeCode": {
       // Check for Kimi/GLM API override credentials based on model
       if (isKimiOrGlmModel(_model)) {
-        const provider = _model === "claude/kimi" ? "kimi" : "glm";
+        const provider =
+          _model === "opencode/kimi-k2" || _model === "claude/kimi"
+            ? "kimi"
+            : "glm";
         const overrideCredentials = await getApiOverrideCredentialsForProvider({
           db,
           userId,
@@ -114,7 +117,35 @@ export async function getAndVerifyCredentials({
       };
     }
     case "opencode": {
-      // Check for API override credentials (Kimi, GLM)
+      // Check for Kimi/GLM API override credentials based on model
+      if (isKimiOrGlmModel(_model)) {
+        const provider =
+          _model === "opencode/kimi-k2" || _model === "claude/kimi"
+            ? "kimi"
+            : "glm";
+        const overrideCredentials = await getApiOverrideCredentialsForProvider({
+          db,
+          userId,
+          provider,
+          encryptionKey: env.ENCRYPTION_MASTER_KEY,
+        });
+        if (overrideCredentials) {
+          return {
+            type: "env-vars",
+            vars: [
+              { key: "ANTHROPIC_API_KEY", value: overrideCredentials.apiKey },
+              { key: "ANTHROPIC_BASE_URL", value: overrideCredentials.baseUrl },
+            ],
+          };
+        }
+        throw new ThreadError(
+          "missing-kimi-glm-credentials",
+          `Missing ${provider === "kimi" ? "Kimi" : "GLM"} API credentials. Please add them in Settings > Credentials.`,
+          null,
+        );
+      }
+
+      // Check for other API override credentials
       const opencodeCredentials = await getAgentProviderCredentialsDecrypted({
         db,
         userId,
