@@ -16,6 +16,13 @@ export function nonLocalhostPublicAppUrl() {
       return `https://${env.NGROK_DOMAIN}`;
     }
     if (env.LOCALHOST_PUBLIC_DOMAIN) {
+      // If LOCALHOST_PUBLIC_DOMAIN already has a protocol, use it as-is
+      if (
+        env.LOCALHOST_PUBLIC_DOMAIN.startsWith("http://") ||
+        env.LOCALHOST_PUBLIC_DOMAIN.startsWith("https://")
+      ) {
+        return env.LOCALHOST_PUBLIC_DOMAIN;
+      }
       return `https://${env.LOCALHOST_PUBLIC_DOMAIN}`;
     }
     // Fallback to localhost for local development (OAuth callbacks won't work without a public domain)
