@@ -461,3 +461,56 @@ export async function getValidAccessTokenForCredential({
   }
   return credentialsDecrypted.accessToken;
 }
+
+/**
+ * Get API override credentials (Kimi/GLM) by provider type.
+ * These are stored under agent "opencode" with claude-api-override metadata.
+ */
+export async function getApiOverrideCredentialsForProvider({
+  db,
+  userId,
+  provider,
+  encryptionKey,
+}: {
+  db: DB;
+  userId: string;
+  provider: "kimi" | "glm";
+  encryptionKey: string;
+}): Promise<{ apiKey: string; baseUrl: string } | null> {
+  // Get all opencode credentials for this user
+  const allCredentials = await db.query.agentProviderCredentials.findMany({
+    where: and(
+      eq(schema.agentProviderCredentials.userId, userId),
+      eq(schema.agentProviderCredentials.agent, "opencode"),
+    ),
+    orderBy: [
+      desc(schema.agentProviderCredentials.isActive),
+      desc(schema.agentProviderCredentials.createdAt),
+    ],
+  });
+
+  // Find the one matching the provider
+  for (const credentials of allCredentials) {
+    if (!credentials.metadata) continue;
+
+    const metadata = credentials.metadata as {
+      type?: string;
+      provider?: string;
+      baseUrl?: string;
+    };
+
+    if (
+      metadata.type === "claude-api-override" &&
+      metadata.provider === provider &&
+      metadata.baseUrl
+    ) {
+      const decrypted = decryptCredentials({ credentials, encryptionKey });
+      const apiKey = decrypted.apiKey || decrypted.accessToken;
+      if (apiKey) {
+        return { apiKey, baseUrl: metadata.baseUrl };
+      }
+    }
+  }
+
+  return null;
+}

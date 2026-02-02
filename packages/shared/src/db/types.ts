@@ -159,6 +159,7 @@ export type ThreadErrorType =
   | "sandbox-resume-failed"
   | "missing-gemini-credentials"
   | "missing-amp-credentials"
+  | "missing-kimi-glm-credentials"
   | "chatgpt-sub-required"
   | "invalid-codex-credentials"
   | "invalid-claude-credentials"

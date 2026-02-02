@@ -5,6 +5,8 @@ export const AIModelSchema = z.enum([
   "opus",
   "sonnet",
   "haiku",
+  "claude/kimi",
+  "claude/glm",
 
   // gemini
   "gemini-2.5-pro",

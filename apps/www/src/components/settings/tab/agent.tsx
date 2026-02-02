@@ -44,6 +44,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AgentIcon } from "@/components/chat/agent-icon";
 import { cn } from "@/lib/utils";
 import { useFeatureFlag } from "@/hooks/use-feature-flag";
+import { useCredentials } from "@/queries/credentials-queries";
+import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
+import { useMemo } from "react";
 
 export function AgentSettings() {
   const user = useAtomValue(userAtom);
@@ -401,10 +404,29 @@ function AgentModelItem({
   const openCodeGemini3ProModel = useFeatureFlag(
     "opencodeGemini3ProModelOption",
   );
+
+  // Check for Kimi/GLM credentials
+  const { data: credentials } = useCredentials();
+  const { hasKimiCredentials, hasGlmCredentials } = useMemo(() => {
+    const opencodeCredentials = credentials?.opencode ?? [];
+    let hasKimi = false;
+    let hasGlm = false;
+    for (const cred of opencodeCredentials) {
+      const metadata = cred.metadata as ClaudeApiOverrideMetadata | null;
+      if (metadata?.type === "claude-api-override") {
+        if (metadata.provider === "kimi") hasKimi = true;
+        if (metadata.provider === "glm") hasGlm = true;
+      }
+    }
+    return { hasKimiCredentials: hasKimi, hasGlmCredentials: hasGlm };
+  }, [credentials]);
+
   const models = agentToModels(agent, {
     agentVersion: "latest",
     enableOpenRouterOpenAIAnthropicModel: openCodeOpenAIAnthropicModel,
     enableOpencodeGemini3ProModelOption: openCodeGemini3ProModel,
+    hasKimiCredentials,
+    hasGlmCredentials,
   });
   const agentLabel = getAgentDisplayName(agent);
   const agentInfo = getAgentInfo(agent);

@@ -71,7 +71,9 @@ export function modelToAgent(model: AIModel | null): AIAgent {
     }
     case "opus":
     case "haiku":
-    case "sonnet": {
+    case "sonnet":
+    case "claude/kimi":
+    case "claude/glm": {
       return "claudeCode";
     }
     case "opencode/grok-code":
@@ -102,6 +104,8 @@ export function agentToModels(
     agentVersion: number | "latest";
     enableOpenRouterOpenAIAnthropicModel: boolean;
     enableOpencodeGemini3ProModelOption: boolean;
+    hasKimiCredentials?: boolean;
+    hasGlmCredentials?: boolean;
   },
 ): AIModel[] {
   agent = agent ?? defaultAgent;
@@ -110,7 +114,14 @@ export function agentToModels(
       return ["gemini-3-pro", "gemini-2.5-pro"];
     }
     case "claudeCode": {
-      return ["haiku", "sonnet", "opus"];
+      const models: AIModel[] = ["haiku", "sonnet", "opus"];
+      if (options.hasKimiCredentials) {
+        models.push("claude/kimi");
+      }
+      if (options.hasGlmCredentials) {
+        models.push("claude/glm");
+      }
+      return models;
     }
     case "amp": {
       return ["amp"];
@@ -336,6 +347,18 @@ export function getModelDisplayName(model: AIModel): ModelDisplayName {
         fullName: "Haiku 4.5",
         mainName: "Haiku",
         subName: "4.5",
+      };
+    case "claude/kimi":
+      return {
+        fullName: "Kimi K2",
+        mainName: "Kimi",
+        subName: "K2",
+      };
+    case "claude/glm":
+      return {
+        fullName: "GLM 4.6",
+        mainName: "GLM",
+        subName: "4.6",
       };
     case "gemini-2.5-pro":
       return {
@@ -729,6 +752,10 @@ export function isModelEnabledByDefault({
     case "opencode/kimi-k2":
     case "opencode/glm-4.6":
       return true;
+    case "claude/kimi":
+    case "claude/glm":
+      // These are only shown when user has credentials, so enable by default
+      return true;
     default:
       const _exhaustiveCheck: never = model;
       console.warn("Unknown model", _exhaustiveCheck);
@@ -820,6 +847,12 @@ export function parseModelOrNull({
 }
 
 export function normalizedModelForDaemon(model: AIModel): string {
+  // claude/kimi and claude/glm use Claude Code with Kimi/GLM API
+  // They use the default Claude model (sonnet) since the actual model
+  // is determined by the ANTHROPIC_BASE_URL pointing to Kimi/GLM API
+  if (model === "claude/kimi" || model === "claude/glm") {
+    return "sonnet";
+  }
   // Switch to using the google proxy
   // For now, just switch gemini-3-pro to the google proxy
   if (model === "opencode/gemini-3-pro") {
@@ -841,6 +874,14 @@ export function normalizedModelForDaemon(model: AIModel): string {
     return "gemini-3-pro-preview";
   }
   return model;
+}
+
+/**
+ * Returns true if the model uses Kimi or GLM API through Claude Code.
+ * These models require user-provided Kimi/GLM API credentials.
+ */
+export function isKimiOrGlmModel(model: AIModel | null): boolean {
+  return model === "claude/kimi" || model === "claude/glm";
 }
 
 /**
