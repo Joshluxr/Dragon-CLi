@@ -470,7 +470,7 @@ const API_OVERRIDE_CONFIGS: Record<
     provider: "glm",
     providerName: "GLM (Zhipu AI)",
     placeholder: "...",
-    baseUrl: "https://open.bigmodel.cn/api/paas/v4",
+    baseUrl: "https://api.z.ai/api/coding/paas/v4",
     helpText: (
       <>
         Enter your GLM API key. Get one from{" "}
