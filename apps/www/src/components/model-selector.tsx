@@ -39,6 +39,8 @@ import { Switch } from "@/components/ui/switch";
 import { AgentIcon } from "@/components/chat/agent-icon";
 import { useFeatureFlag } from "@/hooks/use-feature-flag";
 import { AGENT_VERSION } from "@dragon/agent/versions";
+import { useCredentials } from "@/queries/credentials-queries";
+import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
 
 function MultiAgentModeToggle({
   isMultiAgentMode,
@@ -97,6 +99,23 @@ function ModelSelectorInner({
   const openCodeGemini3ProModel = useFeatureFlag(
     "opencodeGemini3ProModelOption",
   );
+
+  // Check for Kimi/GLM credentials to show claude/kimi and claude/glm models
+  const { data: credentials } = useCredentials();
+  const { hasKimiCredentials, hasGlmCredentials } = useMemo(() => {
+    const opencodeCredentials = credentials?.opencode ?? [];
+    let hasKimi = false;
+    let hasGlm = false;
+    for (const cred of opencodeCredentials) {
+      const metadata = cred.metadata as ClaudeApiOverrideMetadata | null;
+      if (metadata?.type === "claude-api-override") {
+        if (metadata.provider === "kimi") hasKimi = true;
+        if (metadata.provider === "glm") hasGlm = true;
+      }
+    }
+    return { hasKimiCredentials: hasKimi, hasGlmCredentials: hasGlm };
+  }, [credentials]);
+
   const currentlySelectedModels = useMemo(() => {
     const models: AIModel[] = [];
     if (selectedModel) {
@@ -126,6 +145,8 @@ function ModelSelectorInner({
             agentVersion: forcedAgentVersion ?? AGENT_VERSION,
             enableOpenRouterOpenAIAnthropicModel: openCodeOpenAIAnthropicModel,
             enableOpencodeGemini3ProModelOption: openCodeGemini3ProModel,
+            hasKimiCredentials,
+            hasGlmCredentials,
           },
         }),
       )
@@ -137,6 +158,8 @@ function ModelSelectorInner({
     agentsToDisplay,
     userSettings?.agentModelPreferences,
     currentlySelectedModels,
+    hasKimiCredentials,
+    hasGlmCredentials,
   ]);
 
   // Don't re-compute the agent/model groups until we re-open the selector.

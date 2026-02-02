@@ -606,6 +606,8 @@ export function getAgentModelGroups({
     agentVersion: number;
     enableOpenRouterOpenAIAnthropicModel: boolean;
     enableOpencodeGemini3ProModelOption: boolean;
+    hasKimiCredentials?: boolean;
+    hasGlmCredentials?: boolean;
   };
 }): AgentModelGroup {
   return {
