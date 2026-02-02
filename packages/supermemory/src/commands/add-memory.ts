@@ -1,5 +1,5 @@
-import { SupermemoryClient } from "../client";
-import { getApiKey, isDebugEnabled } from "../utils/settings";
+import { getMemoryRouter } from "../cache/factory";
+import { isDebugEnabled } from "../utils/settings";
 
 async function main(): Promise<void> {
   const content = process.argv[2];
@@ -9,19 +9,11 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    console.log(
-      "Supermemory not configured. Set SUPERMEMORY_CC_API_KEY environment variable.",
-    );
-    process.exit(1);
-  }
-
   try {
-    const client = new SupermemoryClient();
-    const projectInfo = client.getProjectInfo();
+    const router = await getMemoryRouter();
+    const projectInfo = router.getProjectInfo();
 
-    const memoryId = await client.addMemory(content, "manual");
+    const memoryId = await router.addMemory(content, "manual");
 
     if (memoryId) {
       console.log(`Memory saved to project: ${projectInfo.projectName}`);

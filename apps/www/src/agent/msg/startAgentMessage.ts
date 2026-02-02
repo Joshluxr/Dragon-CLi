@@ -1,8 +1,4 @@
-import {
-  DBUserMessage,
-  DBUserMessageWithModel,
-  Thread,
-} from "@dragon/shared";
+import { DBUserMessage, DBUserMessageWithModel, Thread } from "@dragon/shared";
 import { DB } from "@dragon/shared/db";
 import {
   getActiveThreadCount,
@@ -41,6 +37,7 @@ import {
   normalizedModelForDaemon,
   isConnectedCredentialsSupported,
   modelRequiresChatGptOAuth,
+  isKimiOrGlmModel,
 } from "@dragon/agent/utils";
 import { handleSlashCommand } from "@/agent/slash-command-handler";
 import { tryAutoCompactThread } from "@/server-lib/compact";
@@ -453,9 +450,13 @@ export async function startAgentMessage({
             throw new ThreadError("no-user-message", "", null);
           }
 
+          // Determine if we should use built-in credits (Dragon proxy)
+          // Kimi/GLM models use user's own API keys, not built-in credits
           const shouldUseCredits =
             (agentForModel === "codex" && !userCredentials.hasOpenAI) ||
-            (agentForModel === "claudeCode" && !userCredentials.hasClaude) ||
+            (agentForModel === "claudeCode" &&
+              !userCredentials.hasClaude &&
+              !isKimiOrGlmModel(model)) ||
             !isConnectedCredentialsSupported(agentForModel);
 
           await sendDaemonMessage({

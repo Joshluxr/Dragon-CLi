@@ -1,6 +1,6 @@
-import { SupermemoryClient } from "../client";
+import { getMemoryRouter } from "../cache/factory";
 import { formatSearchResults } from "../utils/formatter";
-import { getApiKey, isDebugEnabled } from "../utils/settings";
+import { isDebugEnabled } from "../utils/settings";
 
 async function main(): Promise<void> {
   const query = process.argv[2];
@@ -12,17 +12,9 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    console.log(
-      "Supermemory not configured. Set SUPERMEMORY_CC_API_KEY environment variable.",
-    );
-    process.exit(1);
-  }
-
   try {
-    const client = new SupermemoryClient();
-    const results = await client.search(query, 10);
+    const router = await getMemoryRouter();
+    const results = await router.search(query, 10);
 
     if (results.length === 0) {
       console.log(`No memories found for: "${query}"`);

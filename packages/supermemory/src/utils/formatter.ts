@@ -5,6 +5,9 @@ export interface MemoryItem {
     type?: string;
     project?: string;
     timestamp?: string;
+    sessionId?: string;
+    tags?: string[];
+    relevanceHints?: string[];
   };
   similarity?: number;
 }

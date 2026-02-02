@@ -1,16 +1,10 @@
-import { SupermemoryClient } from "../client";
+import { getMemoryRouter } from "../cache/factory";
 import { readStdin, writeOutput } from "./types";
-import { isDebugEnabled, getApiKey } from "../utils/settings";
+import { isDebugEnabled } from "../utils/settings";
 import * as fs from "fs";
 
 async function main(): Promise<void> {
   try {
-    // Skip if no API key configured
-    if (!getApiKey()) {
-      writeOutput({ continue: true });
-      return;
-    }
-
     const input = await readStdin();
 
     // Get transcript from file or input
@@ -28,13 +22,13 @@ async function main(): Promise<void> {
       return;
     }
 
-    const client = new SupermemoryClient(input.workingDirectory);
+    const router = await getMemoryRouter(input.workingDirectory);
 
     // Extract summary from transcript
     const summary = extractSummary(transcript);
 
     if (summary) {
-      await client.addMemory(summary, "session-summary");
+      await router.addMemory(summary, "session-summary");
     }
 
     writeOutput({ continue: true });

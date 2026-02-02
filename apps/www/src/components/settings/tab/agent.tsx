@@ -13,6 +13,8 @@ import {
   AddCodexCredentialDialog,
   AddAmpCredentialDialog,
   AddGeminiCredentialDialog,
+  AddKimiCredentialDialog,
+  AddGlmCredentialDialog,
 } from "@/components/credentials/add-credential-dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -42,6 +44,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AgentIcon } from "@/components/chat/agent-icon";
 import { cn } from "@/lib/utils";
 import { useFeatureFlag } from "@/hooks/use-feature-flag";
+import { useCredentials } from "@/queries/credentials-queries";
+import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
+import { useMemo } from "react";
 
 export function AgentSettings() {
   const user = useAtomValue(userAtom);
@@ -63,6 +68,8 @@ export function AgentSettings() {
   );
 }
 
+type OpencodeProvider = "kimi" | "glm";
+
 function AgentProvidersSection() {
   const allAgents = useAtomValue(allAgentsAtom);
   const agents = allAgents.filter((agent) => {
@@ -71,10 +78,26 @@ function AgentProvidersSection() {
   const [selectProviderOpen, setSelectProviderOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
+  const [opencodeProviderSelectOpen, setOpencodeProviderSelectOpen] =
+    useState(false);
+  const [selectedOpencodeProvider, setSelectedOpencodeProvider] =
+    useState<OpencodeProvider | null>(null);
 
   const handleAgentSelect = (agent: AIAgent) => {
-    setSelectedAgent(agent);
-    setSelectProviderOpen(false);
+    if (agent === "opencode") {
+      // For opencode, show sub-selector for Kimi vs GLM
+      setSelectProviderOpen(false);
+      setOpencodeProviderSelectOpen(true);
+    } else {
+      setSelectedAgent(agent);
+      setSelectProviderOpen(false);
+      setCredentialDialogOpen(true);
+    }
+  };
+
+  const handleOpencodeProviderSelect = (provider: OpencodeProvider) => {
+    setSelectedOpencodeProvider(provider);
+    setOpencodeProviderSelectOpen(false);
     setCredentialDialogOpen(true);
   };
 
@@ -103,6 +126,11 @@ function AgentProvidersSection() {
         onOpenChange={setSelectProviderOpen}
         agents={agents}
         onSelect={handleAgentSelect}
+      />
+      <SelectOpencodeProviderDialog
+        open={opencodeProviderSelectOpen}
+        onOpenChange={setOpencodeProviderSelectOpen}
+        onSelect={handleOpencodeProviderSelect}
       />
       {selectedAgent === "claudeCode" && (
         <AddClaudeCredentialDialog
@@ -148,6 +176,28 @@ function AgentProvidersSection() {
           }}
         />
       )}
+      {selectedOpencodeProvider === "kimi" && (
+        <AddKimiCredentialDialog
+          open={credentialDialogOpen}
+          onOpenChange={(open) => {
+            setCredentialDialogOpen(open);
+            if (!open) {
+              setSelectedOpencodeProvider(null);
+            }
+          }}
+        />
+      )}
+      {selectedOpencodeProvider === "glm" && (
+        <AddGlmCredentialDialog
+          open={credentialDialogOpen}
+          onOpenChange={(open) => {
+            setCredentialDialogOpen(open);
+            if (!open) {
+              setSelectedOpencodeProvider(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -184,6 +234,47 @@ function SelectProviderDialog({
               <span>{getAgentDisplayName(agent)}</span>
             </Button>
           ))}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function SelectOpencodeProviderDialog({
+  open,
+  onOpenChange,
+  onSelect,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSelect: (provider: OpencodeProvider) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>OpenCode Provider</DialogTitle>
+          <DialogDescription>
+            Choose which OpenCode provider you'd like to add credentials for.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-2 py-4">
+          <Button
+            variant="outline"
+            className="w-full justify-start flex items-center gap-2 px-4 h-fit"
+            onClick={() => onSelect("kimi")}
+          >
+            <AgentIcon agent="opencode" sessionId={null} />
+            <span>Kimi (Moonshot)</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full justify-start flex items-center gap-2 px-4 h-fit"
+            onClick={() => onSelect("glm")}
+          >
+            <AgentIcon agent="opencode" sessionId={null} />
+            <span>GLM (Zhipu AI)</span>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -313,10 +404,29 @@ function AgentModelItem({
   const openCodeGemini3ProModel = useFeatureFlag(
     "opencodeGemini3ProModelOption",
   );
+
+  // Check for Kimi/GLM credentials
+  const { data: credentials } = useCredentials();
+  const { hasKimiCredentials, hasGlmCredentials } = useMemo(() => {
+    const opencodeCredentials = credentials?.opencode ?? [];
+    let hasKimi = false;
+    let hasGlm = false;
+    for (const cred of opencodeCredentials) {
+      const metadata = cred.metadata as ClaudeApiOverrideMetadata | null;
+      if (metadata?.type === "claude-api-override") {
+        if (metadata.provider === "kimi") hasKimi = true;
+        if (metadata.provider === "glm") hasGlm = true;
+      }
+    }
+    return { hasKimiCredentials: hasKimi, hasGlmCredentials: hasGlm };
+  }, [credentials]);
+
   const models = agentToModels(agent, {
     agentVersion: "latest",
     enableOpenRouterOpenAIAnthropicModel: openCodeOpenAIAnthropicModel,
     enableOpencodeGemini3ProModelOption: openCodeGemini3ProModel,
+    hasKimiCredentials,
+    hasGlmCredentials,
   });
   const agentLabel = getAgentDisplayName(agent);
   const agentInfo = getAgentInfo(agent);

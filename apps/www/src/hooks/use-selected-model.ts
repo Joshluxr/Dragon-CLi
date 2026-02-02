@@ -9,6 +9,8 @@ import { AIAgent, AIModel, SelectedAIModels } from "@dragon/agent/types";
 import { useCallback, useMemo, useState } from "react";
 import { agentToModels, modelToAgent } from "@dragon/agent/utils";
 import { useFeatureFlag } from "./use-feature-flag";
+import { useCredentials } from "@/queries/credentials-queries";
+import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
 
 export type SetSelectedModel = ({
   model,
@@ -43,6 +45,22 @@ export function useSelectedModel({
   const openCodeGemini3ProModel = useFeatureFlag(
     "opencodeGemini3ProModelOption",
   );
+
+  // Check for Kimi/GLM credentials to show claude/kimi and claude/glm models
+  const { data: credentials } = useCredentials();
+  const { hasKimiCredentials, hasGlmCredentials } = useMemo(() => {
+    const opencodeCredentials = credentials?.opencode ?? [];
+    let hasKimi = false;
+    let hasGlm = false;
+    for (const cred of opencodeCredentials) {
+      const metadata = cred.metadata as ClaudeApiOverrideMetadata | null;
+      if (metadata?.type === "claude-api-override") {
+        if (metadata.provider === "kimi") hasKimi = true;
+        if (metadata.provider === "glm") hasGlm = true;
+      }
+    }
+    return { hasKimiCredentials: hasKimi, hasGlmCredentials: hasGlm };
+  }, [credentials]);
   const [selectedModelFromAtom, setSelectedModelFromAtom] =
     useAtom(selectedModelAtom);
   const [selectedModelsPersisted, setPersistedSelectedModels] = useAtom(
@@ -87,6 +105,8 @@ export function useSelectedModel({
         agentVersion: forcedAgentVersion ?? "latest",
         enableOpenRouterOpenAIAnthropicModel: openCodeOpenAIAnthropicModel,
         enableOpencodeGemini3ProModelOption: openCodeGemini3ProModel,
+        hasKimiCredentials,
+        hasGlmCredentials,
       });
       for (const [model, count] of selectedModelsInnerEntries) {
         if (count > 0 && validModels.includes(model)) {
@@ -113,6 +133,8 @@ export function useSelectedModel({
     forcedAgentVersion,
     openCodeOpenAIAnthropicModel,
     openCodeGemini3ProModel,
+    hasKimiCredentials,
+    hasGlmCredentials,
   ]);
 
   const setPersistedSelectedModel = useSetAtom(selectedModelPersistedAtom);

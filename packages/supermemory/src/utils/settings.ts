@@ -7,6 +7,14 @@ export interface SupermemorySettings {
   captureTools: string[];
   maxProfileItems: number;
   debug: boolean;
+  /** Use progressive disclosure (MCP tools) instead of full context injection */
+  progressiveDisclosure: boolean;
+  /** Enable tree-based navigation (PageIndex-style) */
+  treeNavigation: boolean;
+  /** Filter private/sensitive content before storage */
+  privacyFilter: boolean;
+  /** Embedding engine: 'local' | 'openai' | 'none' */
+  embeddingEngine: "local" | "openai" | "none";
 }
 
 const DEFAULT_SETTINGS: SupermemorySettings = {
@@ -14,6 +22,10 @@ const DEFAULT_SETTINGS: SupermemorySettings = {
   captureTools: ["Edit", "Write", "Bash", "Task"],
   maxProfileItems: 50,
   debug: false,
+  progressiveDisclosure: true,
+  treeNavigation: true,
+  privacyFilter: true,
+  embeddingEngine: "none", // Start with none, upgrade to local when ready
 };
 
 function getSettingsDir(): string {

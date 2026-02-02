@@ -328,6 +328,17 @@ function ChatContent({
         />
       );
     }
+    case "missing-kimi-glm-credentials": {
+      return (
+        <ChatErrorContentsWithPre
+          header="Missing Kimi/GLM API credentials"
+          errorStr={
+            errorInfo ||
+            "Please add your Kimi or GLM API key in Settings > Credentials."
+          }
+        />
+      );
+    }
     default: {
       const _exhaustiveCheck: never = errorTypeStrict;
       console.log("Unhandled error", _exhaustiveCheck);
