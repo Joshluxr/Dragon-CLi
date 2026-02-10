@@ -48,15 +48,23 @@ install_deps() {
     # Docker
     if ! command -v docker &> /dev/null; then
         echo "Installing Docker..."
-        curl -fsSL https://get.docker.com | sh
-        systemctl enable docker
-        systemctl start docker
+        export DEBIAN_FRONTEND=noninteractive
+        # Try apt packages first (works on Ubuntu/Debian)
+        apt-get install -y -qq docker.io 2>/dev/null || true
+        if ! command -v docker &> /dev/null; then
+            # Fallback: get.docker.com (pipe yes to skip EOL prompt)
+            yes 2>/dev/null | timeout 180 curl -fsSL https://get.docker.com | sh 2>/dev/null || true
+        fi
+        apt-get install -y -qq docker-compose-plugin 2>/dev/null || \
+        apt-get install -y -qq docker-compose 2>/dev/null || true
+        systemctl enable docker 2>/dev/null || true
+        systemctl start docker 2>/dev/null || true
     fi
     echo "Docker: $(docker -v)"
     
-    # Docker Compose plugin
-    if ! docker compose version &> /dev/null; then
-        apt-get install -y -qq docker-compose-plugin
+    # Docker Compose (v2 plugin or v1 standalone)
+    if ! docker compose version &> /dev/null 2>&1 && ! docker-compose version &> /dev/null; then
+        apt-get install -y -qq docker-compose-plugin docker-compose 2>/dev/null || true
     fi
 }
 
@@ -132,11 +140,17 @@ start_infrastructure() {
     export REDIS_HTTP_PORT=8079
     export REDIS_HTTP_TOKEN="${REDIS_HTTP_TOKEN:-$(openssl rand -hex 16)}"
     
-    docker compose --project-name dragon-prod up -d
+    # Use docker compose (v2) or docker-compose (v1)
+    DOCKER_COMPOSE="docker compose"
+    if ! docker compose version &> /dev/null; then
+        DOCKER_COMPOSE="docker-compose"
+    fi
+    
+    $DOCKER_COMPOSE --project-name dragon-prod up -d
     
     echo "Waiting for PostgreSQL to be ready..."
     sleep 5
-    until docker compose exec -T postgres pg_isready -U postgres 2>/dev/null; do
+    until $DOCKER_COMPOSE exec -T postgres pg_isready -U postgres 2>/dev/null; do
         sleep 2
     done
     echo "PostgreSQL is ready."
