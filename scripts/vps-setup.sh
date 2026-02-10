@@ -135,8 +135,15 @@ start_infrastructure() {
     cd "$COMPOSE_DIR"
     
     export ENV=production
-    export POSTGRES_PORT=5432
-    export REDIS_PORT=6379
+    # Use alternative ports if default ports are in use
+    POSTGRES_PORT=5432
+    REDIS_PORT=6379
+    if command -v ss &> /dev/null; then
+        ss -tlnp 2>/dev/null | grep -q ':5432 ' && POSTGRES_PORT=5433
+        ss -tlnp 2>/dev/null | grep -q ':6379 ' && REDIS_PORT=6380
+    fi
+    export POSTGRES_PORT
+    export REDIS_PORT
     export REDIS_HTTP_PORT=8079
     export REDIS_HTTP_TOKEN="${REDIS_HTTP_TOKEN:-$(openssl rand -hex 16)}"
     
@@ -146,6 +153,9 @@ start_infrastructure() {
         DOCKER_COMPOSE="docker-compose"
     fi
     
+    # Stop any conflicting containers from previous runs
+    $DOCKER_COMPOSE --project-name dragon-prod down 2>/dev/null || true
+    
     $DOCKER_COMPOSE --project-name dragon-prod up -d
     
     echo "Waiting for PostgreSQL to be ready..."
@@ -154,21 +164,26 @@ start_infrastructure() {
         sleep 2
     done
     echo "PostgreSQL is ready."
+    echo "Using DATABASE_URL=postgresql://postgres:postgres@localhost:${POSTGRES_PORT}/dragon"
+    echo "Using REDIS_URL=redis://localhost:${REDIS_PORT}"
 }
 
-# Push database schema
+# Push database schema (POSTGRES_PORT/REDIS_PORT set by start_infrastructure)
 push_schema() {
     echo ""
     echo ">>> Pushing database schema..."
     
     cd "$DRAGON_PATH"
     
+    # Use ports from start_infrastructure (default if not set)
+    POSTGRES_PORT=${POSTGRES_PORT:-5432}
+    
     # Ensure shared package has DATABASE_URL in .env.development.local
     SHARED_ENV="packages/shared/.env.development.local"
     if [ ! -f "$SHARED_ENV" ]; then
-        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dragon" > "$SHARED_ENV"
+        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${POSTGRES_PORT}/dragon" > "$SHARED_ENV"
     elif ! grep -q "DATABASE_URL=" "$SHARED_ENV" 2>/dev/null; then
-        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dragon" >> "$SHARED_ENV"
+        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${POSTGRES_PORT}/dragon" >> "$SHARED_ENV"
     fi
     
     pnpm -C packages/shared drizzle-kit-push-dev
