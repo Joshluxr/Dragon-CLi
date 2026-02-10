@@ -2,6 +2,8 @@
 
 This guide provides detailed instructions for setting up Dragon for local development.
 
+**Deploying to a VPS?** See [VPS-SETUP.md](VPS-SETUP.md) for production deployment instructions.
+
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
