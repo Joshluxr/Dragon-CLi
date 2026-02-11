@@ -78,6 +78,7 @@ export function modelToAgent(model: AIModel | null): AIAgent {
     case "opencode/qwen3-coder":
     case "opencode/kimi-k2":
     case "opencode/glm-4.6":
+    case "opencode/glm-4.7":
     case "opencode/gemini-2.5-pro":
     case "opencode/gemini-3-pro":
     case "opencode-oai/gpt-5":
@@ -91,6 +92,42 @@ export function modelToAgent(model: AIModel | null): AIAgent {
       return defaultAgent;
     }
   }
+}
+
+/**
+ * Returns the agent to store on the thread (for display/grouping).
+ * Kimi and GLM models display under Claude Code even though they use opencode for execution.
+ */
+export function getThreadAgent(model: AIModel | null): AIAgent {
+  if (!model) return defaultAgent;
+  if (
+    model === "opencode/kimi-k2" ||
+    model === "opencode/glm-4.6" ||
+    model === "opencode/glm-4.7"
+  ) {
+    return "claudeCode";
+  }
+  return modelToAgent(model);
+}
+
+/**
+ * Returns the agent to use for execution (daemon/CLI).
+ * When claudeCode + Kimi/GLM is selected, we run opencode under the hood.
+ */
+export function getRuntimeAgent(
+  agent: AIAgent,
+  model: AIModel | null,
+): AIAgent {
+  if (!model) return agent;
+  if (
+    agent === "claudeCode" &&
+    (model === "opencode/kimi-k2" ||
+      model === "opencode/glm-4.6" ||
+      model === "opencode/glm-4.7")
+  ) {
+    return "opencode";
+  }
+  return agent;
 }
 
 /**
@@ -110,7 +147,14 @@ export function agentToModels(
       return ["gemini-3-pro", "gemini-2.5-pro"];
     }
     case "claudeCode": {
-      return ["haiku", "sonnet", "opus"];
+      return [
+        "haiku",
+        "sonnet",
+        "opus",
+        "opencode/kimi-k2",
+        "opencode/glm-4.6",
+        "opencode/glm-4.7",
+      ];
     }
     case "amp": {
       return ["amp"];
@@ -155,6 +199,7 @@ export function agentToModels(
     case "opencode": {
       const models: AIModel[] = [
         "opencode/glm-4.6",
+        "opencode/glm-4.7",
         "opencode/kimi-k2",
         "opencode/grok-code",
         "opencode/qwen3-coder",
@@ -523,6 +568,12 @@ export function getModelDisplayName(model: AIModel): ModelDisplayName {
         mainName: "GLM",
         subName: "4.6",
       };
+    case "opencode/glm-4.7":
+      return {
+        fullName: "GLM 4.7",
+        mainName: "GLM",
+        subName: "4.7",
+      };
     case "opencode/gemini-2.5-pro":
       return {
         fullName: "Gemini 2.5 Pro",
@@ -728,6 +779,7 @@ export function isModelEnabledByDefault({
       return true;
     case "opencode/kimi-k2":
     case "opencode/glm-4.6":
+    case "opencode/glm-4.7":
       return true;
     default:
       const _exhaustiveCheck: never = model;
@@ -806,6 +858,8 @@ export function parseModelOrNull({
       return "opencode/kimi-k2";
     case "glm-4.6":
       return "opencode/glm-4.6";
+    case "glm-4.7":
+      return "opencode/glm-4.7";
     case "opencode/gpt-5":
       return "opencode-oai/gpt-5";
     case "opencode/gpt-5-codex":

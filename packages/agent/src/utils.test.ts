@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   modelToAgent,
   agentToModels,
+  getThreadAgent,
   sortByAgents,
   getAgentModelGroups,
   parseModelOrNull,
@@ -18,12 +19,26 @@ const options = {
 describe("model-to-agent", () => {
   describe("modelToAgent and agentToModels consistency", () => {
     it("should have bidirectional consistency between functions", () => {
-      const agents: AIAgent[] = ["claudeCode", "gemini", "amp", "codex"];
+      const agents: AIAgent[] = [
+        "claudeCode",
+        "gemini",
+        "amp",
+        "codex",
+        "opencode",
+      ];
 
       agents.forEach((agent) => {
         const models = agentToModels(agent, options);
         models.forEach((model) => {
-          expect(modelToAgent(model)).toBe(agent);
+          // Claude Code: getThreadAgent (Kimi/GLM display under Claude Code)
+          // Others: modelToAgent for execution
+          const displayAgent = getThreadAgent(model);
+          const executionAgent = modelToAgent(model);
+          if (agent === "claudeCode") {
+            expect(displayAgent).toBe(agent);
+          } else {
+            expect(executionAgent).toBe(agent);
+          }
         });
       });
     });
@@ -143,6 +158,9 @@ describe("model-to-agent", () => {
       );
       expect(parseModelOrNull({ modelName: "glm-4.6" })).toBe(
         "opencode/glm-4.6",
+      );
+      expect(parseModelOrNull({ modelName: "glm-4.7" })).toBe(
+        "opencode/glm-4.7",
       );
     });
 

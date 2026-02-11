@@ -1,8 +1,4 @@
-import {
-  DBUserMessage,
-  DBUserMessageWithModel,
-  Thread,
-} from "@dragon/shared";
+import { DBUserMessage, DBUserMessageWithModel, Thread } from "@dragon/shared";
 import { DB } from "@dragon/shared/db";
 import {
   getActiveThreadCount,
@@ -21,7 +17,7 @@ import { withSandboxResource } from "@/agent/sandbox-resource";
 import { sendDaemonMessage } from "@/agent/daemon";
 import { ThreadError } from "@/agent/error";
 import { withThreadChat } from "@/agent/thread-resource";
-import { sandboxCreationRateLimit } from "@/lib/rate-limit";
+import { getSandboxCreationRateLimitRemaining } from "@/lib/rate-limit";
 import { getMaxConcurrentTaskCountForUser } from "@/lib/subscription-tiers";
 import {
   getUserMessageToSend,
@@ -38,6 +34,7 @@ import { AIAgent, AIModel } from "@dragon/agent/types";
 import {
   modelToAgent,
   getDefaultModelForAgent,
+  getRuntimeAgent,
   normalizedModelForDaemon,
   isConnectedCredentialsSupported,
   modelRequiresChatGptOAuth,
@@ -144,7 +141,7 @@ export async function startAgentMessage({
         console.log(`Active thread count: ${activeThreadCount}`);
         const [sandboxCreationRateLimitRemaining, maxConcurrentTasks] =
           await Promise.all([
-            sandboxCreationRateLimit.getRemaining(userId),
+            getSandboxCreationRateLimitRemaining(userId),
             getMaxConcurrentTaskCountForUser(userId),
           ]);
         const sandboxCreationRateLimitReached =
@@ -456,13 +453,15 @@ export async function startAgentMessage({
           const shouldUseCredits =
             (agentForModel === "codex" && !userCredentials.hasOpenAI) ||
             (agentForModel === "claudeCode" && !userCredentials.hasClaude) ||
+            (agentForModel === "opencode" && !userCredentials.hasOpenCode) ||
             !isConnectedCredentialsSupported(agentForModel);
 
+          const runtimeAgent = getRuntimeAgent(threadChat.agent, model);
           await sendDaemonMessage({
             message: {
               type: "claude",
               model: normalizedModelForDaemon(model),
-              agent: threadChat.agent,
+              agent: runtimeAgent,
               agentVersion: threadChat.agentVersion,
               prompt: finalFinalPrompt,
               sessionId,

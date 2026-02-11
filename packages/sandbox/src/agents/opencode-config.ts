@@ -16,6 +16,9 @@ export function getModelId(modelName: AIModel): string {
     case "opencode/glm-4.6":
       // https://openrouter.ai/z-ai/glm-4.6:exacto
       return "z-ai/glm-4.6:exacto";
+    case "opencode/glm-4.7":
+      // https://openrouter.ai/z-ai/glm-4.7 or glm-4.7:exacto
+      return "z-ai/glm-4.7:exacto";
     case "opencode/gemini-2.5-pro":
       // https://openrouter.ai/google/gemini-2.5-pro
       return "google/gemini-2.5-pro";

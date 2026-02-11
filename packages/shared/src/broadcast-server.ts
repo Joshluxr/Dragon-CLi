@@ -13,23 +13,28 @@ export async function publishBroadcastUserMessage(
   if (process.env.NODE_ENV === "test") {
     return;
   }
-  const partySocketUrl = publicBroadcastUrl();
-  if (!partySocketUrl) {
-    console.warn("Party socket URL not set");
-    return;
-  }
-  const channel: BroadcastChannelUser = {
-    type: "user",
-    id: message.id,
-  };
-  await fetch(
-    `${partySocketUrl}/parties/main/${getBroadcastChannelStr(channel)}`,
-    {
-      method: "POST",
-      body: JSON.stringify(message),
-      headers: {
-        "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET!,
+  try {
+    const partySocketUrl = publicBroadcastUrl();
+    if (!partySocketUrl) {
+      console.warn("Party socket URL not set");
+      return;
+    }
+    const channel: BroadcastChannelUser = {
+      type: "user",
+      id: message.id,
+    };
+    await fetch(
+      `${partySocketUrl}/parties/main/${getBroadcastChannelStr(channel)}`,
+      {
+        method: "POST",
+        body: JSON.stringify(message),
+        headers: {
+          "X-Dragon-Secret": env.INTERNAL_SHARED_SECRET!,
+        },
       },
-    },
-  );
+    );
+  } catch (error) {
+    // Don't fail the main operation (e.g. saving credentials) if broadcast is unreachable
+    console.warn("[broadcast] Failed to publish message:", error);
+  }
 }

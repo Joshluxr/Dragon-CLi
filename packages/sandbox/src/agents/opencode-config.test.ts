@@ -53,6 +53,10 @@ describe("buildOpencodeConfig", () => {
                 "id": "z-ai/glm-4.6:exacto",
                 "name": "GLM 4.6"
               },
+              "glm-4.7": {
+                "id": "z-ai/glm-4.7:exacto",
+                "name": "GLM 4.7"
+              },
               "kimi-k2": {
                 "id": "moonshotai/kimi-k2-0905:exacto",
                 "name": "Kimi K2"

@@ -7,7 +7,7 @@ import {
 } from "@/atoms/user-flags";
 import { AIAgent, AIModel, SelectedAIModels } from "@dragon/agent/types";
 import { useCallback, useMemo, useState } from "react";
-import { agentToModels, modelToAgent } from "@dragon/agent/utils";
+import { agentToModels, getThreadAgent } from "@dragon/agent/utils";
 import { useFeatureFlag } from "./use-feature-flag";
 
 export type SetSelectedModel = ({
@@ -128,7 +128,7 @@ export function useSelectedModel({
 
   const setSelectedModel = useCallback(
     ({ model, action }: { model: AIModel; action?: "toggle" }) => {
-      if (forcedAgent && modelToAgent(model) !== forcedAgent) {
+      if (forcedAgent && getThreadAgent(model) !== forcedAgent) {
         return false;
       }
       if (!isMultiAgentMode) {

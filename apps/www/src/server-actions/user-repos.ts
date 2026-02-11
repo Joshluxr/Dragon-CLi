@@ -3,7 +3,7 @@
 import { userOnlyAction } from "@/lib/auth-server";
 import {
   getOctokitForApp,
-  getOctokitForUserOrThrow,
+  getOctokitForUser,
   parseRepoFullName,
 } from "@/lib/github";
 import { Endpoints } from "@octokit/types";
@@ -11,9 +11,17 @@ import { Endpoints } from "@octokit/types";
 export type UserRepo =
   Endpoints["GET /installation/repositories"]["response"]["data"]["repositories"][number];
 
+export type GetUserReposResult = {
+  repos: UserRepo[];
+  error?: "bad_credentials" | "no_github_account";
+};
+
 export const getUserRepos = userOnlyAction(
-  async function getUserRepos(userId: string) {
-    const octokit = await getOctokitForUserOrThrow({ userId });
+  async function getUserRepos(userId: string): Promise<GetUserReposResult> {
+    const octokit = await getOctokitForUser({ userId });
+    if (!octokit) {
+      return { repos: [], error: "no_github_account" };
+    }
     try {
       // Try to get installations if GitHub App is configured
       const { data } =
@@ -62,8 +70,16 @@ export const getUserRepos = userOnlyAction(
           return { repos: filteredRepos };
         }
       }
-    } catch (appError) {
+    } catch (appError: unknown) {
+      const status = (appError as { status?: number })?.status;
+      const message = (appError as Error)?.message ?? String(appError);
       console.warn("Failed to get app installations or user info:", appError);
+      if (
+        status === 401 ||
+        message?.toLowerCase().includes("bad credentials")
+      ) {
+        return { repos: [], error: "bad_credentials" };
+      }
     }
     return { repos: [] };
   },

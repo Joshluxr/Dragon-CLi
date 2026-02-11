@@ -11,8 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import { getUserRepos, UserRepo } from "@/server-actions/user-repos";
-import { getGHAppInstallUrl } from "@/lib/gh-app-url";
+import {
+  getUserRepos,
+  UserRepo,
+  type GetUserReposResult,
+} from "@/server-actions/user-repos";
+import { getGHAppInstallUrl, getGHAppInstallationsUrl } from "@/lib/gh-app-url";
 import { Loader2, CheckCircle2, ArrowRight, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { setOnboardingDone } from "@/server-actions/onboarding";
@@ -63,6 +67,7 @@ export function Onboarding({ forceIsDone }: { forceIsDone?: boolean }) {
     },
   );
   const repos = reposResult?.repos ?? null;
+  const repoError = reposResult?.error;
   useEffect(() => {
     if (forceIsDone) {
       setIsDone(true);
@@ -113,6 +118,7 @@ export function Onboarding({ forceIsDone }: { forceIsDone?: boolean }) {
         ) : (
           <GithubStep
             repos={repos ?? null}
+            repoError={repoError}
             onContinue={() => {
               setIsAnimating(true);
               setTimeout(() => {
@@ -164,9 +170,11 @@ function AdjustGitHubAppPermissions() {
 function GithubStep({
   onContinue,
   repos,
+  repoError,
 }: {
   onContinue: () => void;
   repos: UserRepo[] | null;
+  repoError?: GetUserReposResult["error"];
 }) {
   const hasRepos = repos && repos.length > 0;
 
@@ -182,12 +190,16 @@ function GithubStep({
           Connect your GitHub repositories
         </DialogTitle>
         <DialogDescription className="text-center text-muted-foreground mt-3">
-          Granting access allows the Dragon coding agent to write code and
-          open pull requests on your behalf.
+          Granting access allows the Dragon coding agent to write code and open
+          pull requests on your behalf.
         </DialogDescription>
       </DialogHeader>
       <div className={cn("mt-6", hasRepos ? "h-[350px]" : "h-auto")}>
-        <GithubStepContents onContinue={onContinue} repos={repos ?? null} />
+        <GithubStepContents
+          onContinue={onContinue}
+          repos={repos ?? null}
+          repoError={repoError}
+        />
       </div>
     </OnboardingDialogContent>
   );
@@ -196,9 +208,11 @@ function GithubStep({
 function GithubStepContents({
   onContinue,
   repos,
+  repoError,
 }: {
   onContinue: () => void;
   repos: UserRepo[] | null;
+  repoError?: GetUserReposResult["error"];
 }) {
   const hasRepos = repos && repos.length > 0;
 
@@ -230,8 +244,39 @@ function GithubStepContents({
         </ScrollArea>
       ) : null}
       <div className="space-y-3">
+        {repoError === "bad_credentials" && (
+          <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-800 dark:text-amber-200">
+            Your GitHub connection may have expired. Please{" "}
+            <a href="/sign-out" className="font-medium underline">
+              sign out
+            </a>{" "}
+            and sign back in with GitHub to reconnect, then try again.
+          </div>
+        )}
+        {repoError === "no_github_account" && (
+          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+            No GitHub account linked. Please sign out and sign back in with
+            GitHub.
+          </div>
+        )}
         <div className="text-sm text-muted-foreground text-center">
-          Don't see one of your repositories? <AdjustGitHubAppPermissions />
+          Don&apos;t see your repositories? <AdjustGitHubAppPermissions />
+          {!hasRepos && !repoError && (
+            <>
+              {" "}
+              Make sure to <strong>select at least one repository</strong> when
+              installing. You can add more at{" "}
+              <a
+                href={getGHAppInstallationsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                GitHub App settings
+              </a>
+              .
+            </>
+          )}
         </div>
         <Button
           className="w-full group"

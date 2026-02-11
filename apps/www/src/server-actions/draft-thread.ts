@@ -3,13 +3,9 @@
 import { db } from "@/lib/db";
 import { userOnlyAction } from "@/lib/auth-server";
 import { UserFacingError } from "@/lib/server-actions";
-import {
-  DBUserMessage,
-  ThreadChatInsert,
-  ThreadInsert,
-} from "@dragon/shared";
+import { DBUserMessage, ThreadChatInsert, ThreadInsert } from "@dragon/shared";
 import { SelectedAIModels } from "@dragon/agent/types";
-import { modelToAgent } from "@dragon/agent/utils";
+import { getThreadAgent } from "@dragon/agent/utils";
 import {
   getThread,
   updateThread,
@@ -57,7 +53,7 @@ export const updateDraftThread = userOnlyAction(
     if (updates.userMessage) {
       updatesToApply.name = userMessageToPlainText(updates.userMessage);
       updatesToApply.draftMessage = updates.userMessage;
-      chatUpdatesToApply.agent = modelToAgent(updates.userMessage.model);
+      chatUpdatesToApply.agent = getThreadAgent(updates.userMessage.model);
     }
     if (updates.repoFullName) {
       updatesToApply.githubRepoFullName = updates.repoFullName;
@@ -158,7 +154,7 @@ export const submitDraftThread = userOnlyAction(
           draftMessage: null,
         },
         chatUpdates: {
-          agent: modelToAgent(userMessage.model),
+          agent: getThreadAgent(userMessage.model),
           appendMessages: messagesToAppend,
           scheduleAt: new Date(scheduleAt),
         },
@@ -177,7 +173,7 @@ export const submitDraftThread = userOnlyAction(
           draftMessage: null,
         },
         chatUpdates: {
-          agent: modelToAgent(userMessage.model),
+          agent: getThreadAgent(userMessage.model),
           appendMessages: messagesToAppend,
         },
       });

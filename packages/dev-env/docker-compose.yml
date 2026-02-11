@@ -1,3 +1,6 @@
+# Data persistence: use bind mounts for host-path persistence.
+# - Dev: .data/postgres and .data/redis (relative to compose file)
+# - Production: set POSTGRES_DATA_PATH and REDIS_DATA_PATH (e.g. /opt/dragon/data/postgres)
 services:
   postgres:
     image: postgres:16-alpine
@@ -9,7 +12,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ${POSTGRES_DATA_PATH:-.data/postgres}:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -21,7 +24,7 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - redis_data:/data
+      - ${REDIS_DATA_PATH:-.data/redis}:/data
   serverless-redis-http:
     container_name: dragon_redis_http_${ENV:-dev}
     ports:
@@ -31,6 +34,3 @@ services:
       SRH_MODE: env
       SRH_TOKEN: ${REDIS_HTTP_TOKEN:-redis_dev_token}
       SRH_CONNECTION_STRING: "redis://redis:6379"
-volumes:
-  postgres_data:
-  redis_data:

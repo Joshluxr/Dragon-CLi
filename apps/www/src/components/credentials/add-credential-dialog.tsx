@@ -199,14 +199,19 @@ export function AddGeminiCredentialDialog({
   );
 }
 
-// Claude dialog with subscription OAuth or API key
+// Claude dialog with subscription OAuth or API key, plus Kimi and GLM options for Claude Code
 export function AddClaudeCredentialDialog({
   open,
   onOpenChange,
+  onProviderSelect,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onProviderSelect?: (provider: "kimi" | "glm") => void;
 }) {
+  const [provider, setProvider] = useState<"claude" | "kimi" | "glm" | null>(
+    null,
+  );
   const [mode, setMode] = useState<"api-key" | "subscription" | null>(null);
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
@@ -219,6 +224,7 @@ export function AddClaudeCredentialDialog({
   const exchangeCodeMutation = useExchangeClaudeAuthorizationCodeMutation();
 
   const resetForm = () => {
+    setProvider(null);
     setMode(null);
     setApiKey("");
     setShowApiKey(false);
@@ -317,18 +323,56 @@ export function AddClaudeCredentialDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Claude</DialogTitle>
+          <DialogTitle>Claude Code</DialogTitle>
           <DialogDescription>
-            {mode === null
-              ? "Choose how you'd like to add credentials for Claude."
-              : mode === "api-key"
-                ? "Add a new API key for Claude."
-                : "Connect your Claude subscription."}
+            {provider === null
+              ? "Choose which provider to add credentials for. Kimi and GLM are also available as Claude Code models."
+              : provider === "claude" && mode === null
+                ? "Choose how you'd like to add credentials for Claude."
+                : provider === "claude" && mode === "api-key"
+                  ? "Add a new API key for Claude."
+                  : provider === "claude"
+                    ? "Connect your Claude subscription."
+                    : ""}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          {mode === null ? (
+          {provider === null ? (
             <div className="space-y-3">
+              <Button
+                size="sm"
+                className="w-full justify-start"
+                onClick={() => setProvider("claude")}
+              >
+                Claude (Anthropic)
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => onProviderSelect?.("kimi")}
+              >
+                Kimi (Moonshot)
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => onProviderSelect?.("glm")}
+              >
+                GLM (Zhipu AI)
+              </Button>
+            </div>
+          ) : provider === "claude" && mode === null ? (
+            <div className="space-y-3">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="w-full justify-start text-muted-foreground"
+                onClick={() => setProvider(null)}
+              >
+                ← Back
+              </Button>
               <Button
                 size="sm"
                 className="w-full justify-start"
@@ -351,7 +395,7 @@ export function AddClaudeCredentialDialog({
                 Add API Key
               </Button>
             </div>
-          ) : mode === "api-key" ? (
+          ) : provider === "claude" && mode === "api-key" ? (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 Enter your Anthropic API key. Create one at{" "}
@@ -492,10 +536,12 @@ function AddApiOverrideDialog({
   open,
   onOpenChange,
   config,
+  onBack,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   config: ApiOverrideConfig;
+  onBack?: () => void;
 }) {
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
@@ -537,6 +583,16 @@ function AddApiOverrideDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
+          {onBack && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="w-full justify-start text-muted-foreground -mt-2 -mx-2"
+              onClick={onBack}
+            >
+              ← Back
+            </Button>
+          )}
           <p className="text-sm text-muted-foreground">{config.helpText}</p>
           <div className="relative">
             <Input
@@ -578,9 +634,11 @@ function AddApiOverrideDialog({
 export function AddKimiCredentialDialog({
   open,
   onOpenChange,
+  onBack,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onBack?: () => void;
 }) {
   const [mode, setMode] = useState<"api-key" | "subscription" | null>(null);
   const [apiKey, setApiKey] = useState("");
@@ -640,18 +698,28 @@ export function AddKimiCredentialDialog({
               ? "Choose how you'd like to add credentials for Kimi."
               : mode === "api-key"
                 ? "Add a new API key for Kimi."
-                : "Connect your Kimi subscription."}
+                : "Sign in with your Kimi account to use your subscription. Run the Kimi CLI and use /login to authenticate."}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
           {mode === null ? (
             <div className="space-y-3">
+              {onBack && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="w-full justify-start text-muted-foreground"
+                  onClick={onBack}
+                >
+                  ← Back
+                </Button>
+              )}
               <Button
                 size="sm"
                 className="w-full justify-start"
                 onClick={() => setMode("subscription")}
               >
-                Connect Kimi subscription
+                Sign in with Kimi account (subscription)
               </Button>
               <Button
                 size="sm"
@@ -777,15 +845,18 @@ cat ~/.kimi/config.toml | pbcopy`}</code>
 export function AddGlmCredentialDialog({
   open,
   onOpenChange,
+  onBack,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onBack?: () => void;
 }) {
   return (
     <AddApiOverrideDialog
       open={open}
       onOpenChange={onOpenChange}
       config={API_OVERRIDE_CONFIGS.glm}
+      onBack={onBack}
     />
   );
 }

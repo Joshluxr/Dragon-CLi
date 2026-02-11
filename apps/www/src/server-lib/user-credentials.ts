@@ -17,6 +17,7 @@ export async function getUserCredentials({
     hasAmp: false,
     hasOpenAI: false,
     hasOpenAIOAuthCredentials: false,
+    hasOpenCode: false,
   };
   for (const credential of agentProviderCredentials) {
     switch (credential.agent) {
@@ -30,6 +31,9 @@ export async function getUserCredentials({
         break;
       case "amp":
         result.hasAmp = true;
+        break;
+      case "opencode":
+        result.hasOpenCode = true;
         break;
     }
   }

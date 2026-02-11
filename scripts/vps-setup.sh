@@ -147,6 +147,12 @@ start_infrastructure() {
     export REDIS_HTTP_PORT=8079
     export REDIS_HTTP_TOKEN="${REDIS_HTTP_TOKEN:-$(openssl rand -hex 16)}"
     
+    # Persistent data paths (bind mounts) - survives container removal and reboots
+    DATA_DIR="${DRAGON_PATH}/data"
+    mkdir -p "${DATA_DIR}/postgres" "${DATA_DIR}/redis"
+    export POSTGRES_DATA_PATH="${DATA_DIR}/postgres"
+    export REDIS_DATA_PATH="${DATA_DIR}/redis"
+    
     # Use docker compose (v2) or docker-compose (v1)
     DOCKER_COMPOSE="docker compose"
     if ! docker compose version &> /dev/null; then
@@ -185,6 +191,8 @@ push_schema() {
     elif ! grep -q "DATABASE_URL=" "$SHARED_ENV" 2>/dev/null; then
         echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${POSTGRES_PORT}/dragon" >> "$SHARED_ENV"
     fi
+    
+    # Note: REDIS_URL must be http://localhost:8079 (serverless-redis-http), not redis://
     
     pnpm -C packages/shared drizzle-kit-push-dev
 }

@@ -12,7 +12,7 @@ import {
   ThreadSource,
   ThreadSourceMetadata,
 } from "@dragon/shared";
-import { modelToAgent } from "@dragon/agent/utils";
+import { getThreadAgent } from "@dragon/agent/utils";
 import { UserFacingError } from "@/lib/server-actions";
 import { getUserSettings } from "@dragon/shared/model/user";
 import { waitUntil } from "@vercel/functions";
@@ -140,7 +140,7 @@ export async function createNewThread({
     })(),
   ]);
   const messageWithModel = { ...message, model: modelOrDefault };
-  const agent = modelToAgent(messageWithModel.model);
+  const agent = getThreadAgent(messageWithModel.model);
   // Track thread creation
   getPostHogServer().capture({
     distinctId: userId,

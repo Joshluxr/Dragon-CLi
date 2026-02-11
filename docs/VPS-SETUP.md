@@ -59,25 +59,26 @@ nano apps/broadcast/.env
 
 **Critical production variables:**
 
-| Variable                  | Description                                                                     |
-| ------------------------- | ------------------------------------------------------------------------------- |
-| `BETTER_AUTH_URL`         | Your public URL (e.g., `https://yourdomain.com` or `http://65.75.200.136:3000`) |
-| `LOCALHOST_PUBLIC_DOMAIN` | Same as above - sandboxes need this to reach your backend                       |
-| `DATABASE_URL`            | `postgresql://postgres:postgres@localhost:5432/dragon` (default)                |
-| `REDIS_URL`               | `redis://localhost:6379` (default)                                              |
-| `BETTER_AUTH_SECRET`      | Generate with `openssl rand -base64 32`                                         |
-| `ENCRYPTION_MASTER_KEY`   | 32+ character key for encrypting user data                                      |
-| `INTERNAL_SHARED_SECRET`  | Shared secret for internal service auth                                         |
-| `ANTHROPIC_API_KEY`       | Your Anthropic API key                                                          |
-| `E2B_API_KEY`             | Your E2B sandbox API key                                                        |
-| `OPENAI_API_KEY`          | Your OpenAI API key                                                             |
-| `GITHUB_APP_ID`           | GitHub App ID                                                                   |
-| `GITHUB_CLIENT_ID`        | GitHub OAuth client ID                                                          |
-| `GITHUB_CLIENT_SECRET`    | GitHub OAuth client secret                                                      |
-| `GITHUB_APP_PRIVATE_KEY`  | GitHub App private key (PEM format)                                             |
-| `GITHUB_WEBHOOK_SECRET`   | Generate with `openssl rand -hex 32`                                            |
-| `R2_*`                    | Cloudflare R2 credentials                                                       |
-| `RESEND_API_KEY`          | For transactional emails                                                        |
+| Variable                  | Description                                                                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BETTER_AUTH_URL`         | Your public URL (e.g., `https://yourdomain.com` or `http://65.75.200.136:3000`)                                                                                                          |
+| `LOCALHOST_PUBLIC_DOMAIN` | Same as above - sandboxes need this to reach your backend                                                                                                                                |
+| `DATABASE_URL`            | `postgresql://postgres:postgres@localhost:5432/dragon` (or 5433 if 5432 in use)                                                                                                          |
+| `REDIS_URL`               | `http://localhost:8079` (serverless-redis-http, **not** redis://). For production rate limiting, use [Upstash](https://console.upstash.com) (free tier) to avoid "Invalid token" errors. |
+| `REDIS_TOKEN`             | For serverless-redis-http: must match `REDIS_HTTP_TOKEN` in docker-compose (`redis_dev_token` default). For Upstash: token from dashboard.                                               |
+| `BETTER_AUTH_SECRET`      | Generate with `openssl rand -base64 32`                                                                                                                                                  |
+| `ENCRYPTION_MASTER_KEY`   | 32+ character key for encrypting user data                                                                                                                                               |
+| `INTERNAL_SHARED_SECRET`  | Shared secret for internal service auth                                                                                                                                                  |
+| `ANTHROPIC_API_KEY`       | Your Anthropic API key                                                                                                                                                                   |
+| `E2B_API_KEY`             | Your E2B sandbox API key                                                                                                                                                                 |
+| `OPENAI_API_KEY`          | Your OpenAI API key                                                                                                                                                                      |
+| `GITHUB_APP_ID`           | GitHub App ID                                                                                                                                                                            |
+| `GITHUB_CLIENT_ID`        | GitHub OAuth client ID                                                                                                                                                                   |
+| `GITHUB_CLIENT_SECRET`    | GitHub OAuth client secret                                                                                                                                                               |
+| `GITHUB_APP_PRIVATE_KEY`  | GitHub App private key (PEM format)                                                                                                                                                      |
+| `GITHUB_WEBHOOK_SECRET`   | Generate with `openssl rand -hex 32`                                                                                                                                                     |
+| `R2_*`                    | Cloudflare R2 credentials                                                                                                                                                                |
+| `RESEND_API_KEY`          | For transactional emails                                                                                                                                                                 |
 
 ### 4. Deploy Broadcast (WebSocket)
 
@@ -131,9 +132,13 @@ apt-get install -y docker-compose-plugin
 
 ### Start infrastructure
 
+Data is persisted to `/opt/dragon/data/` (PostgreSQL and Redis). Survives container removal and reboots.
+
 ```bash
 cd /opt/dragon/packages/dev-env
-ENV=production docker compose --project-name dragon-prod up -d
+mkdir -p /opt/dragon/data/postgres /opt/dragon/data/redis
+ENV=production POSTGRES_DATA_PATH=/opt/dragon/data/postgres REDIS_DATA_PATH=/opt/dragon/data/redis \
+  docker compose --project-name dragon-prod up -d
 ```
 
 ### Push schema
@@ -212,6 +217,38 @@ ufw enable
 
 ---
 
+## Data Persistence & Backup
+
+PostgreSQL and Redis data are stored in `/opt/dragon/data/postgres` and `/opt/dragon/data/redis` via bind mounts. Data survives container restarts, removals, and server reboots.
+
+### Backup database
+
+```bash
+docker exec dragon_postgres_production pg_dump -U postgres dragon > backup_$(date +%Y%m%d).sql
+```
+
+### Restore database
+
+```bash
+cat backup_20250101.sql | docker exec -i dragon_postgres_production psql -U postgres dragon
+```
+
+### Migrating from named volumes
+
+If you previously used the setup without bind mounts, the data is in Docker volumes. To migrate:
+
+```bash
+# List volumes to find the postgres volume name (e.g. dragon-prod_postgres_data)
+docker volume ls
+
+# Copy data from the old volume to the new bind mount path
+docker run --rm -v <volume_name>:/from -v /opt/dragon/data/postgres:/to alpine sh -c "cp -a /from/. /to/"
+
+# Then start with the new bind mount paths
+```
+
+---
+
 ## Troubleshooting
 
 ### Database connection failed
@@ -234,6 +271,19 @@ Ensure all required variables are set in `apps/www/.env.development.local`. The 
 ### PartyKit deploy fails
 
 Ensure you have a PartyKit account. Run `pnpm partykit login` first.
+
+### Redis "Invalid token" / evalsha errors
+
+The serverless-redis-http proxy has limited Redis command support. For production, use [Upstash Redis](https://console.upstash.com) (free tier): create a database, copy `REDIS_URL` and `REDIS_TOKEN` to your env. The app will allow sandbox creation when Redis fails (graceful degradation).
+
+### Self-hosted Docker sandboxes
+
+To run sandboxes on a separate server:
+
+1. On the sandbox server (e.g. 23.239.108.30): run `./scripts/sandbox-server-setup.sh`
+2. Set up SSH key from main Dragon server to sandbox server (see `scripts/connect-sandbox-to-dragon.py`)
+3. On main server env: `DOCKER_HOST=ssh://root@sandbox-server-ip`
+4. In Dragon settings, users select "Docker (self-hosted)"
 
 ---
 
