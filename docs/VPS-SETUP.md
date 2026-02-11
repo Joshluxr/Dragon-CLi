@@ -276,6 +276,15 @@ Ensure you have a PartyKit account. Run `pnpm partykit login` first.
 
 The serverless-redis-http proxy has limited Redis command support. For production, use [Upstash Redis](https://console.upstash.com) (free tier): create a database, copy `REDIS_URL` and `REDIS_TOKEN` to your env. The app will allow sandbox creation when Redis fails (graceful degradation).
 
+### Stuck on "Provisioning machine"
+
+If tasks hang at "Provisioning machine" with Docker (self-hosted):
+
+- **Quick fix**: Switch to E2B in Settings → Sandbox (Default or E2B) – no self-hosted Docker needed.
+- **Docker SSH**: From the main server, test: `DOCKER_HOST=ssh://root@<sandbox-ip> docker ps`. If this hangs, check SSH keys (`ssh root@<sandbox-ip>`) and that the sandbox server is reachable.
+- **Logs**: `pm2 logs dragon-www` to see sandbox creation errors.
+- **Timeout**: Docker provisioning has a 3‑minute timeout over SSH; then you’ll see an error.
+
 ### Self-hosted Docker sandboxes
 
 To run sandboxes on a separate server:

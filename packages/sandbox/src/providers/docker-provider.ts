@@ -271,15 +271,26 @@ export class DockerProvider implements ISandboxProvider {
     const dateStr = `${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
     const timeStr = `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
     const containerName = `${prefix}-${dateStr}-${timeStr}-${nanoid()}`;
+    const provisionTimeoutMs = process.env.DOCKER_HOST
+      ? 3 * 60 * 1000
+      : 60 * 1000; // 3 min over SSH, 1 min local
     try {
-      // Create and start container
       const createCommand = `docker run -d --name ${containerName} ${envFlags} -w ${DEFAULT_DIR} ${BASE_IMAGE} tail -f /dev/null`;
-      const containerId = execSync(createCommand, { encoding: "utf8" }).trim();
+      const containerId = execSync(createCommand, {
+        encoding: "utf8",
+        timeout: provisionTimeoutMs,
+      }).trim();
       const dockerSession = new DockerSession(containerId);
       return dockerSession;
     } catch (error) {
-      console.error("Failed to create Docker sandbox:", error);
-      throw error;
+      const msg = error instanceof Error ? error.message : String(error);
+      const hint = process.env.DOCKER_HOST
+        ? " (Docker over SSH - check DOCKER_HOST, SSH keys, sandbox server reachable)"
+        : "";
+      console.error("Failed to create Docker sandbox:", msg, hint);
+      throw new Error(
+        `Docker sandbox creation failed: ${msg}${hint}. Try E2B provider in Settings or retry later.`,
+      );
     }
   }
 
