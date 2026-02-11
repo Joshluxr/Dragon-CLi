@@ -31,6 +31,27 @@ docker pull ghcr.io/terragon-labs/containers-test || {
   echo "WARN: Failed to pull base image. You may need to push it or use a different registry."
 }
 
+# Redis + serverless-redis-http for Dragon rate limiting (main app connects remotely)
+echo ""
+echo ">>> Starting Redis + serverless-redis-http..."
+REDIS_HTTP_TOKEN="${REDIS_HTTP_TOKEN:-dragon_redis_sandbox_token}"
+docker network create dragon_redis_net 2>/dev/null || true
+docker rm -f dragon_sandbox_redis dragon_sandbox_redis_http 2>/dev/null || true
+docker run -d --name dragon_sandbox_redis --restart unless-stopped \
+  --network dragon_redis_net \
+  -v dragon_sandbox_redis_data:/data \
+  redis:7-alpine
+docker run -d --name dragon_sandbox_redis_http --restart unless-stopped \
+  --network dragon_redis_net \
+  -p 8079:80 \
+  -e SRH_MODE=env \
+  -e SRH_TOKEN="$REDIS_HTTP_TOKEN" \
+  -e SRH_CONNECTION_STRING="redis://dragon_sandbox_redis:6379" \
+  hiett/serverless-redis-http:latest
+SANDBOX_IP="${SANDBOX_SERVER_IP:-$(curl -s ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}')}"
+echo "Redis HTTP on port 8079 (token: $REDIS_HTTP_TOKEN)"
+echo "On MAIN Dragon server set: REDIS_URL=http://${SANDBOX_IP}:8079 REDIS_TOKEN=$REDIS_HTTP_TOKEN"
+
 # Optional: Enable Docker TCP (2375) for remote access. Use only on trusted networks.
 # Uncomment to allow tcp:// connection (less secure than SSH):
 # mkdir -p /etc/systemd/system/docker.service.d

@@ -81,24 +81,24 @@ def main():
             print("SSH test failed. Host key may need manual acceptance.")
             print("Run on main server: ssh root@23.239.108.30 (accept fingerprint)")
 
-    # 4. Add DOCKER_HOST to main server's env file
-    print(">>> Adding DOCKER_HOST to main server env...")
-    env_update = f"""
-    cd /opt/dragon
-    ENV_FILE="apps/www/.env.production.local"
-    if [ -f "$ENV_FILE" ]; then
-      if ! grep -q "^DOCKER_HOST=" "$ENV_FILE"; then
-        echo "DOCKER_HOST=ssh://root@{sandbox_host}" >> "$ENV_FILE"
-        echo "Added DOCKER_HOST"
-      else
-        sed -i "s|^DOCKER_HOST=.*|DOCKER_HOST=ssh://root@{sandbox_host}|" "$ENV_FILE"
-        echo "Updated DOCKER_HOST"
-      fi
-    else
-      echo "DOCKER_HOST=ssh://root@{sandbox_host}" >> "$ENV_FILE"
-      echo "Created with DOCKER_HOST"
-    fi
-    """
+    # 4. Add DOCKER_HOST, REDIS_URL, REDIS_TOKEN, and Dragon URL to main server's env
+    print(">>> Updating main server env...")
+    main_host_ip = main_host.split("@")[-1].split(":")[0] if "@" in main_host else main_host
+    dragon_url = os.environ.get("DRAGON_APP_URL", f"http://{main_host_ip}:3000")
+    redis_token = os.environ.get("REDIS_HTTP_TOKEN", "dragon_redis_sandbox_token")
+
+    def set_env_var(key, value):
+        return f'if grep -q "^{key}=" "$ENV_FILE"; then sed -i "s|^{key}=.*|{key}={value}|" "$ENV_FILE"; else echo "{key}={value}" >> "$ENV_FILE"; fi'
+
+    env_commands = [
+        f'ENV_FILE="apps/www/.env.production.local"; touch "$ENV_FILE"; cd /opt/dragon',
+        set_env_var("DOCKER_HOST", f"ssh://root@{sandbox_host}"),
+        set_env_var("REDIS_URL", f"http://{sandbox_host}:8079"),
+        set_env_var("REDIS_TOKEN", redis_token),
+        set_env_var("NEXT_PUBLIC_APP_URL", dragon_url),
+        set_env_var("LOCALHOST_PUBLIC_DOMAIN", dragon_url),
+    ]
+    env_update = " && ".join(env_commands)
     code, out, err = run_ssh(main_host, "root", main_password, env_update)
     print(out)
 
@@ -111,7 +111,7 @@ def main():
         print(err, file=sys.stderr)
 
     print("\n>>> Done. Users can select 'Docker (self-hosted)' in Sandbox settings.")
-    print(">>> REDIS: For production rate limiting, use Upstash (console.upstash.com) or the app will allow sandbox creation when Redis fails.")
+    print(">>> Run scripts/sandbox-server-add-redis.py to add Redis on sandbox server for rate limiting.")
 
 
 if __name__ == "__main__":
