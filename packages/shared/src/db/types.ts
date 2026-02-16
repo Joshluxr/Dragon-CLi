@@ -376,6 +376,7 @@ export type UserCredentials = {
   hasAmp: boolean;
   hasOpenAI: boolean;
   hasOpenAIOAuthCredentials: boolean;
+  hasOpenCode: boolean;
 };
 
 export type SignupTrialInfo = {

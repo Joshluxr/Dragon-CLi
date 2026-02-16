@@ -321,5 +321,7 @@ export const auth = betterAuth({
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`,
     process.env.NODE_ENV === "development" && publicAppUrl(),
     process.env.NODE_ENV === "development" && nonLocalhostPublicAppUrl(),
+    // Include auth base URL so sign-out and other auth flows work on self-hosted (e.g. VPS)
+    env.BETTER_AUTH_URL,
   ].filter(Boolean) as string[],
 });

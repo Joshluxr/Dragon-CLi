@@ -13,6 +13,8 @@ import {
   AddCodexCredentialDialog,
   AddAmpCredentialDialog,
   AddGeminiCredentialDialog,
+  AddKimiCredentialDialog,
+  AddGlmCredentialDialog,
 } from "@/components/credentials/add-credential-dialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -63,6 +65,8 @@ export function AgentSettings() {
   );
 }
 
+type ClaudeCodeCredentialProvider = "claude" | "kimi" | "glm";
+
 function AgentProvidersSection() {
   const allAgents = useAtomValue(allAgentsAtom);
   const agents = allAgents.filter((agent) => {
@@ -70,12 +74,29 @@ function AgentProvidersSection() {
   });
   const [selectProviderOpen, setSelectProviderOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
+  const [claudeCodeCredentialProvider, setClaudeCodeCredentialProvider] =
+    useState<ClaudeCodeCredentialProvider | null>(null);
   const [credentialDialogOpen, setCredentialDialogOpen] = useState(false);
 
   const handleAgentSelect = (agent: AIAgent) => {
     setSelectedAgent(agent);
+    setClaudeCodeCredentialProvider(null);
     setSelectProviderOpen(false);
     setCredentialDialogOpen(true);
+  };
+
+  const handleClaudeCodeProviderSelect = (
+    provider: ClaudeCodeCredentialProvider,
+  ) => {
+    setClaudeCodeCredentialProvider(provider);
+  };
+
+  const handleCredentialDialogClose = (open: boolean) => {
+    setCredentialDialogOpen(open);
+    if (!open) {
+      setSelectedAgent(null);
+      setClaudeCodeCredentialProvider(null);
+    }
   };
 
   const addCredentialCTA = (
@@ -104,48 +125,45 @@ function AgentProvidersSection() {
         agents={agents}
         onSelect={handleAgentSelect}
       />
-      {selectedAgent === "claudeCode" && (
+      {selectedAgent === "claudeCode" && !claudeCodeCredentialProvider && (
         <AddClaudeCredentialDialog
           open={credentialDialogOpen}
-          onOpenChange={(open) => {
-            setCredentialDialogOpen(open);
-            if (!open) {
-              setSelectedAgent(null);
-            }
-          }}
+          onOpenChange={handleCredentialDialogClose}
+          onProviderSelect={handleClaudeCodeProviderSelect}
         />
       )}
+      {selectedAgent === "claudeCode" &&
+        claudeCodeCredentialProvider === "kimi" && (
+          <AddKimiCredentialDialog
+            open={credentialDialogOpen}
+            onOpenChange={handleCredentialDialogClose}
+            onBack={() => setClaudeCodeCredentialProvider(null)}
+          />
+        )}
+      {selectedAgent === "claudeCode" &&
+        claudeCodeCredentialProvider === "glm" && (
+          <AddGlmCredentialDialog
+            open={credentialDialogOpen}
+            onOpenChange={handleCredentialDialogClose}
+            onBack={() => setClaudeCodeCredentialProvider(null)}
+          />
+        )}
       {selectedAgent === "codex" && (
         <AddCodexCredentialDialog
           open={credentialDialogOpen}
-          onOpenChange={(open) => {
-            setCredentialDialogOpen(open);
-            if (!open) {
-              setSelectedAgent(null);
-            }
-          }}
+          onOpenChange={handleCredentialDialogClose}
         />
       )}
       {selectedAgent === "amp" && (
         <AddAmpCredentialDialog
           open={credentialDialogOpen}
-          onOpenChange={(open) => {
-            setCredentialDialogOpen(open);
-            if (!open) {
-              setSelectedAgent(null);
-            }
-          }}
+          onOpenChange={handleCredentialDialogClose}
         />
       )}
       {selectedAgent === "gemini" && (
         <AddGeminiCredentialDialog
           open={credentialDialogOpen}
-          onOpenChange={(open) => {
-            setCredentialDialogOpen(open);
-            if (!open) {
-              setSelectedAgent(null);
-            }
-          }}
+          onOpenChange={handleCredentialDialogClose}
         />
       )}
     </div>

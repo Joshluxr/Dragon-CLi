@@ -17,7 +17,7 @@ import type { SetSelectedModel } from "@/hooks/use-selected-model";
 import {
   getModelDisplayName,
   getAgentModelGroups,
-  modelToAgent,
+  getThreadAgent,
   sortByAgents,
   type AgentModelGroup,
 } from "@dragon/agent/utils";
@@ -159,7 +159,9 @@ function ModelSelectorInner({
       }
       if (selectedModelArr.length > 1) {
         // Get unique agents from selected models
-        const agentsArr = selectedModelArr.map((model) => modelToAgent(model));
+        const agentsArr = selectedModelArr.map((model) =>
+          getThreadAgent(model),
+        );
         agentsArr.sort(sortByAgents);
         return (
           <div className="flex min-w-0 flex-1 items-center space-x-0.5 sm:-space-x-1.5">
@@ -177,7 +179,7 @@ function ModelSelectorInner({
     if (!selectedModelOrNull) {
       return defaultLabel;
     }
-    const selectedModelAgent = modelToAgent(selectedModelOrNull)!;
+    const selectedModelAgent = getThreadAgent(selectedModelOrNull)!;
     const { fullName } = getModelDisplayName(selectedModelOrNull);
     return (
       <div className="flex min-w-0 flex-1 items-center gap-1">

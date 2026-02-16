@@ -21,12 +21,13 @@ export function getSandboxProvider(
     case "docker":
       if (
         process.env.NODE_ENV === "test" ||
-        process.env.NODE_ENV === "development"
+        process.env.NODE_ENV === "development" ||
+        process.env.DOCKER_HOST
       ) {
         return new DockerProvider();
       }
       throw new Error(
-        "Docker sandbox provider is only available in test/dev environments",
+        "Docker sandbox provider requires DOCKER_HOST in production (e.g. ssh://root@sandbox-server)",
       );
     case "daytona":
       return new DaytonaProvider();

@@ -253,7 +253,7 @@ export function getOpenRouterSkuForModel(model?: string | null): UsageSku {
   if (model.includes("kimi-k2")) {
     return OPENROUTER_KIMI_SKU;
   }
-  if (model.includes("glm-4.6")) {
+  if (model.includes("glm-4.6") || model.includes("glm-4.7")) {
     return OPENROUTER_GLM_SKU;
   }
   if (model.includes("gemini-2.5-pro")) {

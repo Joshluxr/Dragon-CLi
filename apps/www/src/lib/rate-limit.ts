@@ -28,13 +28,42 @@ export const sandboxCreationRateLimit = new Ratelimit({
   prefix: `${PREFIX}:sandbox-creation`,
 });
 
+export type SandboxCreationRateLimitRemaining = {
+  remaining: number;
+  reset: number;
+};
+
+/**
+ * Get remaining sandbox creation tokens. On Redis/Upstash errors (e.g. invalid
+ * token, evalsha unsupported by serverless-redis-http), returns permissive result
+ * so sandbox creation is not blocked.
+ */
+export async function getSandboxCreationRateLimitRemaining(
+  userId: string,
+): Promise<SandboxCreationRateLimitRemaining> {
+  try {
+    return await sandboxCreationRateLimit.getRemaining(userId);
+  } catch (error) {
+    console.warn(
+      "[rate-limit] Redis unavailable (use Upstash for production), allowing sandbox creation:",
+      error,
+    );
+    return { remaining: 1, reset: Date.now() + 3600000 };
+  }
+}
+
 export async function trackSandboxCreation(userId: string) {
-  const result = await sandboxCreationRateLimit.limit(userId);
-  // Don't throw an error here, just log a warning because there might be a race condition
-  // between the rate limit check and the sandbox creation and its okay if we go over.
-  if (!result.success) {
-    console.log(
-      `Going over sandbox creation rate limit: ${result.remaining} remaining, reset in ${result.reset}`,
+  try {
+    const result = await sandboxCreationRateLimit.limit(userId);
+    if (!result.success) {
+      console.log(
+        `Going over sandbox creation rate limit: ${result.remaining} remaining, reset in ${result.reset}`,
+      );
+    }
+  } catch (error) {
+    console.warn(
+      "[rate-limit] Redis unavailable when tracking sandbox creation:",
+      error,
     );
   }
 }

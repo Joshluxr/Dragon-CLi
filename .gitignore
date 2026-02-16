@@ -44,6 +44,7 @@ yarn-error.log*
 next-env.d.ts
 
 data/
+.data/
 output.txt
 
 # claude code

@@ -7,7 +7,7 @@ import {
 import { db } from "@/lib/db";
 import { env } from "@dragon/env/apps-www";
 import { internalPOST } from "@/server-lib/internal-request";
-import { sandboxCreationRateLimit } from "@/lib/rate-limit";
+import { getSandboxCreationRateLimitRemaining } from "@/lib/rate-limit";
 import { getPostHogServer } from "@/lib/posthog-server";
 import {
   processBatchWithDelay,
@@ -42,7 +42,7 @@ async function processOtherRateLimitedQueues() {
       // Check if the user has tokens remaining before we kick off the request to
       // process the thread queue so we don't end up making a bunch of useless requests.
       const rateLimitResult =
-        await sandboxCreationRateLimit.getRemaining(userId);
+        await getSandboxCreationRateLimitRemaining(userId);
       if (rateLimitResult.remaining === 0) {
         // Update reattemptQueueAt to the rate limit reset time to avoid unnecessary retries
         const resetTime = new Date(rateLimitResult.reset);

@@ -38,7 +38,7 @@ import { sandboxTimeoutMs } from "@dragon/sandbox/constants";
 import { getAndVerifyCredentials } from "./credentials";
 import { DEFAULT_SANDBOX_SIZE } from "@/lib/subscription-tiers";
 import type { UserSettings } from "@dragon/shared";
-import { ensureAgent } from "@dragon/agent/utils";
+import { ensureAgent, getRuntimeAgent } from "@dragon/agent/utils";
 import { getLastUserMessageModel } from "@/lib/db-message-helpers";
 
 async function getOrCreateSandboxWithTimeout(
@@ -163,13 +163,13 @@ async function getOrCreateSandboxForThread({
     getFeatureFlagsForUser({ db, userId }),
     getUserSettings({ db, userId }),
     (async () => {
-      return agentOrNull
-        ? await getAndVerifyCredentials({
-            agent: agentOrNull,
-            model: modelOrNull,
-            userId,
-          })
-        : null;
+      if (!agentOrNull) return null;
+      const runtimeAgent = getRuntimeAgent(agentOrNull, modelOrNull);
+      return getAndVerifyCredentials({
+        agent: runtimeAgent,
+        model: modelOrNull,
+        userId,
+      });
     })(),
     // Fetch the environment to get environment variables
     getOrCreateEnvironment({

@@ -336,6 +336,28 @@ async function updateAgentFiles({
         customSystemPromptFilename: "CLAUDE.md",
         customSystemPrompt,
       });
+      // Also set up opencode config so Kimi and GLM models work under Claude Code
+      const opencodeConfigContent = buildOpencodeConfig({
+        publicUrl: publicUrl!,
+        userMcpConfig: mcpConfig,
+      });
+      await updateAgentFilesShared({
+        session,
+        homeDir,
+        agentConfigDir: ".config/opencode",
+        agentCredentialsFilename: null,
+        agentCredentials: null,
+        isCreatingSandbox,
+        customSystemPromptFilename: ".gitkeep",
+        customSystemPrompt: null,
+        otherFiles: [
+          { filename: "opencode.json", content: opencodeConfigContent },
+          {
+            filename: "plugin/auto-approve.ts",
+            content: OPENCODE_AUTO_APPROVE_PLUGIN_CONTENT,
+          },
+        ],
+      });
       break;
     }
     case "codex": {
@@ -499,9 +521,7 @@ async function executeSetupScriptCommand({
     ),
   ]);
   if (result === "timeout") {
-    throw new Error(
-      `Command timed out after ${dragonSetupScriptTimeoutMs}ms`,
-    );
+    throw new Error(`Command timed out after ${dragonSetupScriptTimeoutMs}ms`);
   }
   // Log the git status after the setup script runs
   await session.runCommand("git status");
