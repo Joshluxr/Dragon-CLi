@@ -307,3 +307,50 @@ When adding new entries to release notes (`apps/docs/content/docs/resources/rele
 1. Follow the template and guidelines in `apps/docs/RELEASE_NOTES_TEMPLATE.md`
 2. **CRITICAL**: After adding a new release notes entry, bump the `RELEASE_NOTES_VERSION` constant in `apps/www/src/lib/constants.ts` by incrementing it by 1
 3. This version bump triggers the release notes badge to appear for users, notifying them of new updates
+
+## Cursor Cloud specific instructions
+
+### Infrastructure
+
+Docker is required for the development database stack (PostgreSQL 16, Redis 7, serverless-redis-http). Start containers with:
+
+```bash
+pnpm -C packages/dev-env docker-up-dev
+```
+
+After starting containers, push the DB schema:
+
+```bash
+pnpm -C packages/shared drizzle-kit-push-dev
+```
+
+### Environment Variables
+
+`apps/www/.env.development.local` must exist with at minimum these keys (placeholder values are sufficient to start the dev server):
+
+- `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` — AI providers
+- `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_ACCOUNT_ID`, `R2_BUCKET_NAME`, `R2_PRIVATE_BUCKET_NAME`, `R2_PUBLIC_URL` — Cloudflare R2 storage
+- `E2B_API_KEY` — sandbox provider
+- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GITHUB_WEBHOOK_SECRET`, `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY` — GitHub OAuth/App
+- `NEXT_PUBLIC_GITHUB_APP_NAME` — required `NEXT_PUBLIC_` env var
+- `LOCALHOST_PUBLIC_DOMAIN` — required in dev for auth callbacks (e.g. `localhost:3000`)
+
+Most infrastructure env vars (DATABASE_URL, REDIS_URL, BETTER_AUTH_SECRET, etc.) have `devDefault` values in `packages/env/src/common.ts` and do not need to be set.
+
+### Building before testing
+
+Some packages require build artifacts from dependencies. The `@dragon/bundled` package needs `@dragon/daemon` and `@dragon/mcp-server` to be built first. When running `packages/sandbox` tests, build the chain first:
+
+```bash
+pnpm -C packages/daemon build && pnpm -C packages/mcp-server build && pnpm -C packages/bundled build && pnpm -C packages/sandbox-image build
+```
+
+The `turbo dev` pipeline handles this automatically during normal development.
+
+### Running services
+
+- **Next.js frontend**: `pnpm -C apps/www dev` (port 3000) — see `AGENTS.md` Key Commands
+- **All services**: `pnpm dev` runs everything via Turborepo (requires ngrok token for tunnel)
+- **Tests**: `pnpm -C packages/shared test`, `pnpm -C packages/daemon test`, `pnpm -C packages/sandbox test` — test containers are managed automatically via Docker
+- **Lint**: `pnpm -C apps/www lint`
+- **Type check**: `pnpm tsc-check`
