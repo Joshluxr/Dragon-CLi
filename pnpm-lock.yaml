@@ -782,9 +782,6 @@ importers:
 
   packages/mcp-server:
     dependencies:
-      '@dragon/supermemory':
-        specifier: workspace:*
-        version: link:../supermemory
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.6
         version: 1.12.1
@@ -997,9 +994,6 @@ importers:
 
   packages/supermemory:
     dependencies:
-      supermemory:
-        specifier: ^4.0.0
-        version: 4.0.0
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -10505,9 +10499,6 @@ packages:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
-
-  supermemory@4.0.0:
-    resolution: {integrity: sha512-xMN05PQ8kTv8DuXa2qf8h/9LaRI7v1Kz3Tutt97JPq+PzhGabKLv5YVbSgqHiPX5yXcSUBVBNYPPbhAQMF6GYQ==}
 
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
@@ -22481,8 +22472,6 @@ snapshots:
       mz: 2.7.0
       pirates: 4.0.7
       ts-interface-checker: 0.1.13
-
-  supermemory@4.0.0: {}
 
   supports-color@5.5.0:
     dependencies:
