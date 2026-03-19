@@ -26,6 +26,9 @@ export function SandboxProviderSelector() {
       </SelectTrigger>
       <SelectContent align="end">
         <SelectItem value="default">Default</SelectItem>
+        {process.env.NODE_ENV === "development" && (
+          <SelectItem value="docker">Docker (Local)</SelectItem>
+        )}
         <SelectItem value="e2b">E2B</SelectItem>
         <SelectItem value="daytona">Daytona</SelectItem>
       </SelectContent>

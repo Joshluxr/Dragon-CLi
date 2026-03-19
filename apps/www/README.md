@@ -60,6 +60,23 @@ The webhook handler is located at `/api/webhooks/github` and the events we liste
 
 E2B provides cloud-based sandboxed environments for code execution and is used for secure sandbox environments in the application.
 
+### Local Sandbox (Docker) - For Development
+
+When running Dragon locally (`NODE_ENV=development`), you can use **Docker** as the sandbox provider instead of E2B. This avoids needing E2B API keys and runs sandboxes in local Docker containers.
+
+**Requirements:**
+
+- Docker installed and running (e.g., [Docker Desktop](https://www.docker.com/products/docker-desktop/) or [Orbstack](https://orbstack.dev/))
+- `NODE_ENV=development` (set automatically when running `pnpm dev`)
+
+**Setup:**
+
+1. Ensure Docker is running: `docker info`
+2. In Settings → Sandbox Configuration, select **Docker (Local)** as the sandbox provider (or **Default**, which maps to Docker in development)
+3. The app uses the `ghcr.io/terragon-labs/containers-test` image by default. Override with `DOCKER_SANDBOX_IMAGE` env var if needed
+
+**Note:** Sandbox terminal is not supported with Docker (only E2B). Containers are created with the prefix `dragon-sandbox-` and can be cleaned up with `docker ps -a --filter "name=dragon-sandbox"`.
+
 ### Cloudflare R2 Setup (Optional)
 
 Cloudflare R2 is used for file storage. If you need file upload/storage functionality:
