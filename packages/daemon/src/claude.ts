@@ -34,6 +34,14 @@ export function getAnthropicApiKeyOrNull(runtime: IDaemonRuntime) {
 const toolUseErrorStr =
   "The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed.";
 
+function isRootUser(runtime: IDaemonRuntime): boolean {
+  try {
+    return runtime.execSync("id -u").trim() === "0";
+  } catch {
+    return false;
+  }
+}
+
 function isValidSessionId(runtime: IDaemonRuntime, sessionId: string) {
   try {
     // Look for the sessionId in ~/.claude/projects/**/<sessionId>.jsonl
@@ -210,6 +218,21 @@ export function claudeCommand({
     }
   }
 
+  const planPermissionArgs = [
+    "--permission-mode",
+    "plan",
+    "--allowedTools",
+    "WebSearch",
+    "WebFetch",
+    "Read",
+    "Bash",
+  ] as const;
+
+  // Claude CLI refuses --dangerously-skip-permissions when uid=0 (e.g. OpenSandbox / Docker as root).
+  const allowAllPermissionArgs = isRootUser(runtime)
+    ? (["--permission-mode", "acceptEdits"] as const)
+    : (["--dangerously-skip-permissions"] as const);
+
   const parts = [
     "cat",
     tmpFileName,
@@ -221,16 +244,8 @@ export function claudeCommand({
     resumeOrContinueFlag,
     "--verbose",
     ...(permissionMode === "plan"
-      ? [
-          "--permission-mode",
-          "plan",
-          "--allowedTools",
-          "WebSearch",
-          "WebFetch",
-          "Read",
-          "Bash",
-        ]
-      : ["--dangerously-skip-permissions"]),
+      ? planPermissionArgs
+      : allowAllPermissionArgs),
     "--output-format",
     "stream-json",
     ...(mcpConfigPath ? ["--mcp-config", mcpConfigPath] : []),
