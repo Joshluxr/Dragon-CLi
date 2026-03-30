@@ -80,6 +80,10 @@ export const env = envsafe({
   HOLYCLAUDE_VARIANT: str({ default: "", allowEmpty: true }),
   HOLYCLAUDE_SKIP_NPM_GLOBALS: str({ default: "", allowEmpty: true }),
 
+  // Sandbox UI / defaults (self-hosted)
+  NEXT_PUBLIC_SHOW_SANDBOX_SETTINGS: str({ default: "", allowEmpty: true }),
+  DEFAULT_SANDBOX_PROVIDER_FOR_USER: str({ default: "", allowEmpty: true }),
+
   // GitHub App
   GITHUB_CLIENT_ID: str(),
   GITHUB_CLIENT_SECRET: str(),

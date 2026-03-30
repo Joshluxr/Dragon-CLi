@@ -12,6 +12,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useFeatureFlag } from "@/hooks/use-feature-flag";
+import { showSandboxSettings } from "@dragon/env/next-public";
 import { useRealtimeUser } from "@/hooks/useRealtime";
 
 interface NavItem {
@@ -57,7 +58,7 @@ export function SettingsLayout({ children }: { children: React.ReactNode }) {
       icon: <CreditCard className="w-4 h-4" />,
     },
   ];
-  if (daytonaOptionsForSandboxProviderEnabled) {
+  if (daytonaOptionsForSandboxProviderEnabled || showSandboxSettings()) {
     navItems.push({
       href: "/settings/sandbox",
       label: "Sandbox",

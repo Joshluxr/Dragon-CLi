@@ -408,8 +408,18 @@ export async function getSandboxProvider({
   }
 
   switch (userSetting) {
-    case "default":
+    case "default": {
+      const override = process.env.DEFAULT_SANDBOX_PROVIDER_FOR_USER?.trim();
+      if (
+        override === "opensandbox" ||
+        override === "daytona" ||
+        override === "e2b" ||
+        override === "docker"
+      ) {
+        return override;
+      }
       return "e2b";
+    }
     case "e2b":
       return "e2b";
     case "daytona":
