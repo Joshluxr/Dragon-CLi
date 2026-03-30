@@ -11,6 +11,7 @@
     "./utils": "./src/utils.ts",
     "./env": "./src/env.ts",
     "./constants": "./src/constants.ts",
+    "./sandbox-lifetime": "./src/sandbox-lifetime.ts",
     "./circuit-breakers": "./src/circuit-breakers.ts"
   },
   "scripts": {

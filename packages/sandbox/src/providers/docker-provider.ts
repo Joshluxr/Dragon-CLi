@@ -8,12 +8,13 @@ import { execSync, spawn } from "child_process";
 import { promises as fs } from "fs";
 import path from "path";
 import { nanoid } from "nanoid/non-secure";
+import { sandboxDefaultLifetimeMs } from "../sandbox-lifetime";
 
 const HOME_DIR = "root";
 const DEFAULT_DIR = `/${HOME_DIR}`;
 const REPO_DIR = "repo";
 const BASE_IMAGE = "ghcr.io/terragon-labs/containers-test";
-const SLEEP_MS = 60 * 60 * 1000; // 1 hour
+const SLEEP_MS = sandboxDefaultLifetimeMs;
 
 const CONTAINER_PREFIX = "dragon-sandbox";
 const TEST_CONTAINER_PREFIX = `${CONTAINER_PREFIX}-test`;

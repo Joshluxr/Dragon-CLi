@@ -10,10 +10,11 @@ import {
   ConnectionConfig,
   Sandbox as OpenSandbox,
 } from "@alibaba-group/opensandbox";
+import { sandboxDefaultLifetimeSec } from "../sandbox-lifetime";
 
 const HOME_DIR = "root";
 const REPO_DIR = "repo";
-const SLEEP_SEC = 60 * 15;
+const SLEEP_SEC = sandboxDefaultLifetimeSec;
 
 function getOpenSandboxConnection(): ConnectionConfig {
   const domain =
