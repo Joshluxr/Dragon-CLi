@@ -68,6 +68,11 @@ export const env = envsafe({
   // Sandbox providers
   E2B_API_KEY: str(),
   DAYTONA_API_KEY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_DOMAIN: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_API_KEY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_PROTOCOL: str({ default: "http", allowEmpty: true }),
+  OPEN_SANDBOX_USE_SERVER_PROXY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_ENTRYPOINT: str({ default: "", allowEmpty: true }),
 
   // GitHub App
   GITHUB_CLIENT_ID: str(),

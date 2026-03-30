@@ -416,6 +416,8 @@ export async function getSandboxProvider({
       return "daytona";
     case "docker":
       return "docker";
+    case "opensandbox":
+      return "opensandbox";
     case "mock":
       return "mock";
     default:

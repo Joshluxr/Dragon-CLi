@@ -28,6 +28,7 @@ export function SandboxProviderSelector() {
         <SelectItem value="default">Default</SelectItem>
         <SelectItem value="e2b">E2B</SelectItem>
         <SelectItem value="daytona">Daytona</SelectItem>
+        <SelectItem value="opensandbox">OpenSandbox</SelectItem>
       </SelectContent>
     </Select>
   );
