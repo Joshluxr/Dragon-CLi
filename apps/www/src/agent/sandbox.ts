@@ -20,8 +20,10 @@ import {
 } from "@dragon/shared/model/environments";
 import { env } from "@dragon/env/apps-www";
 import type {
+  BootingSubstatus,
   CreateSandboxOptions,
   ISandboxSession,
+  SandboxStatus,
 } from "@dragon/sandbox/types";
 import type { SandboxProvider, SandboxSize } from "@dragon/types/sandbox";
 import {
@@ -228,7 +230,7 @@ async function getOrCreateSandboxForThread({
     generateBranchName(threadName, branchPrefix);
   const sandboxSize = thread.sandboxSize ?? DEFAULT_SANDBOX_SIZE;
   const startTime = Date.now();
-  const session = await getOrCreateSandboxWithTimeout(thread.codesandboxId, {
+  const sandboxOptions = {
     threadName: thread.name,
     agent: agentOrNull,
     agentCredentials: agentCredentialsOrNull,
@@ -252,7 +254,15 @@ async function getOrCreateSandboxForThread({
     publicUrl: nonLocalhostPublicAppUrl(),
     featureFlags: userFeatureFlags,
     generateBranchName: generateBranchNameWithPrefix,
-    onStatusUpdate: async ({ sandboxId, sandboxStatus, bootingStatus }) => {
+    onStatusUpdate: async ({
+      sandboxId,
+      sandboxStatus,
+      bootingStatus,
+    }: {
+      sandboxId: string | null;
+      sandboxStatus: SandboxStatus;
+      bootingStatus: BootingSubstatus | null;
+    }) => {
       if (sandboxId && bootingStatus === "provisioning-done") {
         getPostHogServer().capture({
           distinctId: userId,
@@ -272,9 +282,53 @@ async function getOrCreateSandboxForThread({
         bootingStatus,
       });
     },
-  });
+  };
 
-  if (!thread.codesandboxId) {
+  const priorSandboxId = thread.codesandboxId;
+  let session: ISandboxSession;
+  try {
+    session = await getOrCreateSandboxWithTimeout(
+      priorSandboxId,
+      sandboxOptions,
+    );
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    const looksLikeStaleSandbox =
+      !!priorSandboxId && msg.toLowerCase().includes("not found");
+    if (!looksLikeStaleSandbox) {
+      throw error;
+    }
+    console.warn(
+      `[sandbox] Resume failed for ${priorSandboxId} (${msg}); provisioning a new sandbox`,
+    );
+    getPostHogServer().capture({
+      distinctId: userId,
+      event: "sandbox_replaced_after_not_found",
+      properties: {
+        threadId,
+        priorSandboxId,
+        sandboxProvider: thread.sandboxProvider,
+        githubRepoFullName: thread.githubRepoFullName,
+        errorMessage: msg,
+      },
+    });
+    session = await getOrCreateSandboxWithTimeout(null, {
+      ...sandboxOptions,
+      fastResume: false,
+    });
+    await updateThread({
+      db,
+      userId,
+      threadId,
+      updates: {
+        codesandboxId: session.sandboxId,
+        sandboxSize,
+      },
+    });
+    return session;
+  }
+
+  if (!priorSandboxId) {
     await updateThread({
       db,
       userId,
