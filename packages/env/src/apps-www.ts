@@ -74,6 +74,12 @@ export const env = envsafe({
   OPEN_SANDBOX_USE_SERVER_PROXY: str({ default: "", allowEmpty: true }),
   OPEN_SANDBOX_ENTRYPOINT: str({ default: "", allowEmpty: true }),
 
+  // HolyClaude bundle for OpenSandbox sandboxes (see packages/sandbox/src/holyclaude-opensandbox.ts)
+  HOLYCLAUDE_IN_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_REPO_URL: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_VARIANT: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_SKIP_NPM_GLOBALS: str({ default: "", allowEmpty: true }),
+
   // GitHub App
   GITHUB_CLIENT_ID: str(),
   GITHUB_CLIENT_SECRET: str(),
