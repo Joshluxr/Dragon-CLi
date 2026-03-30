@@ -11,6 +11,10 @@ import { publicAppUrl } from "@dragon/env/next-public";
  */
 export function nonLocalhostPublicAppUrl() {
   if (process.env.NODE_ENV === "development") {
+    const override = env.SANDBOX_PUBLIC_APP_URL?.trim();
+    if (override) {
+      return override.replace(/\/+$/, "");
+    }
     if (!env.NGROK_DOMAIN && !env.LOCALHOST_PUBLIC_DOMAIN) {
       throw new Error("LOCALHOST_PUBLIC_DOMAIN is not set");
     }
@@ -18,7 +22,11 @@ export function nonLocalhostPublicAppUrl() {
     if (env.NGROK_DOMAIN) {
       return `https://${env.NGROK_DOMAIN}`;
     }
-    return `https://${env.LOCALHOST_PUBLIC_DOMAIN}`;
+    const domain = env.LOCALHOST_PUBLIC_DOMAIN.trim();
+    if (/^https?:\/\//i.test(domain)) {
+      return domain.replace(/\/+$/, "");
+    }
+    return `https://${domain}`;
   }
   if (process.env.NODE_ENV === "test") {
     return process.env.NEXT_PUBLIC_APP_URL!;

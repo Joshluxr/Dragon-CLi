@@ -55,6 +55,8 @@ export const env = envsafe({
   // Deprecated, use LOCALHOST_PUBLIC_DOMAIN instead
   NGROK_DOMAIN: str({ allowEmpty: true, default: "" }),
   LOCALHOST_PUBLIC_DOMAIN: str({ allowEmpty: true, default: "" }),
+  /** Full base URL for sandboxes to reach the app (e.g. http://1.2.3.4:3000). Overrides LOCALHOST_PUBLIC_DOMAIN in dev when set. */
+  SANDBOX_PUBLIC_APP_URL: str({ allowEmpty: true, default: "" }),
 
   // R2
   R2_ACCESS_KEY_ID: str(),

@@ -131,6 +131,8 @@ export async function setupSandboxOneTime(
       bootingStatus: "installing-sandbox-scripts",
     });
     await installHolyClaudeForOpenSandbox(session, options);
+    // Heavy install can disturb the daemon; ensure it still responds before we send work.
+    await restartDaemonIfNotRunning({ session, options });
   }
 
   // Only run dragon-setup.sh if not explicitly skipped
