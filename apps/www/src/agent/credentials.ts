@@ -5,7 +5,10 @@ import { getAgentProviderCredentialsDecrypted } from "@dragon/shared/model/agent
 import { getCodexCredentialsJSONOrNull } from "@/agent/msg/codexCredentials";
 import { getClaudeCredentialsJSONOrNull } from "@/agent/msg/claudeCredentials";
 import { ThreadError } from "./error";
-import { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
+import {
+  ClaudeApiOverrideMetadata,
+  MinimaxClaudeApiMetadata,
+} from "@dragon/shared/db/types";
 
 export async function getAndVerifyCredentials({
   agent,
@@ -58,6 +61,37 @@ export async function getAndVerifyCredentials({
       };
     }
     case "claudeCode": {
+      const activeClaude = await getAgentProviderCredentialsDecrypted({
+        db,
+        userId,
+        agent: "claudeCode",
+        encryptionKey: env.ENCRYPTION_MASTER_KEY,
+      });
+      const minimaxMeta = activeClaude?.metadata as
+        | MinimaxClaudeApiMetadata
+        | undefined;
+      if (
+        minimaxMeta?.type === "minimax-claude-api-override" &&
+        activeClaude?.apiKey
+      ) {
+        const baseUrl = minimaxMeta.baseUrl.trim();
+        const modelName = (minimaxMeta.modelName ?? "MiniMax-M2.7").trim();
+        return {
+          type: "env-vars",
+          vars: [
+            { key: "ANTHROPIC_BASE_URL", value: baseUrl },
+            { key: "ANTHROPIC_AUTH_TOKEN", value: activeClaude.apiKey },
+            { key: "API_TIMEOUT_MS", value: "3000000" },
+            { key: "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC", value: "1" },
+            { key: "ANTHROPIC_MODEL", value: modelName },
+            { key: "ANTHROPIC_SMALL_FAST_MODEL", value: modelName },
+            { key: "ANTHROPIC_DEFAULT_SONNET_MODEL", value: modelName },
+            { key: "ANTHROPIC_DEFAULT_OPUS_MODEL", value: modelName },
+            { key: "ANTHROPIC_DEFAULT_HAIKU_MODEL", value: modelName },
+          ],
+        };
+      }
+
       const claudeCredentials = await getClaudeCredentialsJSONOrNull({
         userId,
       });

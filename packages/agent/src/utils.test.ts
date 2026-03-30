@@ -32,6 +32,7 @@ describe("model-to-agent", () => {
       const modelAgentPairs: [AIModel, AIAgent][] = [
         ["opus", "claudeCode"],
         ["sonnet", "claudeCode"],
+        ["minimax-m2.7", "claudeCode"],
         ["gemini-2.5-pro", "gemini"],
         ["amp", "amp"],
         ["gpt-5-low", "codex"],

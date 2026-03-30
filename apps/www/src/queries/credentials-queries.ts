@@ -10,6 +10,7 @@ import {
   getAgentProviderCredentialsAction,
   setAgentProviderCredentialActive,
   saveApiOverrideCredential,
+  saveMinimaxClaudeCredential,
 } from "@/server-actions/credentials";
 import { toast } from "sonner";
 import { saveCodexAuthJson } from "@/server-actions/codex-auth";
@@ -186,6 +187,19 @@ export function useSaveApiOverrideMutation() {
     mutationFn: saveApiOverrideCredential,
     onSuccess: () => {
       toast.success("API credentials saved");
+      queryClient.invalidateQueries({
+        queryKey: credentialsQueryKeys.list(),
+      });
+    },
+  });
+}
+
+export function useSaveMinimaxClaudeCredentialMutation() {
+  const queryClient = useQueryClient();
+  return useServerActionMutation({
+    mutationFn: saveMinimaxClaudeCredential,
+    onSuccess: () => {
+      toast.success("MiniMax credentials saved");
       queryClient.invalidateQueries({
         queryKey: credentialsQueryKeys.list(),
       });

@@ -448,8 +448,18 @@ export type KimiProviderMetadata = {
   email?: string;
 };
 
+/** MiniMax M2.7 via Claude-compatible API (Claude Code) */
+export type MinimaxClaudeApiMetadata = {
+  type: "minimax-claude-api-override";
+  baseUrl: string;
+  modelName?: string;
+  // Optional for compatibility with code that reads accountId on metadata unions
+  accountId?: string;
+};
+
 export type AgentProviderMetadata =
   | ClaudeAgentProviderMetadata
   | OpenAIProviderMetadata
   | ClaudeApiOverrideMetadata
-  | KimiProviderMetadata;
+  | KimiProviderMetadata
+  | MinimaxClaudeApiMetadata;

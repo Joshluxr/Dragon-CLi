@@ -19,6 +19,7 @@ import {
   useSaveApiKeyMutation,
   useSaveApiOverrideMutation,
   useSaveKimiConfigTomlMutation,
+  useSaveMinimaxClaudeCredentialMutation,
 } from "@/queries/credentials-queries";
 import type { ClaudeApiOverrideProvider } from "@dragon/shared/db/types";
 import type { AuthType } from "@/lib/claude-oauth";
@@ -207,9 +208,15 @@ export function AddClaudeCredentialDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [mode, setMode] = useState<"api-key" | "subscription" | null>(null);
+  const [mode, setMode] = useState<
+    "api-key" | "subscription" | "minimax" | null
+  >(null);
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
+  const [minimaxBaseUrl, setMinimaxBaseUrl] = useState(
+    "https://api.minimax.io/anthropic",
+  );
+  const [minimaxModel, setMinimaxModel] = useState("MiniMax-M2.7");
   const [loading, setLoading] = useState(false);
   const [authType, setAuthType] = useState<AuthType | null>(null);
   const [codeVerifier, setCodeVerifier] = useState("");
@@ -217,11 +224,14 @@ export function AddClaudeCredentialDialog({
 
   const saveApiKeyMutation = useSaveApiKeyMutation();
   const exchangeCodeMutation = useExchangeClaudeAuthorizationCodeMutation();
+  const saveMinimaxMutation = useSaveMinimaxClaudeCredentialMutation();
 
   const resetForm = () => {
     setMode(null);
     setApiKey("");
     setShowApiKey(false);
+    setMinimaxBaseUrl("https://api.minimax.io/anthropic");
+    setMinimaxModel("MiniMax-M2.7");
     setCodeVerifier("");
     setAuthCode("");
     setAuthType(null);
@@ -307,6 +317,20 @@ export function AddClaudeCredentialDialog({
     resetForm();
   };
 
+  const handleSubmitMinimax = async () => {
+    if (!apiKey.trim()) {
+      toast.error("Please enter your MiniMax API key");
+      return;
+    }
+    await saveMinimaxMutation.mutateAsync({
+      apiKey: apiKey.trim(),
+      baseUrl: minimaxBaseUrl.trim(),
+      modelName: minimaxModel.trim() || "MiniMax-M2.7",
+    });
+    onOpenChange(false);
+    resetForm();
+  };
+
   useEffect(() => {
     if (!open) {
       resetForm();
@@ -323,7 +347,9 @@ export function AddClaudeCredentialDialog({
               ? "Choose how you'd like to add credentials for Claude."
               : mode === "api-key"
                 ? "Add a new API key for Claude."
-                : "Connect your Claude subscription."}
+                : mode === "minimax"
+                  ? "Use MiniMax M2.7 through the Claude-compatible API (see MiniMax docs)."
+                  : "Connect your Claude subscription."}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
@@ -350,6 +376,14 @@ export function AddClaudeCredentialDialog({
               >
                 Add API Key
               </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => setMode("minimax")}
+              >
+                MiniMax M2.7 (Claude Code API)
+              </Button>
             </div>
           ) : mode === "api-key" ? (
             <div className="space-y-2">
@@ -369,6 +403,85 @@ export function AddClaudeCredentialDialog({
                   id="apiKey"
                   type={showApiKey ? "text" : "password"}
                   placeholder="sk-ant-api03-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value.trim())}
+                  className="pr-10"
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  className="absolute right-0 top-0 h-full px-3"
+                >
+                  {showApiKey ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : mode === "minimax" ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Get an API key from the{" "}
+                <a
+                  href="https://platform.minimax.io/user-center/basic-information/interface-key"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  MiniMax Developer Platform
+                </a>
+                . International base URL is pre-filled; use{" "}
+                <span className="font-mono text-xs">
+                  https://api.minimaxi.com/anthropic
+                </span>{" "}
+                in China. See{" "}
+                <a
+                  href="https://platform.minimax.io/docs/coding-plan/claude-code"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  Claude Code setup
+                </a>
+                .
+              </p>
+              <div className="space-y-1">
+                <label
+                  htmlFor="minimaxBaseUrl"
+                  className="text-xs font-medium text-muted-foreground"
+                >
+                  Anthropic-compatible API base URL
+                </label>
+                <Input
+                  id="minimaxBaseUrl"
+                  type="url"
+                  placeholder="https://api.minimax.io/anthropic"
+                  value={minimaxBaseUrl}
+                  onChange={(e) => setMinimaxBaseUrl(e.target.value.trim())}
+                />
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="minimaxModel"
+                  className="text-xs font-medium text-muted-foreground"
+                >
+                  Model name (optional)
+                </label>
+                <Input
+                  id="minimaxModel"
+                  placeholder="MiniMax-M2.7"
+                  value={minimaxModel}
+                  onChange={(e) => setMinimaxModel(e.target.value.trim())}
+                />
+              </div>
+              <div className="relative">
+                <Input
+                  id="minimaxApiKey"
+                  type={showApiKey ? "text" : "password"}
+                  placeholder="MiniMax API key"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value.trim())}
                   className="pr-10"
@@ -418,6 +531,14 @@ export function AddClaudeCredentialDialog({
               disabled={!apiKey || saveApiKeyMutation.isPending}
             >
               {saveApiKeyMutation.isPending ? "Adding..." : "Add Credential"}
+            </Button>
+          )}
+          {mode === "minimax" && (
+            <Button
+              onClick={handleSubmitMinimax}
+              disabled={!apiKey.trim() || saveMinimaxMutation.isPending}
+            >
+              {saveMinimaxMutation.isPending ? "Adding..." : "Add Credential"}
             </Button>
           )}
           {mode === "subscription" && codeVerifier && (

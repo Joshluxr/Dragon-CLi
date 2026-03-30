@@ -16,7 +16,10 @@ import {
   getAgentDisplayName,
   isConnectedCredentialsSupported,
 } from "@dragon/agent/utils";
-import type { ClaudeApiOverrideMetadata } from "@dragon/shared/db/types";
+import type {
+  ClaudeApiOverrideMetadata,
+  MinimaxClaudeApiMetadata,
+} from "@dragon/shared/db/types";
 import { AgentIcon } from "@/components/chat/agent-icon";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -119,7 +122,14 @@ function CredentialsListItem({
                 ? getApiOverrideDisplayName(
                     (credential.metadata as ClaudeApiOverrideMetadata).provider,
                   )
-                : credential.agentName}
+                : credential.agent === "claudeCode" &&
+                    credential.metadata &&
+                    typeof credential.metadata === "object" &&
+                    "type" in credential.metadata &&
+                    (credential.metadata as MinimaxClaudeApiMetadata).type ===
+                      "minimax-claude-api-override"
+                  ? "MiniMax (Claude Code)"
+                  : credential.agentName}
             </span>
             <Badge variant="outline" className="text-xs">
               {credential.type === "api-key" ? "API Key" : "Subscription"}

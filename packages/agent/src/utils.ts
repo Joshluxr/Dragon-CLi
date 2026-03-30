@@ -71,7 +71,8 @@ export function modelToAgent(model: AIModel | null): AIAgent {
     }
     case "opus":
     case "haiku":
-    case "sonnet": {
+    case "sonnet":
+    case "minimax-m2.7": {
       return "claudeCode";
     }
     case "opencode/grok-code":
@@ -110,7 +111,7 @@ export function agentToModels(
       return ["gemini-3-pro", "gemini-2.5-pro"];
     }
     case "claudeCode": {
-      return ["haiku", "sonnet", "opus"];
+      return ["haiku", "sonnet", "opus", "minimax-m2.7"];
     }
     case "amp": {
       return ["amp"];
@@ -336,6 +337,12 @@ export function getModelDisplayName(model: AIModel): ModelDisplayName {
         fullName: "Haiku 4.5",
         mainName: "Haiku",
         subName: "4.5",
+      };
+    case "minimax-m2.7":
+      return {
+        fullName: "MiniMax M2.7",
+        mainName: "MiniMax",
+        subName: "M2.7",
       };
     case "gemini-2.5-pro":
       return {
@@ -707,6 +714,7 @@ export function isModelEnabledByDefault({
     case "opus":
     case "sonnet":
     case "haiku":
+    case "minimax-m2.7":
       return true;
     case "gemini-3-pro":
     case "gemini-2.5-pro":
@@ -820,6 +828,9 @@ export function parseModelOrNull({
 }
 
 export function normalizedModelForDaemon(model: AIModel): string {
+  if (model === "minimax-m2.7") {
+    return "MiniMax-M2.7";
+  }
   // Switch to using the google proxy
   // For now, just switch gemini-3-pro to the google proxy
   if (model === "opencode/gemini-3-pro") {

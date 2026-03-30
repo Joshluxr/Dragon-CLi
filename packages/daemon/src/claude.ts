@@ -3,6 +3,10 @@ import { nanoid } from "nanoid/non-secure";
 import { IDaemonRuntime } from "./runtime";
 
 export function getAnthropicApiKeyOrNull(runtime: IDaemonRuntime) {
+  // MiniMax / built-in proxy use ANTHROPIC_AUTH_TOKEN; avoid also sending ANTHROPIC_API_KEY.
+  if (process.env.ANTHROPIC_AUTH_TOKEN?.trim()) {
+    return "";
+  }
   // Check if the user has Claude credentials.
   // If they do, we don't need to set the ANTHROPIC_API_KEY environment variable.
   // If they don't, we need to set it to the API key from the environment.
