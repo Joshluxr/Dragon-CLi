@@ -668,7 +668,7 @@
     "createdAt": "2025-12-20T16:07:42.884Z"
   },
   {
-    "name": "opensandbox-code-interpreter-v1.0.2-small",
+    "name": "opensandbox/code-interpreter:v1.0.2",
     "dockerfileHash": "opensandbox-code-interpreter-v1.0.2",
     "cpuCount": 2,
     "memoryGB": 4,
@@ -677,7 +677,7 @@
     "createdAt": "2026-03-30T00:00:00.000Z"
   },
   {
-    "name": "opensandbox-code-interpreter-v1.0.2-large",
+    "name": "opensandbox/code-interpreter:v1.0.2",
     "dockerfileHash": "opensandbox-code-interpreter-v1.0.2",
     "cpuCount": 4,
     "memoryGB": 8,

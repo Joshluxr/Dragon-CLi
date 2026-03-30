@@ -221,10 +221,12 @@ export class OpenSandboxProvider implements ISandboxProvider {
       }
     }
 
-    const image = getTemplateIdForSize({
-      provider: "opensandbox",
-      size: options.sandboxSize,
-    });
+    const image =
+      process.env.OPEN_SANDBOX_IMAGE?.trim() ||
+      getTemplateIdForSize({
+        provider: "opensandbox",
+        size: options.sandboxSize,
+      });
     const connectionConfig = getOpenSandboxConnection();
     const entrypoint = entrypointForImage(image);
 

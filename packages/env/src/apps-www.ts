@@ -73,6 +73,7 @@ export const env = envsafe({
   OPEN_SANDBOX_PROTOCOL: str({ default: "http", allowEmpty: true }),
   OPEN_SANDBOX_USE_SERVER_PROXY: str({ default: "", allowEmpty: true }),
   OPEN_SANDBOX_ENTRYPOINT: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_IMAGE: str({ default: "", allowEmpty: true }),
 
   // HolyClaude bundle for OpenSandbox sandboxes (see packages/sandbox/src/holyclaude-opensandbox.ts)
   HOLYCLAUDE_IN_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),
