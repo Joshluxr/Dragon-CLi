@@ -1,9 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type {
-  DBMessage,
-  DBUserMessage,
-  DBSystemMessage,
-} from "@dragon/shared";
+import type { DBMessage, DBUserMessage, DBSystemMessage } from "@dragon/shared";
 import {
   getPendingToolCallErrorMessages,
   getUserMessageToSend,
@@ -629,9 +625,36 @@ describe("getUserMessageToSend", () => {
     const result = getUserMessageToSend({
       messages,
       currentMessage,
+      threadPermissionMode: "plan",
     });
 
     expect(result!.permissionMode).toBe("plan");
+  });
+
+  it("should use thread permissionMode when later user turns omit it (execution vs plan)", () => {
+    const messages: DBMessage[] = [
+      createAgentMessage("Previous response"),
+      {
+        type: "user",
+        model: null,
+        parts: [{ type: "text", text: "Planned earlier" }],
+        permissionMode: "plan",
+      },
+      {
+        type: "user",
+        model: null,
+        parts: [{ type: "text", text: "Execute now" }],
+      },
+    ];
+    const currentMessage = createUserMessage("Current message");
+
+    const result = getUserMessageToSend({
+      messages,
+      currentMessage,
+      threadPermissionMode: "allowAll",
+    });
+
+    expect(result!.permissionMode).toBe("allowAll");
   });
 
   it("should use the most recent permissionMode when multiple messages have it", () => {

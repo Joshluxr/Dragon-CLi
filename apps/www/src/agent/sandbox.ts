@@ -43,6 +43,24 @@ import type { UserSettings } from "@dragon/shared";
 import { ensureAgent } from "@dragon/agent/utils";
 import { getLastUserMessageModel } from "@/lib/db-message-helpers";
 
+/** True when resume/connect likely failed because the sandbox no longer exists. */
+function isStaleSandboxResumeError(message: string): boolean {
+  const m = message.toLowerCase();
+  if (m.includes("not found")) {
+    return true;
+  }
+  if (/\b404\b/.test(m)) {
+    return true;
+  }
+  if (m.includes("does not exist") || m.includes("no longer exist")) {
+    return true;
+  }
+  if (m.includes("sandbox") && m.includes("deleted")) {
+    return true;
+  }
+  return false;
+}
+
 async function getOrCreateSandboxWithTimeout(
   sandboxId: string | null,
   options: Parameters<typeof getOrCreateSandbox>[1],
@@ -294,7 +312,7 @@ async function getOrCreateSandboxForThread({
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     const looksLikeStaleSandbox =
-      !!priorSandboxId && msg.toLowerCase().includes("not found");
+      !!priorSandboxId && isStaleSandboxResumeError(msg);
     if (!looksLikeStaleSandbox) {
       throw error;
     }
@@ -528,7 +546,7 @@ export async function getOrCreateSandbox(
         errorType:
           error instanceof Error ? error.constructor.name : typeof error,
         isNotFoundError:
-          error instanceof Error && error.message.includes("not found"),
+          error instanceof Error && isStaleSandboxResumeError(error.message),
       },
     });
     throw error;

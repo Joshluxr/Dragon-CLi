@@ -1,8 +1,4 @@
-import {
-  DBUserMessage,
-  DBUserMessageWithModel,
-  Thread,
-} from "@dragon/shared";
+import { DBUserMessage, DBUserMessageWithModel, Thread } from "@dragon/shared";
 import { DB } from "@dragon/shared/db";
 import {
   getActiveThreadCount,
@@ -376,6 +372,7 @@ export async function startAgentMessage({
           const userMessageToSend = getUserMessageToSend({
             messages: threadChat.messages ?? [],
             currentMessage: message ?? null,
+            threadPermissionMode: threadChat.permissionMode ?? "allowAll",
           });
           if (!userMessageToSend) {
             throw new ThreadError("no-user-message", "", null);
