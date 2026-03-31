@@ -76,6 +76,10 @@ export const env = envsafe({
   OPEN_SANDBOX_USE_SERVER_PROXY: str({ default: "", allowEmpty: true }),
   OPEN_SANDBOX_ENTRYPOINT: str({ default: "", allowEmpty: true }),
   OPEN_SANDBOX_IMAGE: str({ default: "", allowEmpty: true }),
+  /** Max wait for OpenSandbox execd readiness (SDK default 30s is often too short). */
+  OPEN_SANDBOX_READY_TIMEOUT_SECONDS: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_HEALTH_POLL_INTERVAL_MS: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_REQUEST_TIMEOUT_SECONDS: str({ default: "", allowEmpty: true }),
 
   // HolyClaude bundle for OpenSandbox sandboxes (see packages/sandbox/src/holyclaude-opensandbox.ts)
   HOLYCLAUDE_IN_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),

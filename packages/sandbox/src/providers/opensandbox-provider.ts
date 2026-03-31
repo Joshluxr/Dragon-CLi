@@ -16,6 +16,34 @@ const HOME_DIR = "root";
 const REPO_DIR = "repo";
 const SLEEP_SEC = sandboxDefaultLifetimeSec;
 
+/** SDK default is 30s — too short for image pull + execd on cold Docker starts. */
+const DEFAULT_READY_TIMEOUT_SECONDS = 600;
+const DEFAULT_HEALTH_POLL_INTERVAL_MS = 1000;
+
+function parsePositiveInt(raw: string | undefined, fallback: number): number {
+  if (raw === undefined || raw.trim() === "") {
+    return fallback;
+  }
+  const n = Number.parseInt(raw.trim(), 10);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function getOpenSandboxReadinessOptions(): {
+  readyTimeoutSeconds: number;
+  healthCheckPollingInterval: number;
+} {
+  return {
+    readyTimeoutSeconds: parsePositiveInt(
+      process.env.OPEN_SANDBOX_READY_TIMEOUT_SECONDS,
+      DEFAULT_READY_TIMEOUT_SECONDS,
+    ),
+    healthCheckPollingInterval: parsePositiveInt(
+      process.env.OPEN_SANDBOX_HEALTH_POLL_INTERVAL_MS,
+      DEFAULT_HEALTH_POLL_INTERVAL_MS,
+    ),
+  };
+}
+
 function getOpenSandboxConnection(): ConnectionConfig {
   const domain =
     process.env.OPEN_SANDBOX_DOMAIN ?? process.env.OPENSANDBOX_DOMAIN;
@@ -32,12 +60,20 @@ function getOpenSandboxConnection(): ConnectionConfig {
   const useServerProxy =
     process.env.OPEN_SANDBOX_USE_SERVER_PROXY === "true" ||
     process.env.OPEN_SANDBOX_USE_SERVER_PROXY === "1";
+  const readyTimeoutSeconds = parsePositiveInt(
+    process.env.OPEN_SANDBOX_READY_TIMEOUT_SECONDS,
+    DEFAULT_READY_TIMEOUT_SECONDS,
+  );
+  const requestTimeoutSeconds = parsePositiveInt(
+    process.env.OPEN_SANDBOX_REQUEST_TIMEOUT_SECONDS,
+    Math.max(120, readyTimeoutSeconds),
+  );
   return new ConnectionConfig({
     domain,
     protocol,
     ...(apiKey ? { apiKey } : {}),
     useServerProxy,
-    requestTimeoutSeconds: 120,
+    requestTimeoutSeconds,
   });
 }
 
@@ -165,11 +201,13 @@ async function connectWithRetry(
   sandboxId: string,
 ): Promise<OpenSandboxSession> {
   const connectionConfig = getOpenSandboxConnection();
+  const readiness = getOpenSandboxReadinessOptions();
   return await retryAsync(
     async () => {
       const sbx = await OpenSandbox.connect({
         sandboxId,
         connectionConfig,
+        ...readiness,
       });
       const session = new OpenSandboxSession(sbx);
       await session.runCommand("echo ok", { cwd: REPO_DIR });
@@ -230,6 +268,7 @@ export class OpenSandboxProvider implements ISandboxProvider {
       });
     const connectionConfig = getOpenSandboxConnection();
     const entrypoint = entrypointForImage(image);
+    const readiness = getOpenSandboxReadinessOptions();
 
     const sandbox = await retryAsync(
       async () =>
@@ -240,6 +279,7 @@ export class OpenSandboxProvider implements ISandboxProvider {
           env: envs,
           resource: resourceForSize(options.sandboxSize),
           timeoutSeconds: SLEEP_SEC,
+          ...readiness,
         }),
       {
         label: `opensandbox create ${image}`,
