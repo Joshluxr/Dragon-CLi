@@ -22,7 +22,10 @@ import {
 } from "./agents/opencode-config";
 import { getEnv } from "./env";
 import path from "path";
-import { installHolyClaudeForOpenSandbox } from "./holyclaude-opensandbox";
+import {
+  installHolyClaudeForOpenSandbox,
+  isHolyClaudeOpenSandboxBootstrapDone,
+} from "./holyclaude-opensandbox";
 
 async function createNewBranch({
   session,
@@ -125,11 +128,15 @@ export async function setupSandboxOneTime(
   await daemonPromise;
 
   if (options.sandboxProvider === "opensandbox") {
-    await options.onStatusUpdate({
-      sandboxId: session.sandboxId,
-      sandboxStatus: "booting",
-      bootingStatus: "installing-sandbox-scripts",
-    });
+    const holyClaudeAlreadyDone =
+      await isHolyClaudeOpenSandboxBootstrapDone(session);
+    if (!holyClaudeAlreadyDone) {
+      await options.onStatusUpdate({
+        sandboxId: session.sandboxId,
+        sandboxStatus: "booting",
+        bootingStatus: "installing-sandbox-scripts",
+      });
+    }
     await installHolyClaudeForOpenSandbox(session, options);
     // Heavy install can disturb the daemon; ensure it still responds before we send work.
     await restartDaemonIfNotRunning({ session, options });

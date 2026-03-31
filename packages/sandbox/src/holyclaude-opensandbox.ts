@@ -9,6 +9,20 @@ const DEFAULT_REPO = "https://github.com/CoderLuii/HolyClaude.git";
  * Clones HolyClaude config + scripts, copies Claude/Codex/Gemini/Cursor templates from upstream,
  * installs global npm/pip packages and Claude Code CLI (matches upstream Dockerfile intent, not s6/Docker).
  */
+const HOLYCLAUDE_MARKER_PATH = "/root/.claude/.holyclaude-opensandbox";
+
+export async function isHolyClaudeOpenSandboxBootstrapDone(
+  session: ISandboxSession,
+): Promise<boolean> {
+  const out = await session
+    .runCommand(
+      `test -f ${bashQuote(HOLYCLAUDE_MARKER_PATH)} && echo yes || echo no`,
+      { cwd: "/" },
+    )
+    .catch(() => "no");
+  return out.trim() === "yes";
+}
+
 export async function installHolyClaudeForOpenSandbox(
   session: ISandboxSession,
   options: CreateSandboxOptions,
@@ -22,6 +36,24 @@ export async function installHolyClaudeForOpenSandbox(
   if (disabled) {
     console.log("[holyclaude] skipped (HOLYCLAUDE_IN_OPEN_SANDBOX disabled)");
     return;
+  }
+
+  const forceReinstall =
+    process.env.HOLYCLAUDE_REINSTALL_OPEN_SANDBOX === "1" ||
+    process.env.HOLYCLAUDE_REINSTALL_OPEN_SANDBOX === "true";
+  if (!forceReinstall) {
+    const markerCheck = await session
+      .runCommand(
+        `test -f ${bashQuote(HOLYCLAUDE_MARKER_PATH)} && echo installed || echo missing`,
+        { cwd: "/" },
+      )
+      .catch(() => "missing");
+    if (markerCheck.trim() === "installed") {
+      console.log(
+        "[holyclaude] skipping bootstrap (marker present; set HOLYCLAUDE_REINSTALL_OPEN_SANDBOX=1 to force)",
+      );
+      return;
+    }
   }
 
   const repoUrl = process.env.HOLYCLAUDE_REPO_URL ?? DEFAULT_REPO;
@@ -133,7 +165,7 @@ if [ ! -f /root/.cursor/hooks.json ]; then
 JSON
 fi
 
-touch /root/.claude/.holyclaude-opensandbox
+touch ${bashQuote(HOLYCLAUDE_MARKER_PATH)}
 echo "[holyclaude] config copied"
 
 if command -v apt-get >/dev/null 2>&1; then
@@ -144,6 +176,7 @@ if command -v apt-get >/dev/null 2>&1; then
     chromium fonts-liberation2 sudo \\
     postgresql-client redis-tools sqlite3 openssh-client \\
     xvfb imagemagick \\
+    freerdp2-x11 \\
     || true
   ln -sf /usr/bin/fdfind /usr/local/bin/fd 2>/dev/null || true
   ln -sf /usr/bin/batcat /usr/local/bin/bat 2>/dev/null || true

@@ -86,6 +86,8 @@ export const env = envsafe({
   HOLYCLAUDE_REPO_URL: str({ default: "", allowEmpty: true }),
   HOLYCLAUDE_VARIANT: str({ default: "", allowEmpty: true }),
   HOLYCLAUDE_SKIP_NPM_GLOBALS: str({ default: "", allowEmpty: true }),
+  /** Force HolyClaude bootstrap on OpenSandbox even if marker file exists */
+  HOLYCLAUDE_REINSTALL_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),
 
   // Sandbox UI / defaults (self-hosted)
   NEXT_PUBLIC_SHOW_SANDBOX_SETTINGS: str({ default: "", allowEmpty: true }),
