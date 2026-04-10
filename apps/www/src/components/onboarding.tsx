@@ -128,28 +128,39 @@ export function Onboarding({ forceIsDone }: { forceIsDone?: boolean }) {
   );
 }
 
+function openGitHubAppInstallPopup(queryClient: ReturnType<typeof useQueryClient>) {
+  const popup = window.open(
+    getGHAppInstallUrl() + "?state=close",
+    "github-app-permissions",
+    "width=700,height=600,left=100,top=100",
+  );
+
+  if (!popup) {
+    toast.error(
+      "Could not open GitHub. Allow popups for this site, or use “Manage repository access” below.",
+    );
+    return;
+  }
+
+  const checkClosed = setInterval(() => {
+    if (popup.closed) {
+      clearInterval(checkClosed);
+      queryClient.invalidateQueries({ queryKey: ["repos-onboarding"] });
+    }
+  }, 500);
+}
+
 function AdjustGitHubAppPermissions() {
   const queryClient = useQueryClient();
 
   return (
     <a
-      onClick={() => {
-        const popup = window.open(
-          getGHAppInstallUrl() + "?state=close",
-          "github-app-permissions",
-          "width=700,height=600,left=100,top=100",
-        );
-
-        // Check if popup is closed every 500ms
-        if (popup) {
-          const checkClosed = setInterval(() => {
-            if (popup.closed) {
-              clearInterval(checkClosed);
-              // Invalidate the repos query to trigger a refetch
-              queryClient.invalidateQueries({ queryKey: ["repos-onboarding"] });
-            }
-          }, 500);
-        }
+      href={getGHAppInstallUrl()}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => {
+        e.preventDefault();
+        openGitHubAppInstallPopup(queryClient);
       }}
       className="font-medium underline cursor-pointer inline-flex items-center gap-1"
     >
@@ -200,6 +211,7 @@ function GithubStepContents({
   onContinue: () => void;
   repos: UserRepo[] | null;
 }) {
+  const queryClient = useQueryClient();
   const hasRepos = repos && repos.length > 0;
 
   return (
@@ -236,8 +248,13 @@ function GithubStepContents({
         <Button
           className="w-full group"
           size="lg"
-          disabled={!hasRepos}
-          onClick={onContinue}
+          onClick={() => {
+            if (hasRepos) {
+              onContinue();
+            } else {
+              openGitHubAppInstallPopup(queryClient);
+            }
+          }}
         >
           <span>{hasRepos ? "Continue" : "Grant Repository Access"}</span>
           <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
