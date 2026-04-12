@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Webpack dev only (`pnpm dev:webpack`). Turbo dev (`pnpm dev`) uses a different pipeline.
+  // Mobile / VPN / slow links: default chunk load timeout can surface as ChunkLoadError on first visit.
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer && config.output) {
+      config.output.chunkLoadTimeout = 300000; // 5 minutes (ms)
+    }
+    return config;
+  },
   images: {
     // Local images are now served from /cdn/ directory
     remotePatterns: [],
