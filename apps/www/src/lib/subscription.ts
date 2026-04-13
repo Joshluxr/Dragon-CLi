@@ -12,6 +12,11 @@ import {
 } from "@dragon/shared/model/subscription";
 import { getFeatureFlagsGlobal } from "@dragon/shared/model/feature-flags";
 import { isStripeConfigured } from "@/server-lib/stripe";
+import { env } from "@dragon/env/apps-www";
+
+function selfHostedFullAccessTier(): AccessTier {
+  return "core";
+}
 
 function resolvePaidTier(plan: string): AccessTier {
   switch (plan) {
@@ -32,6 +37,9 @@ function resolvePaidTier(plan: string): AccessTier {
 export async function getAccessInfoForUser(
   userId: string,
 ): Promise<AccessInfo> {
+  if (env.SELF_HOSTED_FULL_ACCESS) {
+    return { tier: selfHostedFullAccessTier() };
+  }
   if (!isStripeConfigured()) {
     // Don't block in dev/misconfig
     return { tier: "core" };

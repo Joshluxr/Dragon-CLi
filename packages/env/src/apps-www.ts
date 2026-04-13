@@ -124,6 +124,10 @@ export const env = envsafe({
   RESEND_API_KEY: str({ allowEmpty: true, default: "" }),
   DISABLE_ONE_TIME_TOKEN_SIGNIN: bool({ default: true }),
 
+  // Self-hosted: Stripe may be configured for webhooks/top-ups but no Cloud subscriptions exist.
+  // When true, all signed-in users get paid-tier access (task create/run, follow-ups, etc.).
+  SELF_HOSTED_FULL_ACCESS: bool({ default: false }),
+
   // Stripe
   STRIPE_SECRET_KEY: str({ allowEmpty: true, default: "" }),
   STRIPE_WEBHOOK_SECRET: str({ allowEmpty: true, default: "" }),
