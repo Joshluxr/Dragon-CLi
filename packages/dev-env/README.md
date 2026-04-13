@@ -40,3 +40,16 @@ If you don't have docker installed, you can install [Orbstack](https://orbstack.
 ```bash
 pnpm docker-up-dev
 ```
+
+### Security (important on any machine with a public IP)
+
+The compose file binds Postgres, Redis, and the serverless-redis HTTP proxy to **127.0.0.1** only and requires secrets in **`.env.docker`** (see `.env.docker.example`). **Never** expose Postgres or Redis on `0.0.0.0` without a firewall: attackers routinely scan for open `5432`/`6379`. If PostgreSQL is misconfigured with `trust` for all hosts (for example a line like `host all all all trust` in `pg_hba.conf`), anyone on the internet can connect as superuser and run arbitrary commands via `COPY ... PROGRAM` / extensions—treat that as full server compromise.
+
+To run the stack manually:
+
+```bash
+cd packages/dev-env
+cp .env.docker.example .env.docker
+# edit .env.docker with strong random values
+docker compose --env-file .env.docker up -d
+```

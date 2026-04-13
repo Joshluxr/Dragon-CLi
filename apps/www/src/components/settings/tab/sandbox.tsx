@@ -6,6 +6,7 @@ import { useFeatureFlag } from "@/hooks/use-feature-flag";
 import { SettingsWithCTA, SettingsSection } from "../settings-row";
 import { SandboxSizeSelector } from "../sandbox-size-selector";
 import { SandboxProviderSelector } from "../sandbox-provider-selector";
+import { showSandboxSettings } from "@dragon/env/next-public";
 
 export function SandboxSettings() {
   const user = useAtomValue(userAtom);
@@ -14,11 +15,11 @@ export function SandboxSettings() {
   const daytonaOptionsForSandboxProviderEnabled = useFeatureFlag(
     "daytonaOptionsForSandboxProvider",
   );
-  if (
-    !user ||
-    !userSettings ||
-    (!daytonaOptionsForSandboxProviderEnabled && !largeSandboxSizeEnabled)
-  ) {
+  const sandboxSettingsVisible =
+    daytonaOptionsForSandboxProviderEnabled ||
+    largeSandboxSizeEnabled ||
+    showSandboxSettings();
+  if (!user || !userSettings || !sandboxSettingsVisible) {
     return null;
   }
   return (

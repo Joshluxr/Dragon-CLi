@@ -11,6 +11,7 @@ import path from "path";
 import { getTemplateIdForSize } from "@dragon/sandbox-image";
 import { retryAsync } from "@dragon/utils/retry";
 import { formatError } from "@dragon/utils/error";
+import { sandboxDefaultLifetimeSec } from "../sandbox-lifetime";
 
 const HOME_DIR = "root";
 const DEFAULT_DIR = `/${HOME_DIR}`;
@@ -60,8 +61,8 @@ async function createWithRetry(
         user: "root",
         snapshot: templateId,
         envVars: envs,
-        autoStopInterval: 15, // 15 minutes
-        autoArchiveInterval: 5, // 5 minutes
+        autoStopInterval: sandboxDefaultLifetimeSec,
+        autoArchiveInterval: sandboxDefaultLifetimeSec,
         autoDeleteInterval: 60 * 24 * 30, // 30 days
       });
       console.log(

@@ -666,5 +666,23 @@
     "provider": "e2b",
     "size": "large",
     "createdAt": "2025-12-20T16:07:42.884Z"
+  },
+  {
+    "name": "opensandbox/code-interpreter:v1.0.2",
+    "dockerfileHash": "opensandbox-code-interpreter-v1.0.2",
+    "cpuCount": 2,
+    "memoryGB": 4,
+    "provider": "opensandbox",
+    "size": "small",
+    "createdAt": "2026-03-30T00:00:00.000Z"
+  },
+  {
+    "name": "opensandbox/code-interpreter:v1.0.2",
+    "dockerfileHash": "opensandbox-code-interpreter-v1.0.2",
+    "cpuCount": 4,
+    "memoryGB": 8,
+    "provider": "opensandbox",
+    "size": "large",
+    "createdAt": "2026-03-30T00:00:00.000Z"
   }
 ]

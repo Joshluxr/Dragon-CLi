@@ -11,6 +11,7 @@
     "./utils": "./src/utils.ts",
     "./env": "./src/env.ts",
     "./constants": "./src/constants.ts",
+    "./sandbox-lifetime": "./src/sandbox-lifetime.ts",
     "./circuit-breakers": "./src/circuit-breakers.ts"
   },
   "scripts": {
@@ -26,14 +27,15 @@
   },
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
+    "@alibaba-group/opensandbox": "^0.1.5",
     "@daytonaio/sdk": "0.115.2",
-    "@e2b/code-interpreter": "^1.2.0-beta.4",
-    "@iarna/toml": "^3.0.0",
     "@dragon/agent": "workspace:*",
     "@dragon/bundled": "workspace:*",
     "@dragon/daemon": "workspace:*",
     "@dragon/sandbox-image": "workspace:*",
     "@dragon/utils": "workspace:*",
+    "@e2b/code-interpreter": "^1.2.0-beta.4",
+    "@iarna/toml": "^3.0.0",
     "nanoid": "^3.3.8",
     "zod": "4.1.11"
   },

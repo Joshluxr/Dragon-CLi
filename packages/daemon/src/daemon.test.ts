@@ -1551,6 +1551,28 @@ describe("daemon", () => {
       expect(claudeCommand).not.toContain("--permission-mode");
     });
 
+    it("should use --permission-mode acceptEdits when allowAll and running as root", async () => {
+      execSyncMock.mockImplementation((cmd: string) => {
+        if (cmd === "id -u") return "0\n";
+        return "NOT_EXISTS\n";
+      });
+      const allowAllMessage: DaemonMessageClaude = {
+        ...TEST_INPUT_MESSAGE,
+        permissionMode: "allowAll",
+      };
+
+      await daemon.start();
+      await writeToUnixSocket({
+        unixSocketPath: runtime.unixSocketPath,
+        dataStr: JSON.stringify(allowAllMessage),
+      });
+      await sleepUntil(() => spawnCommandLineMock.mock.calls.length === 1);
+      const claudeCommand = spawnCommandLineMock.mock.calls[0]![0];
+
+      expect(claudeCommand).toContain("--permission-mode acceptEdits");
+      expect(claudeCommand).not.toContain("--dangerously-skip-permissions");
+    });
+
     it("should default to --dangerously-skip-permissions when permissionMode is not specified", async () => {
       // TEST_INPUT_MESSAGE doesn't have permissionMode field
       await daemon.start();
@@ -1607,6 +1629,43 @@ describe("daemon", () => {
       claudeCommand = spawnCommandLineMock.mock.calls[1]![0];
       expect(claudeCommand).toContain("--dangerously-skip-permissions");
       expect(claudeCommand).not.toContain("--permission-mode");
+    });
+
+    it("should use acceptEdits for allowAll when root, plan unchanged", async () => {
+      execSyncMock.mockImplementation((cmd: string) => {
+        if (cmd === "id -u") return "0\n";
+        return "NOT_EXISTS\n";
+      });
+      const planMessage: DaemonMessageClaude = {
+        ...TEST_INPUT_MESSAGE,
+        permissionMode: "plan",
+        threadId: "THREAD_ROOT_1",
+      };
+      const allowAllMessage: DaemonMessageClaude = {
+        ...TEST_INPUT_MESSAGE,
+        permissionMode: "allowAll",
+        threadId: "THREAD_ROOT_2",
+      };
+
+      await daemon.start();
+
+      await writeToUnixSocket({
+        unixSocketPath: runtime.unixSocketPath,
+        dataStr: JSON.stringify(planMessage),
+      });
+      await sleepUntil(() => spawnCommandLineMock.mock.calls.length === 1);
+      let claudeCommand = spawnCommandLineMock.mock.calls[0]![0];
+      expect(claudeCommand).toContain("--permission-mode plan");
+      expect(claudeCommand).not.toContain("--dangerously-skip-permissions");
+
+      await writeToUnixSocket({
+        unixSocketPath: runtime.unixSocketPath,
+        dataStr: JSON.stringify(allowAllMessage),
+      });
+      await sleepUntil(() => spawnCommandLineMock.mock.calls.length === 2);
+      claudeCommand = spawnCommandLineMock.mock.calls[1]![0];
+      expect(claudeCommand).toContain("--permission-mode acceptEdits");
+      expect(claudeCommand).not.toContain("--dangerously-skip-permissions");
     });
   });
 });

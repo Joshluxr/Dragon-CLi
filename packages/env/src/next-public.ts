@@ -58,3 +58,9 @@ export function publicDocsUrl() {
     process.env.NEXT_PUBLIC_DOCS_URL ?? "https://dragon-labz-docs.vercel.app"
   );
 }
+
+/** When true, show Settings → Sandbox without the daytonaOptionsForSandboxProvider feature flag. */
+export function showSandboxSettings(): boolean {
+  const v = process.env.NEXT_PUBLIC_SHOW_SANDBOX_SETTINGS;
+  return v === "1" || v?.toLowerCase() === "true";
+}

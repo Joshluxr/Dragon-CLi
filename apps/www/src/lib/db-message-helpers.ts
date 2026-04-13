@@ -64,9 +64,12 @@ export function getPendingToolCallErrorMessages({
 export function getUserMessageToSend({
   messages,
   currentMessage,
+  /** Thread-level mode when aggregating several user turns (avoids inheriting an old plan-mode message). */
+  threadPermissionMode,
 }: {
   messages: DBMessage[] | null;
   currentMessage: DBUserMessage | null;
+  threadPermissionMode?: "allowAll" | "plan";
 }): DBUserMessage | null {
   if (messages) {
     const userMessagesToSend: (DBUserMessage | DBSystemMessage)[] = [];
@@ -114,7 +117,7 @@ export function getUserMessageToSend({
       // If we have multiple messages, add separators between them for clarity
       const allParts: DBUserMessage["parts"] = [];
       let lastMessageType: string | null = null;
-      let lastPermissionMode: "allowAll" | "plan" | null = null;
+      let lastExplicitPermissionInBatch: "allowAll" | "plan" | null = null;
       for (let i = 0; i < userMessagesToSend.length; i++) {
         let msg = userMessagesToSend[i];
         if (!msg) continue;
@@ -136,16 +139,43 @@ export function getUserMessageToSend({
 
         allParts.push(...msg.parts);
         lastMessageType = msg.type;
-        if ("permissionMode" in msg && msg.permissionMode) {
-          lastPermissionMode = msg.permissionMode;
+        if (
+          msg.type === "user" &&
+          "permissionMode" in msg &&
+          msg.permissionMode
+        ) {
+          lastExplicitPermissionInBatch = msg.permissionMode;
         }
+      }
+
+      let lastUserInBatch: DBUserMessage | undefined;
+      for (let i = userMessagesToSend.length - 1; i >= 0; i--) {
+        const msg = userMessagesToSend[i];
+        if (msg?.type === "user") {
+          lastUserInBatch = msg as DBUserMessage;
+          break;
+        }
+      }
+
+      const lastUserSpecifiesMode =
+        !!lastUserInBatch?.permissionMode &&
+        (lastUserInBatch.permissionMode === "allowAll" ||
+          lastUserInBatch.permissionMode === "plan");
+
+      let permissionMode: "allowAll" | "plan";
+      if (lastUserSpecifiesMode) {
+        permissionMode = lastUserInBatch!.permissionMode!;
+      } else if (threadPermissionMode !== undefined) {
+        permissionMode = threadPermissionMode;
+      } else {
+        permissionMode = lastExplicitPermissionInBatch ?? "allowAll";
       }
 
       return {
         type: "user",
         model: getLastUserMessageModel(messages),
         timestamp: userMessagesToSend[userMessagesToSend.length - 1]!.timestamp,
-        permissionMode: lastPermissionMode || "allowAll",
+        permissionMode,
         parts: allParts,
       };
     }

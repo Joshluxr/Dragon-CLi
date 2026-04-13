@@ -39,6 +39,12 @@ const CIRCUIT_CONFIGS: Record<SandboxProvider, CircuitBreakerConfig> = {
     timeout: 1000,
     monitoringWindow: 10000,
   },
+  opensandbox: {
+    failureThreshold: 3,
+    successThreshold: 2,
+    timeout: 45000,
+    monitoringWindow: 90000,
+  },
 };
 
 // Fallback provider mapping
@@ -141,7 +147,13 @@ export function getSandboxProvidersHealth(): Record<
     };
   }
 > {
-  const providers: SandboxProvider[] = ["e2b", "daytona", "docker", "mock"];
+  const providers: SandboxProvider[] = [
+    "e2b",
+    "daytona",
+    "docker",
+    "mock",
+    "opensandbox",
+  ];
   const health: Record<string, unknown> = {};
 
   for (const provider of providers) {

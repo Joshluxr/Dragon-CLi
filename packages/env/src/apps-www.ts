@@ -55,6 +55,8 @@ export const env = envsafe({
   // Deprecated, use LOCALHOST_PUBLIC_DOMAIN instead
   NGROK_DOMAIN: str({ allowEmpty: true, default: "" }),
   LOCALHOST_PUBLIC_DOMAIN: str({ allowEmpty: true, default: "" }),
+  /** Full base URL for sandboxes to reach the app (e.g. http://1.2.3.4:3000). Overrides LOCALHOST_PUBLIC_DOMAIN in dev when set. */
+  SANDBOX_PUBLIC_APP_URL: str({ allowEmpty: true, default: "" }),
 
   // R2
   R2_ACCESS_KEY_ID: str(),
@@ -68,6 +70,28 @@ export const env = envsafe({
   // Sandbox providers
   E2B_API_KEY: str(),
   DAYTONA_API_KEY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_DOMAIN: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_API_KEY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_PROTOCOL: str({ default: "http", allowEmpty: true }),
+  OPEN_SANDBOX_USE_SERVER_PROXY: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_ENTRYPOINT: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_IMAGE: str({ default: "", allowEmpty: true }),
+  /** Max wait for OpenSandbox execd readiness (SDK default 30s is often too short). */
+  OPEN_SANDBOX_READY_TIMEOUT_SECONDS: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_HEALTH_POLL_INTERVAL_MS: str({ default: "", allowEmpty: true }),
+  OPEN_SANDBOX_REQUEST_TIMEOUT_SECONDS: str({ default: "", allowEmpty: true }),
+
+  // HolyClaude bundle for OpenSandbox sandboxes (see packages/sandbox/src/holyclaude-opensandbox.ts)
+  HOLYCLAUDE_IN_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_REPO_URL: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_VARIANT: str({ default: "", allowEmpty: true }),
+  HOLYCLAUDE_SKIP_NPM_GLOBALS: str({ default: "", allowEmpty: true }),
+  /** Force HolyClaude bootstrap on OpenSandbox even if marker file exists */
+  HOLYCLAUDE_REINSTALL_OPEN_SANDBOX: str({ default: "", allowEmpty: true }),
+
+  // Sandbox UI / defaults (self-hosted)
+  NEXT_PUBLIC_SHOW_SANDBOX_SETTINGS: str({ default: "", allowEmpty: true }),
+  DEFAULT_SANDBOX_PROVIDER_FOR_USER: str({ default: "", allowEmpty: true }),
 
   // GitHub App
   GITHUB_CLIENT_ID: str(),
@@ -99,6 +123,10 @@ export const env = envsafe({
   // Others
   RESEND_API_KEY: str({ allowEmpty: true, default: "" }),
   DISABLE_ONE_TIME_TOKEN_SIGNIN: bool({ default: true }),
+
+  // Self-hosted: Stripe may be configured for webhooks/top-ups but no Cloud subscriptions exist.
+  // When true, all signed-in users get paid-tier access (task create/run, follow-ups, etc.).
+  SELF_HOSTED_FULL_ACCESS: bool({ default: false }),
 
   // Stripe
   STRIPE_SECRET_KEY: str({ allowEmpty: true, default: "" }),

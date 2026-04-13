@@ -20,8 +20,10 @@ import {
 } from "@dragon/shared/model/environments";
 import { env } from "@dragon/env/apps-www";
 import type {
+  BootingSubstatus,
   CreateSandboxOptions,
   ISandboxSession,
+  SandboxStatus,
 } from "@dragon/sandbox/types";
 import type { SandboxProvider, SandboxSize } from "@dragon/types/sandbox";
 import {
@@ -40,6 +42,24 @@ import { DEFAULT_SANDBOX_SIZE } from "@/lib/subscription-tiers";
 import type { UserSettings } from "@dragon/shared";
 import { ensureAgent } from "@dragon/agent/utils";
 import { getLastUserMessageModel } from "@/lib/db-message-helpers";
+
+/** True when resume/connect likely failed because the sandbox no longer exists. */
+function isStaleSandboxResumeError(message: string): boolean {
+  const m = message.toLowerCase();
+  if (m.includes("not found")) {
+    return true;
+  }
+  if (/\b404\b/.test(m)) {
+    return true;
+  }
+  if (m.includes("does not exist") || m.includes("no longer exist")) {
+    return true;
+  }
+  if (m.includes("sandbox") && m.includes("deleted")) {
+    return true;
+  }
+  return false;
+}
 
 async function getOrCreateSandboxWithTimeout(
   sandboxId: string | null,
@@ -228,7 +248,7 @@ async function getOrCreateSandboxForThread({
     generateBranchName(threadName, branchPrefix);
   const sandboxSize = thread.sandboxSize ?? DEFAULT_SANDBOX_SIZE;
   const startTime = Date.now();
-  const session = await getOrCreateSandboxWithTimeout(thread.codesandboxId, {
+  const sandboxOptions = {
     threadName: thread.name,
     agent: agentOrNull,
     agentCredentials: agentCredentialsOrNull,
@@ -252,7 +272,15 @@ async function getOrCreateSandboxForThread({
     publicUrl: nonLocalhostPublicAppUrl(),
     featureFlags: userFeatureFlags,
     generateBranchName: generateBranchNameWithPrefix,
-    onStatusUpdate: async ({ sandboxId, sandboxStatus, bootingStatus }) => {
+    onStatusUpdate: async ({
+      sandboxId,
+      sandboxStatus,
+      bootingStatus,
+    }: {
+      sandboxId: string | null;
+      sandboxStatus: SandboxStatus;
+      bootingStatus: BootingSubstatus | null;
+    }) => {
       if (sandboxId && bootingStatus === "provisioning-done") {
         getPostHogServer().capture({
           distinctId: userId,
@@ -272,9 +300,53 @@ async function getOrCreateSandboxForThread({
         bootingStatus,
       });
     },
-  });
+  };
 
-  if (!thread.codesandboxId) {
+  const priorSandboxId = thread.codesandboxId;
+  let session: ISandboxSession;
+  try {
+    session = await getOrCreateSandboxWithTimeout(
+      priorSandboxId,
+      sandboxOptions,
+    );
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    const looksLikeStaleSandbox =
+      !!priorSandboxId && isStaleSandboxResumeError(msg);
+    if (!looksLikeStaleSandbox) {
+      throw error;
+    }
+    console.warn(
+      `[sandbox] Resume failed for ${priorSandboxId} (${msg}); provisioning a new sandbox`,
+    );
+    getPostHogServer().capture({
+      distinctId: userId,
+      event: "sandbox_replaced_after_not_found",
+      properties: {
+        threadId,
+        priorSandboxId,
+        sandboxProvider: thread.sandboxProvider,
+        githubRepoFullName: thread.githubRepoFullName,
+        errorMessage: msg,
+      },
+    });
+    session = await getOrCreateSandboxWithTimeout(null, {
+      ...sandboxOptions,
+      fastResume: false,
+    });
+    await updateThread({
+      db,
+      userId,
+      threadId,
+      updates: {
+        codesandboxId: session.sandboxId,
+        sandboxSize,
+      },
+    });
+    return session;
+  }
+
+  if (!priorSandboxId) {
     await updateThread({
       db,
       userId,
@@ -408,14 +480,26 @@ export async function getSandboxProvider({
   }
 
   switch (userSetting) {
-    case "default":
+    case "default": {
+      const override = process.env.DEFAULT_SANDBOX_PROVIDER_FOR_USER?.trim();
+      if (
+        override === "opensandbox" ||
+        override === "daytona" ||
+        override === "e2b" ||
+        override === "docker"
+      ) {
+        return override;
+      }
       return "e2b";
+    }
     case "e2b":
       return "e2b";
     case "daytona":
       return "daytona";
     case "docker":
       return "docker";
+    case "opensandbox":
+      return "opensandbox";
     case "mock":
       return "mock";
     default:
@@ -462,7 +546,7 @@ export async function getOrCreateSandbox(
         errorType:
           error instanceof Error ? error.constructor.name : typeof error,
         isNotFoundError:
-          error instanceof Error && error.message.includes("not found"),
+          error instanceof Error && isStaleSandboxResumeError(error.message),
       },
     });
     throw error;

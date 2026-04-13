@@ -11,6 +11,7 @@ export async function ensureThreadChatHasUserMessage({
   const userMessageOrNull = getUserMessageToSend({
     messages: threadChat.messages,
     currentMessage: null,
+    threadPermissionMode: threadChat.permissionMode ?? "allowAll",
   });
   if (!userMessageOrNull) {
     await updateThreadChat({

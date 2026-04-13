@@ -22,6 +22,10 @@ import {
 } from "./agents/opencode-config";
 import { getEnv } from "./env";
 import path from "path";
+import {
+  installHolyClaudeForOpenSandbox,
+  isHolyClaudeOpenSandboxBootstrapDone,
+} from "./holyclaude-opensandbox";
 
 async function createNewBranch({
   session,
@@ -122,6 +126,21 @@ export async function setupSandboxOneTime(
 
   // Wait for daemon to be ready (it has its own 1 second wait)
   await daemonPromise;
+
+  if (options.sandboxProvider === "opensandbox") {
+    const holyClaudeAlreadyDone =
+      await isHolyClaudeOpenSandboxBootstrapDone(session);
+    if (!holyClaudeAlreadyDone) {
+      await options.onStatusUpdate({
+        sandboxId: session.sandboxId,
+        sandboxStatus: "booting",
+        bootingStatus: "installing-sandbox-scripts",
+      });
+    }
+    await installHolyClaudeForOpenSandbox(session, options);
+    // Heavy install can disturb the daemon; ensure it still responds before we send work.
+    await restartDaemonIfNotRunning({ session, options });
+  }
 
   // Only run dragon-setup.sh if not explicitly skipped
   if (options.skipSetupScript) {
@@ -499,9 +518,7 @@ async function executeSetupScriptCommand({
     ),
   ]);
   if (result === "timeout") {
-    throw new Error(
-      `Command timed out after ${dragonSetupScriptTimeoutMs}ms`,
-    );
+    throw new Error(`Command timed out after ${dragonSetupScriptTimeoutMs}ms`);
   }
   // Log the git status after the setup script runs
   await session.runCommand("git status");

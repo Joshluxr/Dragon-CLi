@@ -4,6 +4,7 @@ import { DockerProvider } from "./providers/docker-provider";
 import { E2BProvider } from "./providers/e2b-provider";
 import { MockProvider } from "./providers/mock-provider";
 import { DaytonaProvider } from "./providers/daytona-provider";
+import { OpenSandboxProvider } from "./providers/opensandbox-provider";
 
 export function getSandboxProvider(
   provider: SandboxProvider,
@@ -30,6 +31,8 @@ export function getSandboxProvider(
       );
     case "daytona":
       return new DaytonaProvider();
+    case "opensandbox":
+      return new OpenSandboxProvider();
     default:
       const _exhaustiveCheck: never = provider;
       throw new Error(`Unknown sandbox provider: ${_exhaustiveCheck}`);

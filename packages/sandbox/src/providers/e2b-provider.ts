@@ -7,10 +7,11 @@ import {
 import { getTemplateIdForSize } from "@dragon/sandbox-image";
 import { Sandbox } from "@e2b/code-interpreter";
 import { retryAsync } from "@dragon/utils/retry";
+import { sandboxDefaultLifetimeMs } from "../sandbox-lifetime";
 
 const HOME_DIR = "root";
 const REPO_DIR = "repo";
-const SLEEP_MS = 60 * 15 * 1000; // 15 minutes
+const SLEEP_MS = sandboxDefaultLifetimeMs;
 
 async function resumeWithRetry(sandboxId: string): Promise<ISandboxSession> {
   const startTime = Date.now();
