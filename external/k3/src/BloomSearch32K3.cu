@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <string>
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <time.h>
@@ -29,6 +30,7 @@
 #include "../GPUGroup.h"
 #include "../GPUMath_K3.h"
 #include "../GPUHash.h"
+#include "search-state.h"
 
 // ---------------------------------------------------------------------------------------
 // K3 CONFIGURATION
@@ -40,10 +42,8 @@
 #define K3_MAX_FOUND 65536
 #define K3_INV_BATCH 64             // Batch size for modular inversion
 
-// Search mode flags
-#define MODE_COMPRESSED_ONLY 0
-#define MODE_UNCOMPRESSED_ONLY 1
-#define MODE_BOTH 2
+// Search-mode values come from search-state.h.
+#define K3_CENTER_OFFSET (GRP_SIZE / 2)
 
 // Address type flags
 #define ADDR_COMPRESSED   0x8000
@@ -55,24 +55,11 @@
 #define CANDIDATE_ADDR_UNCOMPRESSED 0
 #define CANDIDATE_ADDR_COMPRESSED 1
 
-struct ResultHeader {
-    uint32_t storedCount;
-    uint32_t totalCount;
-    uint32_t droppedCount;
-    uint32_t reserved;
-};
-
-struct CandidateRecord {
-    uint32_t threadId;
-    int32_t pointDelta;
-    uint8_t yVariant;
-    uint8_t addrFormat;
-    uint8_t endoVariant;
-    uint8_t reserved;
-    uint32_t hash160[5];
-};
-
 static_assert(sizeof(CandidateRecord) == 32, "CandidateRecord must remain 32 bytes");
+
+static inline int32_t signedDeltaFromOffset(int32_t offsetWithinWindow) {
+    return offsetWithinWindow - K3_CENTER_OFFSET;
+}
 
 // ---------------------------------------------------------------------------------------
 // CUDA ERROR HANDLING MACRO
@@ -265,14 +252,14 @@ __device__ void CheckPointBothFormats_K3(
     if (CheckTieredBloom_K3(h_comp_pos, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
         RecordMatchSimple(
-            resultHeader, outRecords, maxFound, tid, incr,
+            resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_pos);
     }
 
     if (CheckTieredBloom_K3(h_comp_neg, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
         RecordMatchSimple(
-            resultHeader, outRecords, maxFound, tid, incr,
+            resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_neg);
     }
 
@@ -281,7 +268,7 @@ __device__ void CheckPointBothFormats_K3(
     if (CheckTieredBloom_K3(h_uncomp_pos, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
         RecordMatchSimple(
-            resultHeader, outRecords, maxFound, tid, incr,
+            resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_pos);
     }
 
@@ -289,7 +276,7 @@ __device__ void CheckPointBothFormats_K3(
     if (CheckTieredBloom_K3(h_uncomp_neg, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
         RecordMatchSimple(
-            resultHeader, outRecords, maxFound, tid, incr,
+            resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_neg);
     }
 }
@@ -807,6 +794,93 @@ static void init_valid_keys_k3(uint64_t* h_keys_x, uint64_t* h_keys_y, int nbThr
     init_valid_keys_k3_range(h_keys_x, h_keys_y, nbThread, 0, 1);
 }
 
+static void populate_points_from_thread_states(
+    uint64_t* h_keys_x,
+    uint64_t* h_keys_y,
+    const ThreadScalarState* threadStates,
+    int nbThread
+) {
+    for (int t = 0; t < nbThread; t++) {
+        uint64_t scalar[4];
+        scalarToArray(threadStates[t].windowCenter, scalar);
+
+        uint64_t px[4], py[4];
+        scalar_mult_G(px, py, scalar);
+
+        h_keys_x[t * 4 + 0] = px[0];
+        h_keys_x[t * 4 + 1] = px[1];
+        h_keys_x[t * 4 + 2] = px[2];
+        h_keys_x[t * 4 + 3] = px[3];
+
+        h_keys_y[t * 4 + 0] = py[0];
+        h_keys_y[t * 4 + 1] = py[1];
+        h_keys_y[t * 4 + 2] = py[2];
+        h_keys_y[t * 4 + 3] = py[3];
+    }
+}
+
+static bool initialize_random_thread_states(
+    ThreadScalarState* threadStates,
+    int nbThread,
+    int rangeId,
+    int totalRanges,
+    std::string* error
+) {
+    if (totalRanges < 1) {
+        if (error) *error = "Total ranges must be at least 1.";
+        return false;
+    }
+    if (rangeId < 0 || rangeId >= totalRanges) {
+        if (error) *error = "Range id must be within [0, totalRanges).";
+        return false;
+    }
+
+    uint8_t privkey[32];
+    uint8_t rangeStart = (rangeId * 256) / totalRanges;
+    uint8_t rangeEnd = ((rangeId + 1) * 256) / totalRanges - 1;
+
+    for (int t = 0; t < nbThread; t++) {
+        secure_random(privkey, 32);
+        privkey[0] |= 1;
+
+        if (totalRanges > 1) {
+            uint8_t rangeSize = rangeEnd - rangeStart + 1;
+            privkey[31] = rangeStart + (privkey[31] % rangeSize);
+        }
+
+        memcpy(threadStates[t].windowCenter.limbs, privkey, 32);
+        subU64FromScalarModN(&threadStates[t].windowStart, threadStates[t].windowCenter, (uint64_t)K3_CENTER_OFFSET);
+    }
+
+    return true;
+}
+
+static bool initialize_start_thread_states(
+    ThreadScalarState* threadStates,
+    int nbThread,
+    const char* startDecimal,
+    std::string* error
+) {
+    Scalar256 baseScalar;
+    if (!parseDecimalScalarStrict(startDecimal, &baseScalar, error)) {
+        return false;
+    }
+
+    for (int t = 0; t < nbThread; t++) {
+        addU64ToScalarModN(&threadStates[t].windowCenter, baseScalar, (uint64_t)t);
+        subU64FromScalarModN(&threadStates[t].windowStart, threadStates[t].windowCenter, (uint64_t)K3_CENTER_OFFSET);
+    }
+
+    return true;
+}
+
+static void advance_thread_scalar_states(ThreadScalarState* threadStates, int nbThread) {
+    for (int t = 0; t < nbThread; t++) {
+        addU64ToScalarModN(&threadStates[t].windowCenter, threadStates[t].windowCenter, (uint64_t)K3_STEP_SIZE);
+        addU64ToScalarModN(&threadStates[t].windowStart, threadStates[t].windowStart, (uint64_t)K3_STEP_SIZE);
+    }
+}
+
 // K3: Initialize keys from a specific decimal starting point
 // Each thread gets start + threadIndex as its private key
 static void init_keys_from_decimal_start(uint64_t* h_keys_x, uint64_t* h_keys_y, int nbThread,
@@ -858,27 +932,38 @@ static void init_keys_from_decimal_start(uint64_t* h_keys_x, uint64_t* h_keys_y,
     printf("    Range covers: [start] to [start + %d]\n", nbThread - 1);
 }
 
-void save_state_k3(const char* f, uint64_t* kx, uint64_t* ky, int n, uint64_t t) {
-    FILE* fp = fopen(f, "wb");
-    if (fp) {
-        fwrite(&t, 8, 1, fp);
-        fwrite(kx, 8, n*4, fp);
-        fwrite(ky, 8, n*4, fp);
-        fclose(fp);
+static uint64_t load_thread_state_checkpoint(
+    const char* path,
+    ThreadScalarState* threadStates,
+    int nbThread,
+    int searchMode
+) {
+    CheckpointHeaderV2 header;
+    if (!loadCheckpointV2(path, &header, threadStates, (size_t)nbThread)) {
+        return 0;
     }
+    if ((int)header.searchMode != searchMode) {
+        fprintf(stderr, "Checkpoint mode mismatch. Ignoring checkpoint.\n");
+        return 0;
+    }
+    return header.totalScalarChecks;
 }
 
-uint64_t load_state_k3(const char* f, uint64_t* kx, uint64_t* ky, int n) {
-    struct stat st;
-    if (stat(f, &st)) return 0;
-    FILE* fp = fopen(f, "rb");
-    if (!fp) return 0;
-    uint64_t t = 0;
-    if (fread(&t, 8, 1, fp) != 1) { fclose(fp); return 0; }
-    if (fread(kx, 8, n*4, fp) != (size_t)(n*4)) { fclose(fp); return 0; }
-    if (fread(ky, 8, n*4, fp) != (size_t)(n*4)) { fclose(fp); return 0; }
-    fclose(fp);
-    return t;
+static bool save_thread_state_checkpoint(
+    const char* path,
+    const ThreadScalarState* threadStates,
+    int nbThread,
+    uint64_t totalScalarChecks,
+    int searchMode
+) {
+    CheckpointHeaderV2 header{
+        K3_CHECKPOINT_MAGIC,
+        K3_CHECKPOINT_VERSION,
+        totalScalarChecks,
+        (uint32_t)nbThread,
+        (uint32_t)searchMode,
+    };
+    return saveCheckpointV2(path, header, threadStates, (size_t)nbThread);
 }
 
 void* load_file(const char* path, size_t* size) {
@@ -1097,21 +1182,37 @@ int main(int argc, char** argv) {
     uint64_t* h_keys_y;
     ResultHeader* h_resultHeader;
     CandidateRecord* h_candidateRecords;
+    ThreadScalarState* h_threadStates;
     CUDA_CHECK(cudaMallocHost(&h_keys_x, nbThread * 4 * sizeof(uint64_t)));
     CUDA_CHECK(cudaMallocHost(&h_keys_y, nbThread * 4 * sizeof(uint64_t)));
     CUDA_CHECK(cudaMallocHost(&h_resultHeader, sizeof(ResultHeader)));
     CUDA_CHECK(cudaMallocHost(&h_candidateRecords, K3_MAX_FOUND * sizeof(CandidateRecord)));
+    h_threadStates = (ThreadScalarState*)malloc((size_t)nbThread * sizeof(ThreadScalarState));
+    if (!h_threadStates) {
+        fprintf(stderr, "Error: Unable to allocate thread scalar state.\n");
+        return 1;
+    }
 
     // Initialize or restore keys
-    uint64_t resumedKeys = load_state_k3(stateFile, h_keys_x, h_keys_y, nbThread);
+    uint64_t resumedKeys = load_thread_state_checkpoint(stateFile, h_threadStates, nbThread, searchMode);
     if (resumedKeys > 0) {
         printf("Resumed from checkpoint: %.2fB keys checked\n", resumedKeys / 1e9);
+        populate_points_from_thread_states(h_keys_x, h_keys_y, h_threadStates, nbThread);
     } else if (startDecimal != nullptr) {
-        // Use exact decimal starting point
-        init_keys_from_decimal_start(h_keys_x, h_keys_y, nbThread, startDecimal);
+        std::string error;
+        if (!initialize_start_thread_states(h_threadStates, nbThread, startDecimal, &error)) {
+            fprintf(stderr, "Error: %s\n", error.c_str());
+            return 1;
+        }
+        populate_points_from_thread_states(h_keys_x, h_keys_y, h_threadStates, nbThread);
         printf("Starting K3 search from EXACT DECIMAL starting point\n");
     } else {
-        init_valid_keys_k3_range(h_keys_x, h_keys_y, nbThread, rangeId, totalRanges);
+        std::string error;
+        if (!initialize_random_thread_states(h_threadStates, nbThread, rangeId, totalRanges, &error)) {
+            fprintf(stderr, "Error: %s\n", error.c_str());
+            return 1;
+        }
+        populate_points_from_thread_states(h_keys_x, h_keys_y, h_threadStates, nbThread);
         printf("Starting fresh K3 search with %s EC points\n",
                totalRanges > 1 ? "PARTITIONED" : "random");
     }
@@ -1164,12 +1265,13 @@ int main(int argc, char** argv) {
 
         total += (uint64_t)nbThread * K3_STEP_SIZE * addrsPerPoint;
         iter++;
+        advance_thread_scalar_states(h_threadStates, nbThread);
 
         // Save checkpoint
         if (iter % 500 == 0) {
-            CUDA_CHECK(cudaMemcpy(h_keys_x, d_keys_x, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
-            CUDA_CHECK(cudaMemcpy(h_keys_y, d_keys_y, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
-            save_state_k3(stateFile, h_keys_x, h_keys_y, nbThread, total);
+            if (!save_thread_state_checkpoint(stateFile, h_threadStates, nbThread, total, searchMode)) {
+                fprintf(stderr, "\nWarning: Failed to save checkpoint to %s\n", stateFile);
+            }
         }
 
         // Progress update
@@ -1184,9 +1286,9 @@ int main(int argc, char** argv) {
     }
 
     // Final save
-    CUDA_CHECK(cudaMemcpy(h_keys_x, d_keys_x, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
-    CUDA_CHECK(cudaMemcpy(h_keys_y, d_keys_y, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
-    save_state_k3(stateFile, h_keys_x, h_keys_y, nbThread, total);
+    if (!save_thread_state_checkpoint(stateFile, h_threadStates, nbThread, total, searchMode)) {
+        fprintf(stderr, "\nWarning: Failed to save checkpoint to %s\n", stateFile);
+    }
     printf("\n\nK3 Saved checkpoint: %.2fT keys, %lu total candidates, %lu dropped\n",
            total / 1e12, totalCandidateEvents, totalDroppedCandidates);
 
@@ -1204,6 +1306,7 @@ int main(int argc, char** argv) {
     cudaFreeHost(h_keys_y);
     cudaFreeHost(h_resultHeader);
     cudaFreeHost(h_candidateRecords);
+    free(h_threadStates);
     free(h_prefix);
     free(h_bloom1);
     free(h_seeds1);
