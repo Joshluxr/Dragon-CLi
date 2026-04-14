@@ -19,7 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <algorithm>
+#include <array>
 #include <string>
+#include <vector>
+#include <vector>
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <time.h>
@@ -59,6 +63,25 @@ static_assert(sizeof(CandidateRecord) == 32, "CandidateRecord must remain 32 byt
 
 static inline int32_t signedDeltaFromOffset(int32_t offsetWithinWindow) {
     return offsetWithinWindow - K3_CENTER_OFFSET;
+}
+
+struct ExactTargetSet {
+    std::vector<std::array<uint32_t, 5>> hashes;
+};
+
+static bool hash_words_less(const std::array<uint32_t, 5>& a, const std::array<uint32_t, 5>& b) {
+    for (int i = 0; i < 5; i++) {
+        if (a[i] < b[i]) return true;
+        if (a[i] > b[i]) return false;
+    }
+    return false;
+}
+
+static bool hash_words_equal(const std::array<uint32_t, 5>& a, const std::array<uint32_t, 5>& b) {
+    for (int i = 0; i < 5; i++) {
+        if (a[i] != b[i]) return false;
+    }
+    return true;
 }
 
 // ---------------------------------------------------------------------------------------
