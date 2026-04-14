@@ -23,6 +23,23 @@ struct ThreadScalarState {
     Scalar256 windowCenter;
 };
 
+struct ResultHeader {
+    uint32_t storedCount;
+    uint32_t totalCount;
+    uint32_t droppedCount;
+    uint32_t reserved;
+};
+
+struct CandidateRecord {
+    uint32_t threadId;
+    int32_t pointDelta;
+    uint8_t yVariant;
+    uint8_t addrFormat;
+    uint8_t endoVariant;
+    uint8_t reserved;
+    uint32_t hash160[5];
+};
+
 struct CheckpointHeaderV2 {
     uint32_t magic;
     uint32_t version;

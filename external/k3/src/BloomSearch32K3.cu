@@ -60,7 +60,7 @@
 
 static_assert(sizeof(CandidateRecord) == 32, "CandidateRecord must remain 32 bytes");
 
-static inline int32_t signedDeltaFromOffset(int32_t offsetWithinWindow) {
+__host__ __device__ static inline int32_t signedDeltaFromOffset(int32_t offsetWithinWindow) {
     return offsetWithinWindow - K3_CENTER_OFFSET;
 }
 
@@ -402,28 +402,46 @@ __device__ void CheckHashForMode_K3(
     // Compute negative y
     ModNeg256(pyn, py);
 
-    auto checkPoint = [&](uint64_t* xPoint, uint32_t endoType) {
-        if (searchMode == MODE_COMPRESSED_ONLY) {
-            CheckPointCompressedOnly_K3(
-                xPoint, py, incr, endoType,
-                prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
-        } else if (searchMode == MODE_UNCOMPRESSED_ONLY) {
-            CheckPointUncompressedOnly_K3(
-                xPoint, py, pyn, incr, endoType,
-                prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
-        } else {
-            CheckPointBothFormats_K3(
-                xPoint, py, pyn, incr, endoType,
-                prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
-        }
-    };
-
-    checkPoint(px, 0);
-    checkPoint(pe1x, 1);
-    checkPoint(pe2x, 2);
+    if (searchMode == MODE_COMPRESSED_ONLY) {
+        CheckPointCompressedOnly_K3(
+            px, py, incr, 0,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointCompressedOnly_K3(
+            pe1x, py, incr, 1,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointCompressedOnly_K3(
+            pe2x, py, incr, 2,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+    } else if (searchMode == MODE_UNCOMPRESSED_ONLY) {
+        CheckPointUncompressedOnly_K3(
+            px, py, pyn, incr, 0,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointUncompressedOnly_K3(
+            pe1x, py, pyn, incr, 1,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointUncompressedOnly_K3(
+            pe2x, py, pyn, incr, 2,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+    } else {
+        CheckPointBothFormats_K3(
+            px, py, pyn, incr, 0,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointBothFormats_K3(
+            pe1x, py, pyn, incr, 1,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+        CheckPointBothFormats_K3(
+            pe2x, py, pyn, incr, 2,
+            prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+    }
 }
 
 // ---------------------------------------------------------------------------------------
@@ -1107,7 +1125,7 @@ static bool reconstruct_candidate_scalar(
     if (candidate.threadId >= (uint32_t)nbThread) {
         return false;
     }
-    return deriveExactScalarForHit(
+    return deriveExactScalarForCandidate(
         out,
         threadStates[candidate.threadId],
         candidate.pointDelta,
@@ -1401,7 +1419,7 @@ int main(int argc, char** argv) {
         CUDA_CHECK(cudaMemset(d_resultHeader, 0, sizeof(ResultHeader)));
 
         bloom_kernel_k3<<<K3_BLOCKS, K3_THREADS_PER_BLOCK>>>(
-            d_keys_x, d_keys_y, nbThread,
+            d_keys_x, d_keys_y, nbThread, searchMode,
             d_prefix,
             d_bloom1, bloom1Bits, d_seeds1, bloom1Hashes,
             d_bloom2, bloom2Bits, d_seeds2, bloom2Hashes,
@@ -1444,7 +1462,7 @@ int main(int argc, char** argv) {
 
         total += (uint64_t)nbThread * K3_STEP_SIZE * addrsPerPoint;
         iter++;
-        advance_thread_scalar_states(h_threadStates, nbThread, K3_TOTAL_THREADS);
+        advance_thread_scalar_states(h_threadStates, nbThread);
         populate_points_from_thread_states(h_keys_x, h_keys_y, h_threadStates, nbThread);
         CUDA_CHECK(cudaMemcpy(d_keys_x, h_keys_x, nbThread * 4 * sizeof(uint64_t), cudaMemcpyHostToDevice));
         CUDA_CHECK(cudaMemcpy(d_keys_y, h_keys_y, nbThread * 4 * sizeof(uint64_t), cudaMemcpyHostToDevice));
