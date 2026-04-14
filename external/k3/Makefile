@@ -1,8 +1,8 @@
 # K3 Optimized Bloom Filter Bitcoin Address Search
 # Performance-optimized version with memory coalescing and warp-level atomics
 
-CUDA = /usr/local/cuda
-NVCC = $(CUDA)/bin/nvcc
+CUDA ?= /usr/local/cuda
+NVCC ?= $(CUDA)/bin/nvcc
 CXX = g++
 
 # Compute capability - adjust for your GPU
@@ -41,10 +41,10 @@ debug: src/BloomSearch32K3.cu GPUGroup.h GPUMath.h GPUMath_K3.h GPUHash.h
 
 # Profile targets
 profile-nsys: BloomSearch32K3
-	nsys profile -t cuda,nvtx -o k3_profile ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -bits 334945032 -gpu 0
+	nsys profile -t cuda,nvtx -o k3_profile ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 334945032 -gpu 0 -targets-exact targets.exact
 
 profile-ncu: BloomSearch32K3
-	ncu --set full -o k3_kernel_profile ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -bits 334945032 -gpu 0
+	ncu --set full -o k3_kernel_profile ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 334945032 -gpu 0 -targets-exact targets.exact
 
 # Multi-GPU capability detection
 CCAP_LIST = 75 80 86 89

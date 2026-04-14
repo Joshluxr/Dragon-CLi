@@ -7,7 +7,7 @@ BINARY="./BloomSearch32K3"
 PREFIX_FILE="/data/prefix32.bin"
 BLOOM_FILE="/data/bloom_filter.bin"
 SEEDS_FILE="/data/bloom_seeds.bin"
-BITS="8589934592"  # Adjust based on your bloom filter size
+BITS="4294967296"  # Exact-mode bloom currently supports up to 2^32 bits
 
 # The 8 decimal starting ranges (no end, each GPU starts here)
 declare -a STARTS=(
@@ -43,7 +43,7 @@ for FILE in "$PREFIX_FILE" "$BLOOM_FILE" "$SEEDS_FILE"; do
 done
 
 # Launch each GPU with its starting range
-echo "Launching K3 on 8 GPUs with decimal starting ranges..."
+echo "Launching K3 on 8 GPUs with exact disjoint scalar windows..."
 echo ""
 
 for i in {0..7}; do
@@ -70,6 +70,10 @@ for i in {0..7}; do
 done
 
 echo "All GPUs launched!"
+echo ""
+echo "Notes:"
+echo "  - K3 now treats each -start value as the first scalar of a disjoint 1024-key window stream."
+echo "  - Bloom bit sizes above 2^32 are not supported by the current exact-mode implementation."
 echo ""
 echo "Monitor with:"
 echo "  tail -f /tmp/k3_gpu*.log"

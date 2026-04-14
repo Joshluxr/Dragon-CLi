@@ -1,6 +1,6 @@
 # K3 - Optimized Bloom Filter Bitcoin Address Search
 
-K3 is a performance-optimized CUDA implementation for searching Bitcoin addresses using bloom filters. It builds on the BloomSearch32K1 architecture with significant GPU optimizations for improved throughput.
+K3 is a performance-optimized CUDA implementation for searching Bitcoin address HASH160 values using a GPU bloom-filter candidate pass plus optional exact host-side verification. It builds on the BloomSearch32K1 architecture with significant GPU optimizations for improved throughput.
 
 ## Performance Optimizations
 
@@ -25,24 +25,15 @@ uint64_t* ptr = (base) + (tid) * 4;
 - This allows more registers per thread for the complex EC arithmetic
 - More active blocks can execute concurrently (better occupancy)
 
-### 3. Warp-Level Atomics (Est. 1.5-2x speedup)
-When recording found addresses, K3 uses warp-level ballot to reduce atomic contention:
-```cuda
-uint32_t mask = __ballot_sync(0xFFFFFFFF, found);
-if (found && (threadIdx.x == __ffs(mask) - 1)) {
-    // Only leader thread does atomic
-}
-```
+### 3. Explicit Candidate Buffering
+K3 records bloom-filter candidates into an explicit bounded candidate-record array instead of relying on an unbounded raw hit counter. This prevents host/device copy overruns when false positives spike.
 
-### 4. Fast Bloom Filter Access (Est. 1.2-1.3x speedup)
-Power-of-2 bloom filter sizes enable fast bitmask instead of expensive modulo:
+### 4. Exact Bloom Filter Semantics
+K3 now uses exact modulo-based bloom lookup semantics:
 ```cuda
-// Original: expensive integer division
-uint64_t bitPos = h % bloomBits;
-
-// K3: fast bitmask (when bloomBits = 2^n)
-uint64_t bitPos = h & (bloomBits - 1);
+uint64_t bitPos = ((uint64_t)h) % bloomBits;
 ```
+The scanner no longer silently rounds bloom sizes to a power of two.
 
 ### 5. Symmetric Hash Function (Est. 1.3x speedup)
 Computes both compressed address parities (02/03 prefix) in a single operation:
@@ -77,19 +68,30 @@ make debug
 ## Usage
 
 ```bash
-./BloomSearch32K3 -prefix <prefix_file> -bloom <bloom_file> -bits <bloom_bits> -gpu <gpu_id>
+./BloomSearch32K3 -prefix <prefix_file> -bloom <bloom_file> -seeds <seeds_file> -bits <bloom_bits> -gpu <gpu_id>
 ```
 
 ### Parameters
 - `-prefix`: Path to 32-bit prefix bitmap file
 - `-bloom`: Path to bloom filter file
-- `-bits`: Number of bits in the bloom filter (must be power of 2 for optimal performance)
+- `-seeds`: Path to murmur3 seed file used by the bloom filter
+- `-bits`: Number of bits in the bloom filter (exact value, no silent rounding)
 - `-gpu`: GPU device ID (default: 0)
+- `-targets-exact`: Optional exact HASH160 target file for confirmed-hit verification
 
 ### Example
 ```bash
-./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -bits 268435456 -gpu 0
+./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 268435456 -gpu 0
 ```
+
+## Candidate vs confirmed hits
+
+K3 now distinguishes between:
+
+- **candidate hits**: HASH160 values that passed the prefix bitmap and bloom filters
+- **confirmed hits**: candidate hits that also appear in the optional exact target set passed via `-targets-exact`
+
+If `-targets-exact` is omitted, the scanner still emits candidates but cannot distinguish bloom false positives from exact matches.
 
 ## Profiling
 
@@ -101,8 +103,8 @@ make profile-nsys
 make profile-ncu
 
 # Or manually:
-nsys profile -t cuda ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -bits 268435456 -gpu 0
-ncu --set full ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -bits 268435456 -gpu 0
+nsys profile -t cuda ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 268435456 -gpu 0
+ncu --set full ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 268435456 -gpu 0
 ```
 
 ## Architecture
@@ -123,9 +125,10 @@ Pinned Memory                       Global Memory (Coalesced Layout)
                                     Per Thread:
                                     1. Load EC point (coalesced)
                                     2. Compute addresses (symmetric hash)
-                                    3. Check 3-tier bloom filter (bitmask)
-                                    4. Record hits (warp atomics)
-                                    5. Add 512*G using endomorphism
+                                    3. Check 3-tier bloom filter (exact modulo)
+                                    4. Record bounded candidate records
+                                    5. Reconstruct exact scalars on host
+                                    6. Optionally confirm against exact target set
 ```
 
 ## File Structure
@@ -150,9 +153,9 @@ k3/
 | Threads/block | 512 | 256 |
 | Total threads | 32768 | 65536 |
 | Memory access | Strided | Coalesced |
-| Bloom check | Modulo | Bitmask |
+| Bloom check | Modulo | Modulo (exact semantics) |
 | Hash compute | Separate | Symmetric |
-| Atomics | Global | Warp-level |
+| Candidate buffering | Raw counter | Explicit bounded records |
 | Host memory | Pageable | Pinned |
 
 ## Requirements
