@@ -84,6 +84,56 @@ make debug
 ./BloomSearch32K3 -prefix bloom.prefix32 -bloom bloom.bloom -seeds bloom.seeds -bits 268435456 -gpu 0
 ```
 
+## Building K3 target artifacts from a public address list
+
+K3 expects four input artifacts:
+
+- `prefix.bin` - 2^32-bit sparse prefix bitmap
+- `bloom.bin` - bloom filter over HASH160 values
+- `seeds.bin` - murmur3 seeds used by the bloom
+- `targets.exact` - exact HASH160 set for confirmed-hit verification
+
+This repository now includes:
+
+```bash
+python3 tools/build-k3-targets.py \
+  --input Bitcoin_addresses_LATEST.txt.gz \
+  --output-dir /workspace/k3-generated \
+  --bits 4294967296 \
+  --hashes 8
+```
+
+### Converter behavior
+
+- accepts either plain text or `.gz` compressed address lists
+- expects **one Bitcoin address per line**
+- keeps only **legacy base58 P2PKH** addresses (those starting with `1`)
+- rejects unsupported address types such as:
+  - P2SH (`3...`)
+  - Bech32 / SegWit (`bc1...`)
+- decodes each kept address into a 20-byte HASH160
+- writes:
+  - `prefix.bin`
+  - `bloom.bin`
+  - `seeds.bin`
+  - `targets.exact`
+  - `summary.json`
+
+### Why only P2PKH is supported
+
+The current K3 scanner computes HASH160 values for public keys directly:
+
+- compressed pubkey -> HASH160
+- uncompressed pubkey -> HASH160
+
+That matches **legacy P2PKH** addresses only. It does **not** currently generate:
+
+- redeem scripts for P2SH
+- witness programs for Bech32
+
+So the converter intentionally filters the address list down to the address type
+the scanner can actually verify correctly.
+
 ## Candidate vs confirmed hits
 
 K3 now distinguishes between:
