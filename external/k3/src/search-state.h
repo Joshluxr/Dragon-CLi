@@ -35,6 +35,24 @@ inline constexpr Scalar256 SECP_N = {{
     0xFFFFFFFFFFFFFFFFULL,
 }};
 
+// Scalar-side GLV endomorphism roots modulo secp256k1 group order n.
+// Matches the point-side constants in the codebase as follows:
+// - SECP_LAMBDA_BETA  corresponds to point transform using _beta
+// - SECP_LAMBDA_BETA2 corresponds to point transform using _beta2
+inline constexpr Scalar256 SECP_LAMBDA_BETA = {{
+    0xDF02967C1B23BD72ULL,
+    0x122E22EA20816678ULL,
+    0xA5261C028812645AULL,
+    0x5363AD4CC05C30E0ULL,
+}};
+
+inline constexpr Scalar256 SECP_LAMBDA_BETA2 = {{
+    0xE0CFC810B51283CEULL,
+    0xA880B9FC8EC739C2ULL,
+    0x5AD9E3FD77ED9BA4ULL,
+    0xAC9C52B33FA3CF1FULL,
+}};
+
 static inline void scalarSetZero(Scalar256* out) {
     memset(out, 0, sizeof(*out));
 }
@@ -113,6 +131,66 @@ static inline void subU64FromScalarModN(Scalar256* out, const Scalar256& a, uint
     Scalar256 rhs;
     scalarSetU64(&rhs, b);
     subScalarModN(out, a, rhs);
+}
+
+// Schoolbook 256x256 -> 512 multiplication represented as 8 little-endian limbs.
+static inline void mul256Wide(uint64_t out[8], const Scalar256& a, const Scalar256& b) {
+    for (int i = 0; i < 8; i++) out[i] = 0;
+
+    for (int i = 0; i < 4; i++) {
+        __uint128_t carry = 0;
+        for (int j = 0; j < 4; j++) {
+            __uint128_t accum =
+                (__uint128_t)a.limbs[i] * b.limbs[j] +
+                out[i + j] +
+                carry;
+            out[i + j] = (uint64_t)accum;
+            carry = accum >> 64;
+        }
+
+        int k = i + 4;
+        while (carry && k < 8) {
+            __uint128_t accum = (__uint128_t)out[k] + carry;
+            out[k] = (uint64_t)accum;
+            carry = accum >> 64;
+            k++;
+        }
+    }
+}
+
+static inline bool getBit512(const uint64_t limbs[8], int bitIndex) {
+    int limb = bitIndex / 64;
+    int offset = bitIndex % 64;
+    return ((limbs[limb] >> offset) & 1ULL) != 0ULL;
+}
+
+// Simple shift-and-subtract reduction modulo n.
+static inline void reduceWideModN(Scalar256* out, const uint64_t wide[8]) {
+    Scalar256 rem;
+    scalarSetZero(&rem);
+
+    for (int bit = 511; bit >= 0; bit--) {
+        uint64_t carry = 0;
+        for (int i = 0; i < 4; i++) {
+            uint64_t nextCarry = rem.limbs[i] >> 63;
+            rem.limbs[i] = (rem.limbs[i] << 1) | carry;
+            carry = nextCarry;
+        }
+        rem.limbs[0] |= getBit512(wide, bit) ? 1ULL : 0ULL;
+        if (scalarCmp(rem, SECP_N) >= 0) {
+            Scalar256 tmp;
+            subNoReduce(&tmp, rem, SECP_N);
+            rem = tmp;
+        }
+    }
+
+    *out = rem;
+}
+
+static inline void mulScalarModN(Scalar256* out, const Scalar256& a, const Scalar256& b) {
+    uint64_t wide[8];
+    mul256Wide(wide, a, b);
+    reduceWideModN(out, wide);
 }
 
 static inline void scalarToArray(const Scalar256& in, uint64_t out[4]) {
@@ -223,6 +301,41 @@ static inline bool loadCheckpointV2(
     ok &= fread(threadStates, sizeof(ThreadScalarState), expectedThreadCount, fp) == expectedThreadCount;
     fclose(fp);
     return ok;
+}
+
+static inline bool deriveExactScalarForCandidate(
+    Scalar256* out,
+    const ThreadScalarState& threadState,
+    int32_t pointDelta,
+    uint8_t yVariant,
+    uint8_t endoVariant
+) {
+    Scalar256 candidateScalar;
+    if (pointDelta >= 0) {
+        addU64ToScalarModN(&candidateScalar, threadState.windowCenter, (uint64_t)pointDelta);
+    } else {
+        subU64FromScalarModN(&candidateScalar, threadState.windowCenter, (uint64_t)(-(int64_t)pointDelta));
+    }
+
+    if (yVariant != 0) {
+        Scalar256 negated;
+        negateScalarModN(&negated, candidateScalar);
+        candidateScalar = negated;
+    }
+
+    switch (endoVariant) {
+        case 0:
+            *out = candidateScalar;
+            return true;
+        case 1:
+            mulScalarModN(out, candidateScalar, SECP_LAMBDA_BETA);
+            return true;
+        case 2:
+            mulScalarModN(out, candidateScalar, SECP_LAMBDA_BETA2);
+            return true;
+        default:
+            return false;
+    }
 }
 
 #endif // K3_SEARCH_STATE_H

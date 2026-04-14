@@ -966,6 +966,23 @@ static bool save_thread_state_checkpoint(
     return saveCheckpointV2(path, header, threadStates, (size_t)nbThread);
 }
 
+static bool reconstruct_candidate_scalar(
+    Scalar256* out,
+    const CandidateRecord& candidate,
+    const ThreadScalarState* threadStates,
+    int nbThread
+) {
+    if (candidate.threadId >= (uint32_t)nbThread) {
+        return false;
+    }
+    return deriveExactScalarForHit(
+        out,
+        threadStates[candidate.threadId],
+        candidate.pointDelta,
+        candidate.yVariant,
+        candidate.endoVariant);
+}
+
 void* load_file(const char* path, size_t* size) {
     struct stat st;
     if (stat(path, &st) != 0) return nullptr;
