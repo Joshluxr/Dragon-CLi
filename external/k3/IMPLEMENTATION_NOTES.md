@@ -46,8 +46,42 @@ and optional exact confirmation.
   - Device EC points are then repopulated from the updated host scalar state
     before the next launch so host/device state stays synchronized.
 
-### Current limitation in this environment
+### Remote verification status
 
-The implementation changes were applied at the source level, but CUDA compile
-verification is currently blocked in this environment because `nvcc` is not
-available at `/usr/local/cuda/bin/nvcc`.
+This implementation was subsequently copied to a remote CUDA server and built
+successfully with:
+
+- CUDA 13.0
+- `make CCAP=120`
+
+Runtime smoke testing was also performed on that remote host using generated
+fixture files in the exact on-disk formats the scanner expects:
+
+- deterministic exact target files
+- permissive prefix bitmap
+- permissive bloom filter
+- Murmur3 seed file
+
+Key results from remote verification:
+
+- the branch now compiles successfully on real CUDA hardware
+- a reduced debug launch geometry (`-blocks 1 -threads-per-block 32`) produces
+  stored candidates, confirming that the candidate pipeline is live
+- exact confirmation was exercised successfully using a known emitted candidate
+  promoted into an exact target file, resulting in:
+  - `1 confirmed`
+- the original full production geometry is still substantially slower, so smoke
+  tests should prefer the reduced launch geometry
+
+### Performance note
+
+The original production-sized kernel build showed a very large stack frame.
+After batching the inversion work, the remote PTXAS metrics improved to:
+
+- kernel stack frame: `4880 bytes`
+- kernel spill stores: `0 bytes`
+- kernel spill loads: `0 bytes`
+
+The inlined helper `ComputeKeysK3` still shows spill pressure in PTXAS output,
+so further tuning may still be useful for production performance, but the
+worst stack-frame issue was reduced substantially.

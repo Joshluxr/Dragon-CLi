@@ -193,7 +193,8 @@ __device__ __forceinline__ bool CheckTieredBloom_K3(
     const uint32_t* h,
     const uint8_t* prefixTable32,
     const uint32_t* bloom1, uint64_t bloom1Bits, const uint32_t* bloom1Seeds, int bloom1Hashes,
-    const uint32_t* bloom2, uint64_t bloom2Bits, const uint32_t* bloom2Seeds, int bloom2Hashes
+    const uint32_t* bloom2, uint64_t bloom2Bits, const uint32_t* bloom2Seeds, int bloom2Hashes,
+    ResultHeader* resultHeader
 ) {
     // Tier 1: 32-bit prefix bitmap check (fastest)
     uint32_t prefix32 = __byte_perm(h[0], 0, 0x0123);
@@ -293,14 +294,14 @@ __device__ void CheckPointBothFormats_K3(
     uint32_t* h_comp_neg = isOdd ? h_even : h_odd;
 
     if (CheckTieredBloom_K3(h_comp_pos, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_pos);
     }
 
     if (CheckTieredBloom_K3(h_comp_neg, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_neg);
@@ -309,7 +310,7 @@ __device__ void CheckPointBothFormats_K3(
     // Uncompressed addresses (need full y coordinate)
     _GetHash160(px, py_positive, (uint8_t*)h_uncomp_pos);
     if (CheckTieredBloom_K3(h_uncomp_pos, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_pos);
@@ -317,7 +318,7 @@ __device__ void CheckPointBothFormats_K3(
 
     _GetHash160(px, py_negative, (uint8_t*)h_uncomp_neg);
     if (CheckTieredBloom_K3(h_uncomp_neg, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_neg);
@@ -341,13 +342,13 @@ __device__ void CheckPointCompressedOnly_K3(
     uint32_t* h_comp_neg = isOdd ? h_even : h_odd;
 
     if (CheckTieredBloom_K3(h_comp_pos, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_pos);
     }
     if (CheckTieredBloom_K3(h_comp_neg, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_neg);
@@ -366,7 +367,7 @@ __device__ void CheckPointUncompressedOnly_K3(
     uint32_t tid = (blockIdx.x * blockDim.x) + threadIdx.x;
     _GetHash160(px, py_positive, (uint8_t*)h_uncomp_pos);
     if (CheckTieredBloom_K3(h_uncomp_pos, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_pos);
@@ -374,7 +375,7 @@ __device__ void CheckPointUncompressedOnly_K3(
 
     _GetHash160(px, py_negative, (uint8_t*)h_uncomp_neg);
     if (CheckTieredBloom_K3(h_uncomp_neg, prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes)) {
+                            bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, resultHeader)) {
         RecordMatchSimple(
             resultHeader, outRecords, maxFound, tid, signedDeltaFromOffset(incr),
             CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_neg);
@@ -457,7 +458,8 @@ __device__ void ComputeKeysK3(
     const uint32_t* bloom2, uint64_t bloom2Bits, const uint32_t* bloom2Seeds, int bloom2Hashes,
     uint32_t maxFound, ResultHeader* resultHeader, CandidateRecord* outRecords
 ) {
-    uint64_t dx[GRP_SIZE/2+1][4];
+    uint64_t dx[K3_INV_BATCH][4];
+    uint64_t tailDx[2][4];
     uint64_t px[4], py[4], pyn[4], sx[4], sy[4], dy[4], _s[4], _p2[4];
 
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -474,15 +476,6 @@ __device__ void ComputeKeysK3(
     for (uint32_t j = 0; j < K3_STEP_SIZE / GRP_SIZE; j++) {
         uint32_t i;
 
-        // Compute delta x values for batch inversion
-        for (i = 0; i < HSIZE; i++)
-            ModSub256(dx[i], Gx[i], sx);
-        ModSub256(dx[i], Gx[i], sx);
-        ModSub256(dx[i+1], _2Gnx, sx);
-
-        // Batch modular inversion
-        _ModInvGrouped(dx);
-
         // Check center point
         CheckHashForMode_K3(px, py, j*GRP_SIZE + GRP_SIZE/2, searchMode,
             prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
@@ -490,53 +483,69 @@ __device__ void ComputeKeysK3(
 
         ModNeg256(pyn, py);
 
-        // Process group points
-        for (i = 0; i < HSIZE; i++) {
-            // P = StartPoint + i*G
-            Load256(px, sx);
-            Load256(py, sy);
-            ModSub256(dy, Gy[i], py);
-            _ModMult(_s, dy, dx[i]);
-            _ModSqr(_p2, _s);
-            ModSub256(px, _p2, px);
-            ModSub256(px, Gx[i]);
-            ModSub256(py, Gx[i], px);
-            _ModMult(py, _s);
-            ModSub256(py, Gy[i]);
+        // Process group points in smaller inversion batches to reduce stack/local memory pressure.
+        for (uint32_t base = 0; base < HSIZE; base += K3_INV_BATCH) {
+            uint32_t batchCount = HSIZE - base;
+            if (batchCount > K3_INV_BATCH) batchCount = K3_INV_BATCH;
 
-            CheckHashForMode_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 + (i+1), searchMode,
-                prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+            for (i = 0; i < batchCount; i++) {
+                ModSub256(dx[i], Gx[base + i], sx);
+            }
+            _ModInvGroupedBatched(dx, (int)batchCount);
 
-            // P = StartPoint - i*G
-            Load256(px, sx);
-            ModSub256(dy, pyn, Gy[i]);
-            _ModMult(_s, dy, dx[i]);
-            _ModSqr(_p2, _s);
-            ModSub256(px, _p2, px);
-            ModSub256(px, Gx[i]);
-            ModSub256(py, Gx[i], px);
-            _ModMult(py, _s);
-            ModSub256(py, Gy[i]);
-            ModNeg256(py, py);
+            for (i = 0; i < batchCount; i++) {
+                uint32_t gi = base + i;
 
-            CheckHashForMode_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 - (i+1), searchMode,
-                prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+                // P = StartPoint + i*G
+                Load256(px, sx);
+                Load256(py, sy);
+                ModSub256(dy, Gy[gi], py);
+                _ModMult(_s, dy, dx[i]);
+                _ModSqr(_p2, _s);
+                ModSub256(px, _p2, px);
+                ModSub256(px, Gx[gi]);
+                ModSub256(py, Gx[gi], px);
+                _ModMult(py, _s);
+                ModSub256(py, Gy[gi]);
+
+                CheckHashForMode_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 + (gi+1), searchMode,
+                    prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+                    bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+
+                // P = StartPoint - i*G
+                Load256(px, sx);
+                ModSub256(dy, pyn, Gy[gi]);
+                _ModMult(_s, dy, dx[i]);
+                _ModSqr(_p2, _s);
+                ModSub256(px, _p2, px);
+                ModSub256(px, Gx[gi]);
+                ModSub256(py, Gx[gi], px);
+                _ModMult(py, _s);
+                ModSub256(py, Gy[gi]);
+                ModNeg256(py, py);
+
+                CheckHashForMode_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 - (gi+1), searchMode,
+                    prefixTable32, bloom1, bloom1Bits, bloom1Seeds, bloom1Hashes,
+                    bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
+            }
         }
+
+        ModSub256(tailDx[0], Gx[HSIZE], sx);
+        ModSub256(tailDx[1], _2Gnx, sx);
+        _ModInvGroupedBatched(tailDx, 2);
 
         // First point
         Load256(px, sx);
         Load256(py, sy);
-        ModNeg256(dy, Gy[i]);
+        ModNeg256(dy, Gy[HSIZE]);
         ModSub256(dy, py);
-        _ModMult(_s, dy, dx[i]);
+        _ModMult(_s, dy, tailDx[0]);
         _ModSqr(_p2, _s);
         ModSub256(px, _p2, px);
-        ModSub256(px, Gx[i]);
-        ModSub256(py, Gx[i], px);
+        ModSub256(px, Gx[HSIZE]);
+        ModSub256(py, Gx[HSIZE], px);
         _ModMult(py, _s);
-        ModSub256(py, Gy[i]);
+        ModSub256(py, Gy[HSIZE]);
         ModNeg256(py, py);
 
         CheckHashForMode_K3(px, py, j*GRP_SIZE, searchMode,
@@ -544,11 +553,10 @@ __device__ void ComputeKeysK3(
             bloom2, bloom2Bits, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
         // Next start point
-        i++;
         Load256(px, sx);
         Load256(py, sy);
         ModSub256(dy, _2Gny, py);
-        _ModMult(_s, dy, dx[i]);
+        _ModMult(_s, dy, tailDx[1]);
         _ModSqr(_p2, _s);
         ModSub256(px, _p2, px);
         ModSub256(px, _2Gnx);
@@ -1164,6 +1172,8 @@ int main(int argc, char** argv) {
     int searchMode = MODE_BOTH;
     int rangeId = -1;      // -1 means auto (use gpuId)
     int totalRanges = 1;   // 1 means no partitioning
+    int blockCount = K3_BLOCKS;
+    int threadsPerBlock = K3_THREADS_PER_BLOCK;
     char* startDecimal = nullptr;  // Decimal starting point for key range
     char* exactTargetsFile = nullptr;
 
@@ -1182,6 +1192,8 @@ int main(int argc, char** argv) {
         else if (!strcmp(argv[i], "-state") && i+1 < argc) stateFile = argv[++i];
         else if (!strcmp(argv[i], "-range") && i+1 < argc) rangeId = atoi(argv[++i]);
         else if (!strcmp(argv[i], "-ranges") && i+1 < argc) totalRanges = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "-blocks") && i+1 < argc) blockCount = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "-threads-per-block") && i+1 < argc) threadsPerBlock = atoi(argv[++i]);
         else if (!strcmp(argv[i], "-start") && i+1 < argc) startDecimal = argv[++i];
         else if (!strcmp(argv[i], "-targets-exact") && i+1 < argc) exactTargetsFile = argv[++i];
         else if (!strcmp(argv[i], "-both")) searchMode = MODE_BOTH;
@@ -1216,6 +1228,8 @@ int main(int argc, char** argv) {
         printf("  -uncompressed    Uncompressed only\n");
         printf("  -range <id>      Range partition ID (default: same as gpu)\n");
         printf("  -ranges <n>      Total number of range partitions (default: 1 = no partitioning)\n");
+        printf("  -blocks <n>      Override CUDA block count for smoke tests\n");
+        printf("  -threads-per-block <n> Override CUDA threads per block for smoke tests\n");
         printf("  -start <decimal> Exact decimal starting point for private key range\n");
         printf("\nDecimal Starting Point:\n");
         printf("  Use -start to specify the first scalar in this process's disjoint 1024-key window stream.\n");
@@ -1244,6 +1258,14 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Error: bloom2 bits must be in the range [0, 2^32].\n");
         return 1;
     }
+    if (blockCount <= 0 || threadsPerBlock <= 0) {
+        fprintf(stderr, "Error: block and thread counts must be positive.\n");
+        return 1;
+    }
+    if (threadsPerBlock > 1024) {
+        fprintf(stderr, "Error: threads per block must be <= 1024.\n");
+        return 1;
+    }
 
     char defaultState[256];
     if (!stateFile) {
@@ -1258,11 +1280,17 @@ int main(int argc, char** argv) {
 
     cudaDeviceProp prop;
     CUDA_CHECK(cudaGetDeviceProperties(&prop, gpuId));
+    if (threadsPerBlock > prop.maxThreadsPerBlock) {
+        fprintf(stderr, "Error: requested threads per block (%d) exceeds device max (%d).\n",
+                threadsPerBlock, prop.maxThreadsPerBlock);
+        return 1;
+    }
+    int nbThread = blockCount * threadsPerBlock;
     printf("\n=== BloomSearch32K3 - K3 Optimized ===\n");
     printf("GPU %d: %s (%d MPs, %d threads/block max)\n",
            gpuId, prop.name, prop.multiProcessorCount, prop.maxThreadsPerBlock);
     printf("K3 Config: %d blocks x %d threads = %d total threads\n",
-           K3_BLOCKS, K3_THREADS_PER_BLOCK, K3_TOTAL_THREADS);
+           blockCount, threadsPerBlock, nbThread);
 
     const char* modeStr = (searchMode == MODE_BOTH) ? "BOTH (compressed + uncompressed)" :
                           (searchMode == MODE_COMPRESSED_ONLY) ? "COMPRESSED only" : "UNCOMPRESSED only";
@@ -1331,7 +1359,6 @@ int main(int argc, char** argv) {
     }
 
     // Allocate GPU memory
-    int nbThread = K3_TOTAL_THREADS;
     uint8_t* d_prefix;
     uint32_t* d_bloom1;
     uint32_t* d_seeds1;
@@ -1418,7 +1445,7 @@ int main(int argc, char** argv) {
     while (running) {
         CUDA_CHECK(cudaMemset(d_resultHeader, 0, sizeof(ResultHeader)));
 
-        bloom_kernel_k3<<<K3_BLOCKS, K3_THREADS_PER_BLOCK>>>(
+        bloom_kernel_k3<<<blockCount, threadsPerBlock>>>(
             d_keys_x, d_keys_y, nbThread, searchMode,
             d_prefix,
             d_bloom1, bloom1Bits, d_seeds1, bloom1Hashes,
