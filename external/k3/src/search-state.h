@@ -8,6 +8,12 @@
 #include <string.h>
 #include <string>
 
+enum SearchMode : uint32_t {
+    MODE_COMPRESSED_ONLY = 0,
+    MODE_UNCOMPRESSED_ONLY = 1,
+    MODE_BOTH = 2,
+};
+
 struct Scalar256 {
     uint64_t limbs[4];
 };
@@ -198,6 +204,22 @@ static inline void scalarToArray(const Scalar256& in, uint64_t out[4]) {
     out[1] = in.limbs[1];
     out[2] = in.limbs[2];
     out[3] = in.limbs[3];
+}
+
+static inline void normalizeScalarModN(Scalar256* value) {
+    if (scalarIsZero(*value)) {
+        scalarSetU64(value, 1);
+        return;
+    }
+
+    if (scalarCmp(*value, SECP_N) >= 0) {
+        Scalar256 reduced;
+        subNoReduce(&reduced, *value, SECP_N);
+        *value = reduced;
+        if (scalarIsZero(*value)) {
+            scalarSetU64(value, 1);
+        }
+    }
 }
 
 static inline bool multiplyScalarBy10Checked(Scalar256* value) {

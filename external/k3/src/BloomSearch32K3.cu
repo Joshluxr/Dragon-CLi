@@ -21,11 +21,7 @@
 #include <stdint.h>
 #include <algorithm>
 #include <array>
-#include <algorithm>
-#include <array>
 #include <string>
-#include <vector>
-#include <vector>
 #include <vector>
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -72,6 +68,8 @@ struct ExactTargetSet {
     std::vector<std::array<uint32_t, 5>> hashes;
 };
 
+void* load_file(const char* path, size_t* size);
+
 static uint64_t global_stride_scalars(int nbThread) {
     return (uint64_t)nbThread * (uint64_t)K3_STEP_SIZE;
 }
@@ -104,21 +102,6 @@ static bool contains_exact_hash160(const ExactTargetSet& set, const uint32_t has
     std::array<uint32_t, 5> target{};
     for (int i = 0; i < 5; i++) target[i] = hash160[i];
     return std::binary_search(set.hashes.begin(), set.hashes.end(), target);
-}
-
-static bool hash_words_less(const std::array<uint32_t, 5>& a, const std::array<uint32_t, 5>& b) {
-    for (int i = 0; i < 5; i++) {
-        if (a[i] < b[i]) return true;
-        if (a[i] > b[i]) return false;
-    }
-    return false;
-}
-
-static bool hash_words_equal(const std::array<uint32_t, 5>& a, const std::array<uint32_t, 5>& b) {
-    for (int i = 0; i < 5; i++) {
-        if (a[i] != b[i]) return false;
-    }
-    return true;
 }
 
 // ---------------------------------------------------------------------------------------
@@ -968,7 +951,7 @@ static bool initialize_random_thread_states(
     uint8_t rangeEnd = ((rangeId + 1) * 256) / totalRanges - 1;
 
     Scalar256 baseCenter;
-    memcpy(baseCenter.limbs, privkey, 32);
+    scalarSetZero(&baseCenter);
 
     for (int t = 0; t < nbThread; t++) {
         secure_random(privkey, 32);
@@ -981,15 +964,16 @@ static bool initialize_random_thread_states(
 
         if (t == 0) {
             memcpy(baseCenter.limbs, privkey, 32);
+            normalizeScalarModN(&baseCenter);
         }
 
         addU64ToScalarModN(
-            &threadStates[t].windowCenter,
+            &threadStates[t].windowStart,
             baseCenter,
             (uint64_t)t * (uint64_t)K3_STEP_SIZE);
-        subU64FromScalarModN(
-            &threadStates[t].windowStart,
-            threadStates[t].windowCenter,
+        addU64ToScalarModN(
+            &threadStates[t].windowCenter,
+            threadStates[t].windowStart,
             (uint64_t)K3_CENTER_OFFSET);
     }
 
@@ -1009,10 +993,13 @@ static bool initialize_start_thread_states(
 
     for (int t = 0; t < nbThread; t++) {
         addU64ToScalarModN(
-            &threadStates[t].windowCenter,
+            &threadStates[t].windowStart,
             baseScalar,
             (uint64_t)t * (uint64_t)K3_STEP_SIZE);
-        subU64FromScalarModN(&threadStates[t].windowStart, threadStates[t].windowCenter, (uint64_t)K3_CENTER_OFFSET);
+        addU64ToScalarModN(
+            &threadStates[t].windowCenter,
+            threadStates[t].windowStart,
+            (uint64_t)K3_CENTER_OFFSET);
     }
 
     return true;
@@ -1294,8 +1281,9 @@ int main(int argc, char** argv) {
     // Optional secondary bloom filter
     uint32_t* h_bloom2 = nullptr;
     uint32_t* h_seeds2 = nullptr;
+    size_t bloom2Size = 0;
     if (bloom2File && seeds2File && bloom2Bits > 0) {
-        size_t bloom2Size, seeds2Size;
+        size_t seeds2Size;
         h_bloom2 = (uint32_t*)load_file(bloom2File, &bloom2Size);
         h_seeds2 = (uint32_t*)load_file(seeds2File, &seeds2Size);
         if (h_bloom2 && h_seeds2) {
@@ -1432,19 +1420,23 @@ int main(int argc, char** argv) {
                 d_candidateRecords,
                 numStored * sizeof(CandidateRecord),
                 cudaMemcpyDeviceToHost));
-            for (uint32_t i = 0; i < numStored && i < 10; i++) {
+            for (uint32_t i = 0; i < numStored; i++) {
                 CandidateRecord* item = h_candidateRecords + i;
-                const char* addrType = (item->addrFormat == CANDIDATE_ADDR_COMPRESSED) ? "COMP" : "UNCOMP";
-                const char* yType = (item->yVariant == CANDIDATE_Y_NEGATIVE) ? "-Y" : "+Y";
-                printf("[K3 CANDIDATE %s %s] tid=%u delta=%d endo=%u hash160=%08x%08x%08x%08x%08x\n",
-                       addrType, yType, item->threadId, item->pointDelta, item->endoVariant,
-                       item->hash160[0], item->hash160[1], item->hash160[2], item->hash160[3], item->hash160[4]);
+                if (i < 10) {
+                    const char* addrType = (item->addrFormat == CANDIDATE_ADDR_COMPRESSED) ? "COMP" : "UNCOMP";
+                    const char* yType = (item->yVariant == CANDIDATE_Y_NEGATIVE) ? "-Y" : "+Y";
+                    printf("[K3 CANDIDATE %s %s] tid=%u delta=%d endo=%u hash160=%08x%08x%08x%08x%08x\n",
+                           addrType, yType, item->threadId, item->pointDelta, item->endoVariant,
+                           item->hash160[0], item->hash160[1], item->hash160[2], item->hash160[3], item->hash160[4]);
+                }
                 if (exactVerificationEnabled && contains_exact_hash160(exactTargets, item->hash160)) {
                     Scalar256 scalar;
                     if (reconstruct_candidate_scalar(&scalar, *item, h_threadStates, nbThread)) {
                         totalConfirmedHits++;
-                        printf("[K3 CONFIRMED] scalar=%016lx%016lx%016lx%016lx\n",
-                               scalar.limbs[3], scalar.limbs[2], scalar.limbs[1], scalar.limbs[0]);
+                        if (totalConfirmedHits <= 10) {
+                            printf("[K3 CONFIRMED] scalar=%016lx%016lx%016lx%016lx\n",
+                                   scalar.limbs[3], scalar.limbs[2], scalar.limbs[1], scalar.limbs[0]);
+                        }
                     }
                 }
             }
@@ -1453,6 +1445,9 @@ int main(int argc, char** argv) {
         total += (uint64_t)nbThread * K3_STEP_SIZE * addrsPerPoint;
         iter++;
         advance_thread_scalar_states(h_threadStates, nbThread, K3_TOTAL_THREADS);
+        populate_points_from_thread_states(h_keys_x, h_keys_y, h_threadStates, nbThread);
+        CUDA_CHECK(cudaMemcpy(d_keys_x, h_keys_x, nbThread * 4 * sizeof(uint64_t), cudaMemcpyHostToDevice));
+        CUDA_CHECK(cudaMemcpy(d_keys_y, h_keys_y, nbThread * 4 * sizeof(uint64_t), cudaMemcpyHostToDevice));
 
         // Save checkpoint
         if (iter % 500 == 0) {
