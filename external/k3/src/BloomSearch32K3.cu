@@ -38,7 +38,6 @@
 #define K3_TOTAL_THREADS (K3_THREADS_PER_BLOCK * K3_BLOCKS)  // 65536
 #define K3_STEP_SIZE 1024
 #define K3_MAX_FOUND 65536
-#define K3_ITEM_SIZE32 8
 #define K3_INV_BATCH 64             // Batch size for modular inversion
 
 // Search mode flags
@@ -49,6 +48,31 @@
 // Address type flags
 #define ADDR_COMPRESSED   0x8000
 #define ADDR_UNCOMPRESSED 0x0000
+
+// Explicit candidate record metadata values.
+#define CANDIDATE_Y_POSITIVE 0
+#define CANDIDATE_Y_NEGATIVE 1
+#define CANDIDATE_ADDR_UNCOMPRESSED 0
+#define CANDIDATE_ADDR_COMPRESSED 1
+
+struct ResultHeader {
+    uint32_t storedCount;
+    uint32_t totalCount;
+    uint32_t droppedCount;
+    uint32_t reserved;
+};
+
+struct CandidateRecord {
+    uint32_t threadId;
+    int32_t pointDelta;
+    uint8_t yVariant;
+    uint8_t addrFormat;
+    uint8_t endoVariant;
+    uint8_t reserved;
+    uint32_t hash160[5];
+};
+
+static_assert(sizeof(CandidateRecord) == 32, "CandidateRecord must remain 32 bytes");
 
 // ---------------------------------------------------------------------------------------
 // CUDA ERROR HANDLING MACRO
@@ -165,64 +189,54 @@ __device__ __forceinline__ bool CheckTieredBloom_K3(
 }
 
 // ---------------------------------------------------------------------------------------
-// K3 OPTIMIZATION: WARP-LEVEL ATOMIC RECORDING
+// Candidate recording with bounded storage and explicit record metadata.
+// totalCount tracks every candidate event while storedCount only reflects
+// payloads that fit in the fixed-size candidate array.
 // ---------------------------------------------------------------------------------------
-__device__ void RecordMatch_K3(
-    uint32_t* out, uint32_t maxFound,
-    uint32_t tid, int32_t incr, uint32_t addrType, uint32_t endoType,
-    uint32_t* h,
-    bool hasMatch
+__device__ __forceinline__ bool reserveCandidateSlot(
+    ResultHeader* resultHeader,
+    uint32_t maxFound,
+    uint32_t* outPos
 ) {
-    // Warp-level voting to reduce atomic contention
-    unsigned mask = __ballot_sync(0xFFFFFFFF, hasMatch);
+    atomicAdd(&resultHeader->totalCount, 1);
 
-    if (mask == 0) return;  // No matches in this warp
-
-    int matchCount = __popc(mask);
-    uint32_t basePos;
-
-    // Only lane 0 does the atomic
-    if ((threadIdx.x & 31) == 0) {
-        basePos = atomicAdd(out, matchCount);
+    uint32_t pos = atomicAdd(&resultHeader->storedCount, 1);
+    if (pos >= maxFound) {
+        atomicSub(&resultHeader->storedCount, 1);
+        atomicAdd(&resultHeader->droppedCount, 1);
+        return false;
     }
 
-    // Broadcast basePos to all lanes
-    basePos = __shfl_sync(0xFFFFFFFF, basePos, 0);
-
-    if (hasMatch) {
-        // Calculate this thread's offset within the warp's matches
-        unsigned lowerMask = (1u << (threadIdx.x & 31)) - 1;
-        int laneOffset = __popc(mask & lowerMask);
-        uint32_t pos = basePos + laneOffset;
-
-        if (pos < maxFound) {
-            out[pos * K3_ITEM_SIZE32 + 1] = tid;
-            out[pos * K3_ITEM_SIZE32 + 2] = (incr << 16) | addrType | endoType;
-            out[pos * K3_ITEM_SIZE32 + 3] = h[0];
-            out[pos * K3_ITEM_SIZE32 + 4] = h[1];
-            out[pos * K3_ITEM_SIZE32 + 5] = h[2];
-            out[pos * K3_ITEM_SIZE32 + 6] = h[3];
-            out[pos * K3_ITEM_SIZE32 + 7] = h[4];
-        }
-    }
+    *outPos = pos;
+    return true;
 }
 
-// Simple non-warp version for fallback
 __device__ __forceinline__ void RecordMatchSimple(
-    uint32_t* out, uint32_t maxFound,
-    uint32_t tid, int32_t incr, uint32_t addrType, uint32_t endoType,
+    ResultHeader* resultHeader,
+    CandidateRecord* outRecords,
+    uint32_t maxFound,
+    uint32_t tid,
+    int32_t pointDelta,
+    uint8_t yVariant,
+    uint8_t addrFormat,
+    uint8_t endoType,
     uint32_t* h
 ) {
-    uint32_t pos = atomicAdd(out, 1);
-    if (pos < maxFound) {
-        out[pos * K3_ITEM_SIZE32 + 1] = tid;
-        out[pos * K3_ITEM_SIZE32 + 2] = (incr << 16) | addrType | endoType;
-        out[pos * K3_ITEM_SIZE32 + 3] = h[0];
-        out[pos * K3_ITEM_SIZE32 + 4] = h[1];
-        out[pos * K3_ITEM_SIZE32 + 5] = h[2];
-        out[pos * K3_ITEM_SIZE32 + 6] = h[3];
-        out[pos * K3_ITEM_SIZE32 + 7] = h[4];
-    }
+    uint32_t pos;
+    if (!reserveCandidateSlot(resultHeader, maxFound, &pos)) return;
+
+    CandidateRecord* record = &outRecords[pos];
+    record->threadId = tid;
+    record->pointDelta = pointDelta;
+    record->yVariant = yVariant;
+    record->addrFormat = addrFormat;
+    record->endoVariant = endoType;
+    record->reserved = 0;
+    record->hash160[0] = h[0];
+    record->hash160[1] = h[1];
+    record->hash160[2] = h[2];
+    record->hash160[3] = h[3];
+    record->hash160[4] = h[4];
 }
 
 // ---------------------------------------------------------------------------------------
@@ -234,7 +248,7 @@ __device__ void CheckPointBothFormats_K3(
     const uint8_t* prefixTable32,
     const uint32_t* bloom1, uint64_t bloom1Mask, const uint32_t* bloom1Seeds, int bloom1Hashes,
     const uint32_t* bloom2, uint64_t bloom2Mask, const uint32_t* bloom2Seeds, int bloom2Hashes,
-    uint32_t maxFound, uint32_t* out
+    uint32_t maxFound, ResultHeader* resultHeader, CandidateRecord* outRecords
 ) {
     uint32_t h_even[5], h_odd[5];
     uint32_t h_uncomp_pos[5], h_uncomp_neg[5];
@@ -250,25 +264,33 @@ __device__ void CheckPointBothFormats_K3(
 
     if (CheckTieredBloom_K3(h_comp_pos, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
-        RecordMatchSimple(out, maxFound, tid, incr, ADDR_COMPRESSED, endoType, h_comp_pos);
+        RecordMatchSimple(
+            resultHeader, outRecords, maxFound, tid, incr,
+            CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_pos);
     }
 
     if (CheckTieredBloom_K3(h_comp_neg, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
-        RecordMatchSimple(out, maxFound, tid, -incr, ADDR_COMPRESSED, endoType, h_comp_neg);
+        RecordMatchSimple(
+            resultHeader, outRecords, maxFound, tid, incr,
+            CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_COMPRESSED, (uint8_t)endoType, h_comp_neg);
     }
 
     // Uncompressed addresses (need full y coordinate)
     _GetHash160(px, py_positive, (uint8_t*)h_uncomp_pos);
     if (CheckTieredBloom_K3(h_uncomp_pos, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
-        RecordMatchSimple(out, maxFound, tid, incr, ADDR_UNCOMPRESSED, endoType, h_uncomp_pos);
+        RecordMatchSimple(
+            resultHeader, outRecords, maxFound, tid, incr,
+            CANDIDATE_Y_POSITIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_pos);
     }
 
     _GetHash160(px, py_negative, (uint8_t*)h_uncomp_neg);
     if (CheckTieredBloom_K3(h_uncomp_neg, prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
                             bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes)) {
-        RecordMatchSimple(out, maxFound, tid, -incr, ADDR_UNCOMPRESSED, endoType, h_uncomp_neg);
+        RecordMatchSimple(
+            resultHeader, outRecords, maxFound, tid, incr,
+            CANDIDATE_Y_NEGATIVE, CANDIDATE_ADDR_UNCOMPRESSED, (uint8_t)endoType, h_uncomp_neg);
     }
 }
 
@@ -280,7 +302,7 @@ __device__ void CheckHashBothFormats_K3(
     const uint8_t* prefixTable32,
     const uint32_t* bloom1, uint64_t bloom1Mask, const uint32_t* bloom1Seeds, int bloom1Hashes,
     const uint32_t* bloom2, uint64_t bloom2Mask, const uint32_t* bloom2Seeds, int bloom2Hashes,
-    uint32_t maxFound, uint32_t* out
+    uint32_t maxFound, ResultHeader* resultHeader, CandidateRecord* outRecords
 ) {
     uint64_t pe1x[4], pe2x[4];
     uint64_t pyn[4];
@@ -295,17 +317,17 @@ __device__ void CheckHashBothFormats_K3(
     // Check original point - both formats
     CheckPointBothFormats_K3(px, py, pyn, incr, 0,
         prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
     // Check endomorphism 1: (beta*x, y)
     CheckPointBothFormats_K3(pe1x, py, pyn, incr, 1,
         prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
     // Check endomorphism 2: (beta2*x, y)
     CheckPointBothFormats_K3(pe2x, py, pyn, incr, 2,
         prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+        bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -318,7 +340,7 @@ __device__ void ComputeKeysK3(
     const uint8_t* prefixTable32,
     const uint32_t* bloom1, uint64_t bloom1Mask, const uint32_t* bloom1Seeds, int bloom1Hashes,
     const uint32_t* bloom2, uint64_t bloom2Mask, const uint32_t* bloom2Seeds, int bloom2Hashes,
-    uint32_t maxFound, uint32_t* out
+    uint32_t maxFound, ResultHeader* resultHeader, CandidateRecord* outRecords
 ) {
     uint64_t dx[GRP_SIZE/2+1][4];
     uint64_t px[4], py[4], pyn[4], sx[4], sy[4], dy[4], _s[4], _p2[4];
@@ -349,7 +371,7 @@ __device__ void ComputeKeysK3(
         // Check center point
         CheckHashBothFormats_K3(px, py, j*GRP_SIZE + GRP_SIZE/2,
             prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-            bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+            bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
         ModNeg256(pyn, py);
 
@@ -369,7 +391,7 @@ __device__ void ComputeKeysK3(
 
             CheckHashBothFormats_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 + (i+1),
                 prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+                bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
             // P = StartPoint - i*G
             Load256(px, sx);
@@ -385,7 +407,7 @@ __device__ void ComputeKeysK3(
 
             CheckHashBothFormats_K3(px, py, j*GRP_SIZE + GRP_SIZE/2 - (i+1),
                 prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-                bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+                bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
         }
 
         // First point
@@ -404,7 +426,7 @@ __device__ void ComputeKeysK3(
 
         CheckHashBothFormats_K3(px, py, j*GRP_SIZE,
             prefixTable32, bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
-            bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, out);
+            bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes, maxFound, resultHeader, outRecords);
 
         // Next start point
         i++;
@@ -440,13 +462,13 @@ __global__ void bloom_kernel_k3(
     const uint8_t* prefixTable32,
     const uint32_t* bloom1, uint64_t bloom1Mask, const uint32_t* bloom1Seeds, int bloom1Hashes,
     const uint32_t* bloom2, uint64_t bloom2Mask, const uint32_t* bloom2Seeds, int bloom2Hashes,
-    uint32_t maxFound, uint32_t* found
+    uint32_t maxFound, ResultHeader* resultHeader, CandidateRecord* outRecords
 ) {
     ComputeKeysK3(keys_x, keys_y, totalThreads,
         prefixTable32,
         bloom1, bloom1Mask, bloom1Seeds, bloom1Hashes,
         bloom2, bloom2Mask, bloom2Seeds, bloom2Hashes,
-        maxFound, found);
+        maxFound, resultHeader, outRecords);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -1047,14 +1069,16 @@ int main(int argc, char** argv) {
     uint32_t* d_seeds2 = nullptr;
     uint64_t* d_keys_x;
     uint64_t* d_keys_y;
-    uint32_t* d_found;
+    ResultHeader* d_resultHeader;
+    CandidateRecord* d_candidateRecords;
 
     CUDA_CHECK(cudaMalloc(&d_prefix, prefixSize));
     CUDA_CHECK(cudaMalloc(&d_bloom1, (bloom1Mask + 32) / 8));  // Use mask size
     CUDA_CHECK(cudaMalloc(&d_seeds1, bloom1Hashes * 4));
     CUDA_CHECK(cudaMalloc(&d_keys_x, nbThread * 4 * sizeof(uint64_t)));  // Coalesced layout
     CUDA_CHECK(cudaMalloc(&d_keys_y, nbThread * 4 * sizeof(uint64_t)));
-    CUDA_CHECK(cudaMalloc(&d_found, (1 + K3_MAX_FOUND * K3_ITEM_SIZE32) * 4));
+    CUDA_CHECK(cudaMalloc(&d_resultHeader, sizeof(ResultHeader)));
+    CUDA_CHECK(cudaMalloc(&d_candidateRecords, K3_MAX_FOUND * sizeof(CandidateRecord)));
 
     CUDA_CHECK(cudaMemcpy(d_prefix, h_prefix, prefixSize, cudaMemcpyHostToDevice));
     CUDA_CHECK(cudaMemcpy(d_bloom1, h_bloom1, bloom1Size, cudaMemcpyHostToDevice));
@@ -1071,10 +1095,12 @@ int main(int argc, char** argv) {
     // K3: Use PINNED memory for host buffers
     uint64_t* h_keys_x;
     uint64_t* h_keys_y;
-    uint32_t* h_found;
+    ResultHeader* h_resultHeader;
+    CandidateRecord* h_candidateRecords;
     CUDA_CHECK(cudaMallocHost(&h_keys_x, nbThread * 4 * sizeof(uint64_t)));
     CUDA_CHECK(cudaMallocHost(&h_keys_y, nbThread * 4 * sizeof(uint64_t)));
-    CUDA_CHECK(cudaMallocHost(&h_found, (1 + K3_MAX_FOUND * K3_ITEM_SIZE32) * 4));
+    CUDA_CHECK(cudaMallocHost(&h_resultHeader, sizeof(ResultHeader)));
+    CUDA_CHECK(cudaMallocHost(&h_candidateRecords, K3_MAX_FOUND * sizeof(CandidateRecord)));
 
     // Initialize or restore keys
     uint64_t resumedKeys = load_state_k3(stateFile, h_keys_x, h_keys_y, nbThread);
@@ -1097,35 +1123,42 @@ int main(int argc, char** argv) {
     time_t start = time(NULL);
     uint64_t total = resumedKeys;
     uint64_t iter = 0;
-    uint64_t totalHits = 0;
+    uint64_t totalCandidateEvents = 0;
+    uint64_t totalDroppedCandidates = 0;
     int addrsPerPoint = (searchMode == MODE_BOTH) ? 12 : 6;
 
     printf("\nStarting K3-optimized search (%d addresses per EC point)...\n\n", addrsPerPoint);
 
     while (running) {
-        CUDA_CHECK(cudaMemset(d_found, 0, 4));
+        CUDA_CHECK(cudaMemset(d_resultHeader, 0, sizeof(ResultHeader)));
 
         bloom_kernel_k3<<<K3_BLOCKS, K3_THREADS_PER_BLOCK>>>(
             d_keys_x, d_keys_y, nbThread,
             d_prefix,
             d_bloom1, bloom1Mask, d_seeds1, bloom1Hashes,
             d_bloom2, bloom2Mask, d_seeds2, bloom2Hashes,
-            K3_MAX_FOUND, d_found);
+            K3_MAX_FOUND, d_resultHeader, d_candidateRecords);
 
         CUDA_CHECK(cudaDeviceSynchronize());
 
         // Check for matches
-        CUDA_CHECK(cudaMemcpy(h_found, d_found, 4, cudaMemcpyDeviceToHost));
-        uint32_t numFound = h_found[0];
-        if (numFound > 0) {
-            totalHits += numFound;
-            CUDA_CHECK(cudaMemcpy(h_found, d_found, (1 + numFound * K3_ITEM_SIZE32) * 4, cudaMemcpyDeviceToHost));
-            for (uint32_t i = 0; i < numFound && i < 10; i++) {
-                uint32_t* item = h_found + 1 + i * K3_ITEM_SIZE32;
-                uint32_t meta = item[1];
-                const char* addrType = (meta & ADDR_COMPRESSED) ? "COMP" : "UNCOMP";
-                printf("[K3 CANDIDATE %s] tid=%u meta=%08x hash160=%08x%08x%08x%08x%08x\n",
-                       addrType, item[0], item[1], item[2], item[3], item[4], item[5], item[6]);
+        CUDA_CHECK(cudaMemcpy(h_resultHeader, d_resultHeader, sizeof(ResultHeader), cudaMemcpyDeviceToHost));
+        totalCandidateEvents += h_resultHeader->totalCount;
+        totalDroppedCandidates += h_resultHeader->droppedCount;
+        uint32_t numStored = h_resultHeader->storedCount;
+        if (numStored > 0) {
+            CUDA_CHECK(cudaMemcpy(
+                h_candidateRecords,
+                d_candidateRecords,
+                numStored * sizeof(CandidateRecord),
+                cudaMemcpyDeviceToHost));
+            for (uint32_t i = 0; i < numStored && i < 10; i++) {
+                CandidateRecord* item = h_candidateRecords + i;
+                const char* addrType = (item->addrFormat == CANDIDATE_ADDR_COMPRESSED) ? "COMP" : "UNCOMP";
+                const char* yType = (item->yVariant == CANDIDATE_Y_NEGATIVE) ? "-Y" : "+Y";
+                printf("[K3 CANDIDATE %s %s] tid=%u delta=%d endo=%u hash160=%08x%08x%08x%08x%08x\n",
+                       addrType, yType, item->threadId, item->pointDelta, item->endoVariant,
+                       item->hash160[0], item->hash160[1], item->hash160[2], item->hash160[3], item->hash160[4]);
             }
         }
 
@@ -1144,8 +1177,8 @@ int main(int argc, char** argv) {
             double t = difftime(time(NULL), start);
             double sessionKeys = total - resumedKeys;
             double rate = sessionKeys / t / 1e9;
-            printf("\r[K3 %5.0fs] %.2fT keys | %.2f GKey/s | %lu candidates     ",
-                   t, total / 1e12, rate, totalHits);
+            printf("\r[K3 %5.0fs] %.2fT keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
+                   t, total / 1e12, rate, totalCandidateEvents, totalDroppedCandidates);
             fflush(stdout);
         }
     }
@@ -1154,7 +1187,8 @@ int main(int argc, char** argv) {
     CUDA_CHECK(cudaMemcpy(h_keys_x, d_keys_x, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(h_keys_y, d_keys_y, nbThread * 4 * sizeof(uint64_t), cudaMemcpyDeviceToHost));
     save_state_k3(stateFile, h_keys_x, h_keys_y, nbThread, total);
-    printf("\n\nK3 Saved checkpoint: %.2fT keys, %lu total candidates\n", total / 1e12, totalHits);
+    printf("\n\nK3 Saved checkpoint: %.2fT keys, %lu total candidates, %lu dropped\n",
+           total / 1e12, totalCandidateEvents, totalDroppedCandidates);
 
     // Cleanup
     cudaFree(d_prefix);
@@ -1164,10 +1198,12 @@ int main(int argc, char** argv) {
     if (d_seeds2) cudaFree(d_seeds2);
     cudaFree(d_keys_x);
     cudaFree(d_keys_y);
-    cudaFree(d_found);
+    cudaFree(d_resultHeader);
+    cudaFree(d_candidateRecords);
     cudaFreeHost(h_keys_x);
     cudaFreeHost(h_keys_y);
-    cudaFreeHost(h_found);
+    cudaFreeHost(h_resultHeader);
+    cudaFreeHost(h_candidateRecords);
     free(h_prefix);
     free(h_bloom1);
     free(h_seeds1);
