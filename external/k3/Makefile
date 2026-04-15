@@ -16,7 +16,7 @@ NVCCFLAGS = -O3 -std=c++17 \
 	-I. \
 	--use_fast_math \
 	-Xptxas -v \
-	--maxrregcount=64
+	
 
 LDFLAGS = -L$(CUDA)/lib64 -lcudart -lpthread
 

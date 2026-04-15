@@ -43,7 +43,7 @@
 #define K3_TOTAL_THREADS (K3_THREADS_PER_BLOCK * K3_BLOCKS)  // 65536
 #define K3_STEP_SIZE 1024
 #define K3_MAX_FOUND 65536
-#define K3_INV_BATCH 64             // Batch size for modular inversion
+#define K3_INV_BATCH 32             // Batch size for modular inversion
 
 // Search-mode values come from search-state.h.
 #define K3_CENTER_OFFSET (GRP_SIZE / 2)
