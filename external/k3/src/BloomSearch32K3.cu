@@ -1506,8 +1506,14 @@ int main(int argc, char** argv) {
             double t = difftime(time(NULL), start);
             double sessionKeys = total - resumedKeys;
             double rate = sessionKeys / t / 1e9;
-            printf("\r[K3 %5.0fs] %.2fT keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
-                   t, total / 1e12, rate, totalCandidateEvents, totalDroppedCandidates);
+            // Show B (billion) for smaller counts, T (trillion) for large
+            if (total < 1e12) {
+                printf("\r[K3 %5.0fs] %.2fB keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
+                       t, total / 1e9, rate, totalCandidateEvents, totalDroppedCandidates);
+            } else {
+                printf("\r[K3 %5.0fs] %.3fT keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
+                       t, total / 1e12, rate, totalCandidateEvents, totalDroppedCandidates);
+            }
             fflush(stdout);
         }
     }
@@ -1516,8 +1522,13 @@ int main(int argc, char** argv) {
     if (!save_thread_state_checkpoint(stateFile, h_threadStates, nbThread, total, searchMode)) {
         fprintf(stderr, "\nWarning: Failed to save checkpoint to %s\n", stateFile);
     }
-    printf("\n\nK3 Saved checkpoint: %.2fT keys, %lu total candidates, %lu confirmed, %lu dropped\n",
-           total / 1e12, totalCandidateEvents, totalConfirmedHits, totalDroppedCandidates);
+    if (total < 1e12) {
+        printf("\n\nK3 Saved checkpoint: %.2fB keys, %lu total candidates, %lu confirmed, %lu dropped\n",
+               total / 1e9, totalCandidateEvents, totalConfirmedHits, totalDroppedCandidates);
+    } else {
+        printf("\n\nK3 Saved checkpoint: %.3fT keys, %lu total candidates, %lu confirmed, %lu dropped\n",
+               total / 1e12, totalCandidateEvents, totalConfirmedHits, totalDroppedCandidates);
+    }
 
     // Cleanup
     cudaFree(d_prefix);
