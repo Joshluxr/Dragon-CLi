@@ -1506,11 +1506,17 @@ int main(int argc, char** argv) {
             double t = difftime(time(NULL), start);
             double sessionKeys = total - resumedKeys;
             double rate = sessionKeys / t / 1e9;
-            // Show B (billion) for smaller counts, T (trillion) for large
-            if (total < 1e12) {
-                printf("\r[K3 %5.0fs] %.2fB keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
+            // Show M (million) for very small counts, B (billion) for medium, T (trillion) for large
+            if (total < 1e9) {
+                // Less than 1 billion - show in millions (M)
+                printf("\r[K3 %5.0fs] %.2fM keys | %.4f MKey/s | %lu candidates | %lu dropped     ",
+                       t, total / 1e6, rate * 1000, totalCandidateEvents, totalDroppedCandidates);
+            } else if (total < 1e12) {
+                // 1 billion to 1 trillion - show in billions (B)
+                printf("\r[K3 %5.0fs] %.3fB keys | %.3f GKey/s | %lu candidates | %lu dropped     ",
                        t, total / 1e9, rate, totalCandidateEvents, totalDroppedCandidates);
             } else {
+                // Over 1 trillion - show in trillions (T)
                 printf("\r[K3 %5.0fs] %.3fT keys | %.2f GKey/s | %lu candidates | %lu dropped     ",
                        t, total / 1e12, rate, totalCandidateEvents, totalDroppedCandidates);
             }
@@ -1522,8 +1528,11 @@ int main(int argc, char** argv) {
     if (!save_thread_state_checkpoint(stateFile, h_threadStates, nbThread, total, searchMode)) {
         fprintf(stderr, "\nWarning: Failed to save checkpoint to %s\n", stateFile);
     }
-    if (total < 1e12) {
-        printf("\n\nK3 Saved checkpoint: %.2fB keys, %lu total candidates, %lu confirmed, %lu dropped\n",
+    if (total < 1e9) {
+        printf("\n\nK3 Saved checkpoint: %.2fM keys, %lu total candidates, %lu confirmed, %lu dropped\n",
+               total / 1e6, totalCandidateEvents, totalConfirmedHits, totalDroppedCandidates);
+    } else if (total < 1e12) {
+        printf("\n\nK3 Saved checkpoint: %.3fB keys, %lu total candidates, %lu confirmed, %lu dropped\n",
                total / 1e9, totalCandidateEvents, totalConfirmedHits, totalDroppedCandidates);
     } else {
         printf("\n\nK3 Saved checkpoint: %.3fT keys, %lu total candidates, %lu confirmed, %lu dropped\n",
